@@ -2,10 +2,10 @@
 #include <memory>
 
 #include "assertmacros.h"
-#include "subs/integervalue.h"
-#include "subs/parser.h"
-#include "subs/stringtreeleaf.h"
-#include "subs/value.h"
+#include "lib/integervalue.h"
+#include "lib/parser.h"
+#include "lib/stringtreeleaf.h"
+#include "lib/value.h"
 
 #include "testparseconstants.h"
 

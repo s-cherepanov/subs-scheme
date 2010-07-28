@@ -1,7 +1,7 @@
 
 #include "assertmacros.h"
-#include "subs/integervalue.h"
-#include "subs/prettyprinter.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
 
 #include "testprettyprintconstants.h"
 

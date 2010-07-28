@@ -1,6 +1,6 @@
 
 #include "assertmacros.h"
-#include "subs/subsinterpreter.h"
+#include "lib/subsinterpreter.h"
 
 #include "testconstants.h"
 

@@ -5,11 +5,14 @@ env = Environment(
 	TARFLAGS = '-c -z',
 	)
 
-env.Program( 
+env.Program(
 	["test_subs.cpp"]
 	+ Glob( "test/*.cpp")
-	+ Glob( "subs/*.cpp")
+	+ Glob( "lib/*.cpp")
 	)
 
-
+env.Program(
+	["subs.cpp"]
+	+ Glob( "lib/*.cpp")
+	)
 

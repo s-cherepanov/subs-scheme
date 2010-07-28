@@ -2,8 +2,8 @@
 #include <memory>
 
 #include "assertmacros.h"
-#include "subs/lexer.h"
-#include "subs/stringtreeleaf.h"
+#include "lib/lexer.h"
+#include "lib/stringtreeleaf.h"
 
 #include "testlexconstants.h"
 

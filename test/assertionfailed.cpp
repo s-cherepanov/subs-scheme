@@ -1,6 +1,4 @@
 
-#include <iostream> // todo remove
-
 #include <sstream>
 #include <string>
 
@@ -8,7 +6,7 @@
 
 using namespace std;
 
-string AssertionFailed::ToString()
+string AssertionFailed::ToString() const
 {
     ostringstream ss;
     ss << file_ << ":" << line_ << " - Assertion failed: " << msg_;

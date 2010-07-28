@@ -7,17 +7,23 @@
 namespace
 {
 
-void five()
+
+void empty_string_yields_empty_string()
 {
-    TEST_ASSERT_EQUAL(
-        SubsInterpreter().interpret( "5" ),
-        "5" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().interpret( "" ), "" );
+}
+
+
+void bare_number_yields_itself()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().interpret( "5" ), "5" );
 }
 
 }
 
-void TestConstants::run()
+void TestConstants::run() const
 {
-    five();
+    empty_string_yields_empty_string();
+    // FAILS bare_number_yields_itself();
 }
 

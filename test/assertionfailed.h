@@ -1,4 +1,7 @@
 
+#ifndef ASSERTIONFAILED_H
+#define ASSERTIONFAILED_H
+
 #include <string>
 
 class AssertionFailed
@@ -11,11 +14,13 @@ public:
     {
     }
 
-    std::string ToString();
+    std::string ToString() const;
 
 private:
     std::string file_;
     unsigned int line_;
     std::string msg_;
 };
+
+#endif
 

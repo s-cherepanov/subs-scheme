@@ -1,11 +1,11 @@
 
-#ifndef TEST_CONSTANTS_H
-#define TEST_CONSTANTS_H
+#ifndef TESTCONSTANTS_H
+#define TESTCONSTANTS_H
 
 class TestConstants
 {
 public:
-    void run();
+    void run() const;
 };
 
 #endif

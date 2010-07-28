@@ -5,7 +5,7 @@
 
 using namespace std;
 
-std::string SubsInterpreter::interpret( const std::string& codestring )
+std::string SubsInterpreter::interpret( const std::string& codestring ) const
 {
     return "";
 }

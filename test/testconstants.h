@@ -5,7 +5,7 @@
 class TestConstants
 {
 public:
-    void run() const;
+    void Run() const;
 };
 
 #endif

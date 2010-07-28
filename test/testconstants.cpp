@@ -10,20 +10,20 @@ namespace
 
 void empty_string_yields_empty_string()
 {
-    TEST_ASSERT_EQUAL( SubsInterpreter().interpret( "" ), "" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "" ), "" );
 }
 
 
 void bare_number_yields_itself()
 {
-    TEST_ASSERT_EQUAL( SubsInterpreter().interpret( "5" ), "5" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "5" ), "5" );
 }
 
 }
 
-void TestConstants::run() const
+void TestConstants::Run() const
 {
     empty_string_yields_empty_string();
-    // FAILS bare_number_yields_itself();
+    bare_number_yields_itself();
 }
 

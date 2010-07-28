@@ -5,7 +5,7 @@
 class TestParseConstants
 {
 public:
-    void run() const;
+    void Run() const;
 };
 
 #endif

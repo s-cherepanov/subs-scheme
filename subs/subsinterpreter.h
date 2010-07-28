@@ -7,7 +7,7 @@
 class SubsInterpreter
 {
 public:
-    std::string interpret( const std::string& codestring ) const;
+    std::string Interpret( const std::string& codestring ) const;
 };
 
 #endif

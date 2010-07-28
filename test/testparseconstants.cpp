@@ -16,7 +16,8 @@ namespace
 
 void bare_number_becomes_single_value()
 {
-    auto_ptr<Value> v = Parser().parse( StringTreeLeaf( "5" ) );
+    StringTreeLeaf leaf_5( "5" );
+    auto_ptr<Value> v = Parser().Parse( &leaf_5 );
 
     IntegerValue* parsed_5_leaf = dynamic_cast<IntegerValue*>( v.get() );
 
@@ -27,7 +28,7 @@ void bare_number_becomes_single_value()
 
 }
 
-void TestParseConstants::run() const
+void TestParseConstants::Run() const
 {
     bare_number_becomes_single_value();
 }

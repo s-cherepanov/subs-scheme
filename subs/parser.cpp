@@ -11,10 +11,10 @@
 
 using namespace std;
 
-std::auto_ptr<Value> Parser::parse( const StringTree& stringtree ) const
+std::auto_ptr<Value> Parser::Parse( const StringTree* stringtree ) const
 {
     const StringTreeLeaf* leaf = dynamic_cast<const StringTreeLeaf*>(
-        &stringtree );
+        stringtree );
     if( leaf )
     {
         return ValueFactory::CreateValue( leaf );

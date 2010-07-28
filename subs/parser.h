@@ -10,7 +10,7 @@ class Value;
 class Parser
 {
 public:
-    std::auto_ptr<Value> parse( const StringTree& stringtree ) const;
+    std::auto_ptr<Value> Parse( const StringTree* stringtree ) const;
 };
 
 #endif

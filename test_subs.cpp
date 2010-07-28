@@ -3,7 +3,9 @@
 
 #include "test/assertionfailed.h"
 #include "test/testconstants.h"
+#include "test/testlexconstants.h"
 #include "test/testparseconstants.h"
+#include "test/testprettyprintconstants.h"
 
 using namespace std;
 
@@ -11,8 +13,10 @@ int main()
 {
     try
     {
-        TestParseConstants().run();
-        TestConstants().run();
+        TestLexConstants(         ).Run();
+        TestParseConstants(       ).Run();
+        TestPrettyPrintConstants( ).Run();
+        TestConstants(            ).Run();
     }
     catch( AssertionFailed& e )
     {

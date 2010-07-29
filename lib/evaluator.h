@@ -21,7 +21,8 @@ public:
      */
     std::auto_ptr<Value> Eval( const Value* value );
 
-    std::auto_ptr<Value> Apply( const CombinationValue* combo );
+    const SymbolValueMap& GetGlobalSymbolMap() const;
+    SymbolValueMap& GetGlobalSymbolMap();
 private:
     SymbolValueMap global_symbols_;
     bool print_intermediates_;

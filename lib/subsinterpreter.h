@@ -4,10 +4,14 @@
 
 #include <string>
 
+#include "evaluator.h"
+
 class SubsInterpreter
 {
 public:
-    std::string Interpret( const std::string& codestring ) const;
+    std::string Interpret( const std::string& codestring );
+private:
+    Evaluator evaluator_;
 };
 
 #endif

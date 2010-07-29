@@ -1,8 +1,7 @@
 
 env = Environment(
-	CCFLAGS = '-Wall -Werror',
+	CCFLAGS = '-Wall -Werror -g',
 	CPPPATH = '.',
-	TARFLAGS = '-c -z',
 	)
 
 env.Program(

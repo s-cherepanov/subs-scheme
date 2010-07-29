@@ -5,6 +5,7 @@
 #include "test/assertionfailed.h"
 #include "test/testbuiltinfunctions.h"
 #include "test/testconstants.h"
+#include "test/testdefinesymbol.h"
 #include "test/testlexconstants.h"
 #include "test/testparseconstants.h"
 #include "test/testprettyprintconstants.h"
@@ -24,6 +25,7 @@ int main()
         TestConstants(            ).Run();
         TestRepl(                 ).Run();
         TestBuiltInFunctions(     ).Run();
+        TestDefineSymbol(         ).Run();
     }
     catch( AssertionFailed& e )
     {

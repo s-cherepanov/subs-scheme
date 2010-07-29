@@ -13,7 +13,8 @@
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> PlusProcedureValue::Run( const CombinationValue* combo )
+std::auto_ptr<Value> PlusProcedureValue::Run( Evaluator* ev,
+    const CombinationValue* combo )
 {
     // TODO: values other than integers
 

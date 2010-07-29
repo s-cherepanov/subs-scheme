@@ -6,6 +6,7 @@
 #include "test/testbuiltinfunctions.h"
 #include "test/testconstants.h"
 #include "test/testdefinesymbol.h"
+#include "test/testlambda.h"
 #include "test/testlexconstants.h"
 #include "test/testparseconstants.h"
 #include "test/testprettyprintconstants.h"
@@ -26,6 +27,7 @@ int main()
         TestRepl(                 ).Run();
         TestBuiltInFunctions(     ).Run();
         TestDefineSymbol(         ).Run();
+        TestLambda(               ).Run();
     }
     catch( AssertionFailed& e )
     {

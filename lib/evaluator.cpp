@@ -8,6 +8,7 @@
 #include "procedurevalue.h"
 #include "prettyprinter.h"
 #include "symbolvalue.h"
+#include "userdefinedprocedurevalue.h"
 #include "value.h"
 
 #include "evaluator.h"
@@ -18,7 +19,7 @@ namespace
 {
 
 
-std::auto_ptr<Value> apply( const CombinationValue* combo )
+std::auto_ptr<Value> apply( Evaluator* ev, const CombinationValue* combo )
 {
     if( combo->empty() )
     {
@@ -36,21 +37,20 @@ std::auto_ptr<Value> apply( const CombinationValue* combo )
             + "', which is not a symbol." );
     }
 
-    return operator_proc->Run( combo );
+    return operator_proc->Run( ev, combo );
 }
 
-bool is_define_symbol( const Value* value )
+bool is_define_symbol( const SymbolValue* sym )
 {
-    const SymbolValue* sym = dynamic_cast<const SymbolValue*>( value );
-    if( sym )
-    {
-        // TODO: case insensitive?
-        if( sym->GetStringValue() == "define" )
-        {
-            return true;
-        }
-    }
-    return false;
+    // TODO: case insensitive?
+    return ( sym->GetStringValue() == "define" );
+}
+
+
+bool is_lambda_symbol( const SymbolValue* sym )
+{
+    // TODO: case insensitive?
+    return ( sym->GetStringValue() == "lambda" );
 }
 
 std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo )
@@ -90,6 +90,46 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo )
     return auto_ptr<Value>( sym->Clone() );
 }
 
+
+std::auto_ptr<Value> eval_lambda( Evaluator* ev, const CombinationValue* combo )
+{
+    if( combo->size() < 3 )
+    {
+        throw EvaluationError(
+            "Too few operands to the lambda operator: there should "
+            "be  at least 2." );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() );
+    ++it;
+    assert( it != combo->end() );
+
+    const CombinationValue* args = dynamic_cast<const CombinationValue*>( *it );
+    if( !args )
+    {
+        throw EvaluationError( "The first operand to the lambda operator "
+            "must be a combination naming its arguments.  '"
+            + PrettyPrinter::Print( *it )
+            + "' is not a combination." );
+    }
+
+    ++it;
+    assert( it != combo->end() );
+
+    // Copy the rest of the combo (unevaluated) as the
+    // body of the function
+    auto_ptr<CombinationValue> bodycombo( new CombinationValue );
+    for( ; it != combo->end(); ++it )
+    {
+        bodycombo->push_back( (*it)->Clone() );
+    }
+    
+    return auto_ptr<Value>( new UserDefinedProcedureValue( args->Clone(),
+        bodycombo.release() ) );
+}
+
+
 std::auto_ptr<Value> eval_combo( Evaluator* ev, const CombinationValue* combo )
 {
     auto_ptr<CombinationValue> new_combo( new CombinationValue );
@@ -99,7 +139,7 @@ std::auto_ptr<Value> eval_combo( Evaluator* ev, const CombinationValue* combo )
         new_combo->push_back( ev->Eval( *it ).release() );
     }
 
-    return apply( new_combo.get() );
+    return apply( ev, new_combo.get() );
 
 }
 
@@ -136,15 +176,30 @@ std::auto_ptr<Value> Evaluator::Eval( const Value* value )
         value );
     if( combo )
     {
-        if( combo->begin() != combo->end() && is_define_symbol(
-            *combo->begin() ) )
+        // Check for special keywords
+
+        if( combo->begin() != combo->end() )
         {
-            return eval_define( this, combo );
+            const SymbolValue* sym = dynamic_cast<const SymbolValue*>(
+                (*combo)[0] );
+
+            if( sym )
+            {
+                if( is_define_symbol( sym ) )
+                {
+                    return eval_define( this, combo );
+                }
+
+                if( is_lambda_symbol( sym ) )
+                {
+                    return eval_lambda( this, combo );
+                }
+            }
         }
-        else
-        {
-            return eval_combo( this, combo );
-        }
+
+        // If none of the special cases occurred, treat it as
+        // a normal combination
+        return eval_combo( this, combo );
     }
 
     const SymbolValue* sym = dynamic_cast<const SymbolValue*>(

@@ -53,7 +53,7 @@ void list_on_one_line_gets_evaluated_together()
 }
 
 
-void undefined_symbol_reports_error()
+void bare_undefined_symbol_reports_error()
 {
     istringstream in( "foo" );
     ostringstream out;
@@ -67,6 +67,35 @@ void undefined_symbol_reports_error()
 }
 
 
+void undefined_symbol_operator_reports_error()
+{
+    istringstream in( "(foo 5 6)" );
+    ostringstream out;
+    ostringstream err;
+
+    int retval = SubsRepl( false ).Run( in, out, err );
+
+    TEST_ASSERT_EQUAL( retval, 0 );
+    TEST_ASSERT_NOT_EQUAL( err.str().find( "Undefined symbol 'foo'" ), 
+        string::npos );
+}
+
+
+void undefined_symbol_operand_reports_error()
+{
+    istringstream in( "(+ foo 6)" );
+    ostringstream out;
+    ostringstream err;
+
+    int retval = SubsRepl( false ).Run( in, out, err );
+
+    TEST_ASSERT_EQUAL( retval, 0 );
+    TEST_ASSERT_NOT_EQUAL( err.str().find( "Undefined symbol 'foo'" ), 
+        string::npos );
+}
+
+
+
 
 }
 
@@ -75,6 +104,8 @@ void TestRepl::Run() const
     prompt_gets_written();
     single_symbol_gets_evaluated();
     // INCORRECT could quote list_on_one_line_gets_evaluated_together();
-    undefined_symbol_reports_error();
+    bare_undefined_symbol_reports_error();
+    undefined_symbol_operator_reports_error();
+    undefined_symbol_operand_reports_error();
 }
 

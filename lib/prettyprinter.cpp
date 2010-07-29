@@ -2,6 +2,7 @@
 #include <sstream>
 #include <string>
 
+#include "combinationvalue.h"
 #include "integervalue.h"
 #include "value.h"
 
@@ -21,6 +22,33 @@ std::string Print( const Value* value )
     if( integervalue )
     {
         result << integervalue->GetIntValue();
+    }
+    else
+    {
+        const CombinationValue* combovalue = dynamic_cast<
+            const CombinationValue*>( value );
+
+        if( combovalue )
+        {
+            result << "(";
+            CombinationValue::const_iterator it = combovalue->begin();
+            while( true )
+            {
+                result << Print( *it );
+
+                ++it;
+
+                if( it == combovalue->end() )
+                {
+                    break;
+                }
+                else
+                {
+                    result << " ";
+                }
+            }
+            result << ")";
+        }
     }
     // TODO other types
 

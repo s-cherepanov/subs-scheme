@@ -33,12 +33,9 @@ void branch_becomes_combination_value()
 {
     // (31 32 33)
     StringTreeBranch branch;
-    branch.push_back( auto_ptr<StringTreeLeaf>( new StringTreeLeaf( "31" )
-        ).release() );
-    branch.push_back( auto_ptr<StringTreeLeaf>( new StringTreeLeaf( "32" )
-        ).release() );
-    branch.push_back( auto_ptr<StringTreeLeaf>( new StringTreeLeaf( "33" )
-        ).release() );
+    branch.push_back( new StringTreeLeaf( "31" ) );
+    branch.push_back( new StringTreeLeaf( "32" ) );
+    branch.push_back( new StringTreeLeaf( "33" ) );
 
     auto_ptr<Value> v = Parser().Parse( &branch );
 

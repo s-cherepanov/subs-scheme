@@ -5,7 +5,9 @@
 
 #include "emptystringtree.h"
 #include "stringtree.h"
+#include "stringtreebranch.h"
 #include "stringtreeleaf.h"
+#include "wordlexer.h"
 
 #include "lexer.h"
 
@@ -23,8 +25,14 @@ std::auto_ptr<StringTree> Lexer::Lex( const std::string& codestring ) const
     istringstream codestream( codestring );
     string symbol;
 
-    codestream >> symbol;
+    WordLexer wordlexer;
 
-    return auto_ptr<StringTree>( new StringTreeLeaf( symbol ) );
+    while( codestream.good() )
+    {
+        codestream >> symbol;
+        wordlexer.ProcessWord( symbol );
+    }
+
+    return wordlexer.GetRootTreeItem();
 }
 

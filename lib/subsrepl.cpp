@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <sstream>
 
 #include "subsinterpreter.h"
 
@@ -14,7 +15,8 @@ SubsRepl::SubsRepl( bool print_prompt /*= true */)
 
 int SubsRepl::Run( istream& in, ostream& out, ostream& err )
 {
-    string inputline;
+    static const int bufferlength = 1024;
+    char buffer[bufferlength];
     SubsInterpreter interpreter;
 
     while( in.good() )
@@ -24,10 +26,10 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
             out << ">> ";
         }
 
-        // TODO: read until a newline
-        in >> inputline;
+        // TODO: handle lines longer than bufferlength.
+        in.getline( buffer, bufferlength );
 
-        out << interpreter.Interpret( inputline ) << endl;
+        out << interpreter.Interpret( buffer ) << endl;
     }
 
     return 0;

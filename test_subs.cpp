@@ -6,6 +6,8 @@
 #include "test/testlexconstants.h"
 #include "test/testparseconstants.h"
 #include "test/testprettyprintconstants.h"
+#include "test/testrepl.h"
+#include "test/testwordlexer.h"
 
 using namespace std;
 
@@ -13,10 +15,12 @@ int main()
 {
     try
     {
+        TestWordLexer(            ).Run();
         TestLexConstants(         ).Run();
         TestParseConstants(       ).Run();
         TestPrettyPrintConstants( ).Run();
         TestConstants(            ).Run();
+        TestRepl(                 ).Run();
     }
     catch( AssertionFailed& e )
     {

@@ -21,7 +21,7 @@ void prompt_gets_written()
 
     TEST_ASSERT_EQUAL( retval, 0 );
     TEST_ASSERT_EQUAL( err.str(), "" );
-    TEST_ASSERT_EQUAL( out.str(), ">> \n" );
+    TEST_ASSERT_EQUAL( out.str(), "> \n" );
 }
 
 void single_symbol_gets_evaluated()

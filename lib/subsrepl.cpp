@@ -23,7 +23,7 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
     {
         if( print_prompt_ )
         {
-            out << ">> ";
+            out << "> ";
         }
 
         // TODO: handle lines longer than bufferlength.

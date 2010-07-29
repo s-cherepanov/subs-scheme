@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "evaluationerror.h"
 #include "subsinterpreter.h"
 
 #include "subsrepl.h"
@@ -29,7 +30,16 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
         // TODO: handle lines longer than bufferlength.
         in.getline( buffer, bufferlength );
 
-        out << interpreter.Interpret( buffer ) << endl;
+        try
+        {
+            out << interpreter.Interpret( buffer );
+        }
+        catch( EvaluationError& e )
+        {
+            err << "Error: " << e.ToString() << endl;
+        }
+
+        out << endl;
     }
 
     return 0;

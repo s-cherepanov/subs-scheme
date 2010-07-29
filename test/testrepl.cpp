@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <sstream>
 
 #include "assertmacros.h"
@@ -52,6 +53,21 @@ void list_on_one_line_gets_evaluated_together()
 }
 
 
+void undefined_symbol_reports_error()
+{
+    istringstream in( "foo" );
+    ostringstream out;
+    ostringstream err;
+
+    int retval = SubsRepl( false ).Run( in, out, err );
+
+    TEST_ASSERT_EQUAL( retval, 0 );
+    TEST_ASSERT_NOT_EQUAL( err.str().find( "Undefined symbol 'foo'" ), 
+        string::npos );
+}
+
+
+
 }
 
 void TestRepl::Run() const
@@ -59,5 +75,6 @@ void TestRepl::Run() const
     prompt_gets_written();
     single_symbol_gets_evaluated();
     // INCORRECT could quote list_on_one_line_gets_evaluated_together();
+    undefined_symbol_reports_error();
 }
 

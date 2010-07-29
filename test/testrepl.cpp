@@ -58,6 +58,6 @@ void TestRepl::Run() const
 {
     prompt_gets_written();
     single_symbol_gets_evaluated();
-    // FAILS list_on_one_line_gets_evaluated_together();
+    list_on_one_line_gets_evaluated_together();
 }
 

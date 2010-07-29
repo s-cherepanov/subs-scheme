@@ -12,7 +12,7 @@
 class StringTreeBranch : public StringTree, public std::vector<StringTree*>
 {
 public:
-    ~StringTreeBranch();
+    virtual ~StringTreeBranch();
 };
 
 #endif

@@ -2,8 +2,10 @@
 #include <memory>
 
 #include "assertmacros.h"
+#include "lib/combinationvalue.h"
 #include "lib/integervalue.h"
 #include "lib/parser.h"
+#include "lib/stringtreebranch.h"
 #include "lib/stringtreeleaf.h"
 #include "lib/value.h"
 
@@ -26,10 +28,45 @@ void bare_number_becomes_single_value()
     TEST_ASSERT_EQUAL( parsed_5_leaf->GetIntValue(), 5 );
 }
 
+
+void branch_becomes_combination_value()
+{
+    // (31 32 33)
+    StringTreeBranch branch;
+    branch.push_back( auto_ptr<StringTreeLeaf>( new StringTreeLeaf( "31" )
+        ).release() );
+    branch.push_back( auto_ptr<StringTreeLeaf>( new StringTreeLeaf( "32" )
+        ).release() );
+    branch.push_back( auto_ptr<StringTreeLeaf>( new StringTreeLeaf( "33" )
+        ).release() );
+
+    auto_ptr<Value> v = Parser().Parse( &branch );
+
+    CombinationValue* parsed_combo = dynamic_cast<CombinationValue*>( v.get() );
+
+    TEST_ASSERT_NOT_NULL( parsed_combo );
+
+    TEST_ASSERT_EQUAL( parsed_combo->size(), 3 );
+
+    IntegerValue* val = dynamic_cast<IntegerValue*>( (*parsed_combo)[0] );
+    TEST_ASSERT_NOT_NULL( val );
+    TEST_ASSERT_EQUAL( val->GetIntValue(), 31 );
+
+    val = dynamic_cast<IntegerValue*>( (*parsed_combo)[1] );
+    TEST_ASSERT_NOT_NULL( val );
+    TEST_ASSERT_EQUAL( val->GetIntValue(), 32 );
+
+    val = dynamic_cast<IntegerValue*>( (*parsed_combo)[2] );
+    TEST_ASSERT_NOT_NULL( val );
+    TEST_ASSERT_EQUAL( val->GetIntValue(), 33 );
+}
+
+
 }
 
 void TestParseConstants::Run() const
 {
     bare_number_becomes_single_value();
+    branch_becomes_combination_value();
 }
 

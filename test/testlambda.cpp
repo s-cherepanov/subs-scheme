@@ -1,8 +1,13 @@
 
+#include <string>
+
 #include "assertmacros.h"
+#include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
 
 #include "testlambda.h"
+
+using namespace std;
 
 namespace
 {
@@ -70,7 +75,7 @@ void noargs_function_works_list_body()
 
 
 
-void double_function_works()
+void onearg_function_works()
 {
     SubsInterpreter interpreter;
 
@@ -78,6 +83,66 @@ void double_function_works()
 
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(double 3)" ), "6" );
 }
+
+
+void threearg_function_works()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define foo (lambda (x y z) (+ x x y z)))" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(foo 1 2 3)" ), "7" );
+}
+
+
+
+
+void error_when_supply_too_few_args()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define tri (lambda (x y z) 3))" );
+
+    bool exception_caught = false;
+    try
+    {
+        interpreter.Interpret( "(tri 3 2)" );
+    }
+    catch( EvaluationError& e )
+    {
+        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Not enough" ),
+            string::npos );
+        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Expected 3 but got 2" ),
+            string::npos );
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_EQUAL( exception_caught, true );
+}
+
+
+void error_when_supply_too_many_args()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define tri (lambda (x y z) 3))" );
+
+    bool exception_caught = false;
+    try
+    {
+        interpreter.Interpret( "(tri 3 2 1 0)" );
+    }
+    catch( EvaluationError& e )
+    {
+        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Too many" ), string::npos );
+        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Expected 3 but got 4" ),
+            string::npos );
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_EQUAL( exception_caught, true );
+}
+
 
 
 
@@ -89,7 +154,10 @@ void TestLambda::Run() const
     define_lambda_args();
     noargs_function_works();
     noargs_function_works_list_body();
-    double_function_works();
+    onearg_function_works();
+    threearg_function_works();
+    error_when_supply_too_few_args();
+    error_when_supply_too_many_args();
     // NOTDONE arguments_dont_leak_out();
 }
 

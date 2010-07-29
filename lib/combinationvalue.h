@@ -13,7 +13,11 @@
 class CombinationValue : public Value, public std::vector<Value*>
 {
 public:
+    CombinationValue();
+    CombinationValue( const CombinationValue& other );
     virtual ~CombinationValue();
+
+    virtual CombinationValue* Clone() const;
 };
 
 #endif

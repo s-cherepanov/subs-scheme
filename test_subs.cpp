@@ -1,7 +1,9 @@
 
 #include <iostream>
 
+#include "lib/evaluationerror.h"
 #include "test/assertionfailed.h"
+#include "test/testbuiltinfunctions.h"
 #include "test/testconstants.h"
 #include "test/testlexconstants.h"
 #include "test/testparseconstants.h"
@@ -21,8 +23,15 @@ int main()
         TestPrettyPrintConstants( ).Run();
         TestConstants(            ).Run();
         TestRepl(                 ).Run();
+        TestBuiltInFunctions(     ).Run();
     }
     catch( AssertionFailed& e )
+    {
+        cerr << e.ToString() << endl;
+        cout << "Some tests failed." << endl;
+        return 1;
+    }
+    catch( EvaluationError& e )
     {
         cerr << e.ToString() << endl;
         cout << "Some tests failed." << endl;

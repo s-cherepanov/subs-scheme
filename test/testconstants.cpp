@@ -41,7 +41,7 @@ void TestConstants::Run() const
 {
     empty_string_yields_empty_string();
     bare_number_yields_itself();
-    combo_yields_itself();
-    combo_of_combos_yields_itself();
+    //INCORRECT could quote combo_yields_itself();
+    //INCORRECT could quote combo_of_combos_yields_itself();
 }
 

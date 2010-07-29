@@ -7,6 +7,7 @@
 #include "lib/parser.h"
 #include "lib/stringtreebranch.h"
 #include "lib/stringtreeleaf.h"
+#include "lib/symbolvalue.h"
 #include "lib/value.h"
 
 #include "testparseconstants.h"
@@ -59,11 +60,40 @@ void branch_becomes_combination_value()
 }
 
 
+void name_becomes_symbol_value()
+{
+    StringTreeLeaf leaf_foo( "foo" );
+    auto_ptr<Value> v = Parser().Parse( &leaf_foo );
+
+    SymbolValue* parsed_foo = dynamic_cast<SymbolValue*>( v.get() );
+
+    TEST_ASSERT_NOT_NULL( parsed_foo );
+
+    TEST_ASSERT_EQUAL( parsed_foo->GetStringValue(), "foo" );
+}
+
+
+void plus_becomes_symbol_value()
+{
+    StringTreeLeaf leaf( "+" );
+    auto_ptr<Value> v = Parser().Parse( &leaf );
+
+    SymbolValue* parsed = dynamic_cast<SymbolValue*>( v.get() );
+
+    TEST_ASSERT_NOT_NULL( parsed );
+
+    TEST_ASSERT_EQUAL( parsed->GetStringValue(), "+" );
+}
+
+
+
 }
 
 void TestParseConstants::Run() const
 {
     bare_number_becomes_single_value();
     branch_becomes_combination_value();
+    name_becomes_symbol_value();
+    plus_becomes_symbol_value();
 }
 

@@ -14,7 +14,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> PlusProcedureValue::Run( Evaluator* ev,
-    const CombinationValue* combo )
+    const CombinationValue* combo, Environment& environment )
 {
     // TODO: values other than integers
 

@@ -146,6 +146,20 @@ void error_when_supply_too_many_args()
 
 
 
+void arguments_dont_leak_out()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define foo 3)" );
+    interpreter.Interpret( "(define bar (lambda (foo) (+ foo 1)))" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(bar 1)" ), "2" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "foo" ), "3" );
+}
+
+
+
 }
 
 void TestLambda::Run() const
@@ -158,6 +172,6 @@ void TestLambda::Run() const
     threearg_function_works();
     error_when_supply_too_few_args();
     error_when_supply_too_many_args();
-    // NOTDONE arguments_dont_leak_out();
+    arguments_dont_leak_out();
 }
 

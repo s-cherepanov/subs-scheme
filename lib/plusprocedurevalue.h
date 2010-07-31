@@ -5,12 +5,13 @@
 #include "procedurevalue.h"
 
 class Evaluator;
+class Environment;
 
 class PlusProcedureValue : public ProcedureValue
 {
 public:
     virtual std::auto_ptr<Value> Run( Evaluator* ev,
-        const CombinationValue* combo );
+        const CombinationValue* combo, Environment& environment );
 
     virtual PlusProcedureValue* Clone() const;
 

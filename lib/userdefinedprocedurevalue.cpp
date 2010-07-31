@@ -18,11 +18,14 @@ namespace
 {
 
 
-void process_args(
+Environment extend_environment_with_args(
     const CombinationValue* argnames,
     const CombinationValue* combo,
-    Environment& environment )
+    const Environment& environment )
 {
+    // Set up an environment that extends the existing one
+    Environment ret_environment( environment, true );
+
     CombinationValue::const_iterator itargvalue = combo->begin();
     // We have at least one thing in combo - the operator
     assert( itargvalue != combo->end() );
@@ -49,7 +52,8 @@ void process_args(
                 + PrettyPrinter::Print( *itargname )
                 + "' in a lambda expression is not a symbol." );
         }
-        environment[ argsym->GetStringValue() ] = (*itargvalue)->Clone();
+        ret_environment.InsertSymbol( argsym->GetStringValue(),
+            (*itargvalue)->Clone() );
     }
 
     if( itargvalue != combo->end() )
@@ -59,6 +63,7 @@ void process_args(
             << argnames->size() << " but got " << combo->size() - 1 << ".";
         throw EvaluationError( err.str() );
     }
+    return ret_environment;
 }
 
 
@@ -82,19 +87,18 @@ UserDefinedProcedureValue::UserDefinedProcedureValue(
 
 //virtual
 std::auto_ptr<Value> UserDefinedProcedureValue::Run(
-    Evaluator* ev, const CombinationValue* combo )
+    Evaluator* ev, const CombinationValue* combo, Environment& environment )
 {
     auto_ptr<Value> ret;
 
-    // TODO: don't pollute the global namespace
-    Environment& environment = ev->GetGlobalEnvironment();
-
-    process_args( argnames_.get(), combo, environment );
+    // Create our own environment for running this procedure
+    Environment new_environment = extend_environment_with_args(
+        argnames_.get(), combo, environment );
 
     for( CombinationValue::const_iterator it = body_->begin();
         it != body_->end(); ++it )
     {
-        ret = ev->Eval( *it );
+        ret = ev->EvalInContext( *it, new_environment );
     }
 
     return ret;

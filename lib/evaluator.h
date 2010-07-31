@@ -21,10 +21,13 @@ public:
      */
     std::auto_ptr<Value> Eval( const Value* value );
 
-    const Environment& GetGlobalEnvironment() const;
-    Environment& GetGlobalEnvironment();
+    std::auto_ptr<Value> EvalInContext( const Value* value,
+        Environment& environment );
+
 private:
     Environment global_environment_;
+
+    /** For debugging: print out all stages of the evaluation. */
     bool print_intermediates_;
 };
 

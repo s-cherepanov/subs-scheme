@@ -7,6 +7,7 @@
 #include "procedurevalue.h"
 
 class Evaluator;
+class Environment;
 
 /**
  * A procedure defined by the user using lambda or the define
@@ -23,7 +24,7 @@ public:
     UserDefinedProcedureValue( const UserDefinedProcedureValue& other );
 
     virtual std::auto_ptr<Value> Run( Evaluator* ev,
-        const CombinationValue* combo );
+        const CombinationValue* combo, Environment& environment );
 
     virtual UserDefinedProcedureValue* Clone() const;
 

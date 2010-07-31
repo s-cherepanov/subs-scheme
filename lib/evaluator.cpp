@@ -19,7 +19,8 @@ namespace
 {
 
 
-std::auto_ptr<Value> apply( Evaluator* ev, const CombinationValue* combo )
+std::auto_ptr<Value> apply( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment )
 {
     if( combo->empty() )
     {
@@ -37,7 +38,7 @@ std::auto_ptr<Value> apply( Evaluator* ev, const CombinationValue* combo )
             + "', which is not a symbol." );
     }
 
-    return operator_proc->Run( ev, combo );
+    return operator_proc->Run( ev, combo, environment );
 }
 
 bool is_define_symbol( const SymbolValue* sym )
@@ -53,7 +54,8 @@ bool is_lambda_symbol( const SymbolValue* sym )
     return ( sym->GetStringValue() == "lambda" );
 }
 
-std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo )
+std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment )
 {
     if( combo->size() < 3 )
     {
@@ -83,15 +85,14 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo )
     ++it;
     assert( it != combo->end() );
 
-    // TODO: not always global
-    Environment& environment = ev->GetGlobalEnvironment();
-    environment[ sym->GetStringValue() ] = ev->Eval( *it ).release();
+    environment.InsertSymbol( sym->GetStringValue(),
+        ev->EvalInContext( *it, environment ).release() );
 
     return auto_ptr<Value>( sym->Clone() );
 }
 
 
-std::auto_ptr<Value> eval_lambda( Evaluator* ev, const CombinationValue* combo )
+std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
 {
     if( combo->size() < 3 )
     {
@@ -130,33 +131,33 @@ std::auto_ptr<Value> eval_lambda( Evaluator* ev, const CombinationValue* combo )
 }
 
 
-std::auto_ptr<Value> eval_combo( Evaluator* ev, const CombinationValue* combo )
+std::auto_ptr<Value> eval_combo( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment )
 {
     auto_ptr<CombinationValue> new_combo( new CombinationValue );
     for( CombinationValue::const_iterator it = combo->begin();
         it != combo->end(); ++it )
     {
-        new_combo->push_back( ev->Eval( *it ).release() );
+        new_combo->push_back( ev->EvalInContext( *it, environment ).release() );
     }
 
-    return apply( ev, new_combo.get() );
+    return apply( ev, new_combo.get(), environment );
 
 }
 
-std::auto_ptr<Value> eval_symbol( Evaluator* ev, const SymbolValue* sym )
+std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
+    Environment& environment )
 {
-    const Environment& environment = ev->GetGlobalEnvironment();
-    Environment::const_iterator itFind = environment.find(
-        sym->GetStringValue() );
+    const Value* value = environment.FindSymbol( sym->GetStringValue() );
 
-    if( itFind == environment.end() )
+    if( !value )
     {
         throw EvaluationError( "Undefined symbol '"
             + PrettyPrinter::Print( sym ) + "'." );
     }
 
     // TODO: avoid the copy here?
-    return auto_ptr<Value>( itFind->second->Clone() );
+    return auto_ptr<Value>( value->Clone() );
 }
 
 
@@ -165,10 +166,16 @@ std::auto_ptr<Value> eval_symbol( Evaluator* ev, const SymbolValue* sym )
 Evaluator::Evaluator()
 : print_intermediates_( true )
 {
-    global_environment_["+"] = new PlusProcedureValue();
+    global_environment_.InsertSymbol( "+", new PlusProcedureValue() );
 }
 
 std::auto_ptr<Value> Evaluator::Eval( const Value* value )
+{
+    return EvalInContext( value, global_environment_ );
+}
+
+std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
+    Environment& environment )
 {
     // TODO: replace switch-style dispatch with a virtual method on Value
 
@@ -187,19 +194,19 @@ std::auto_ptr<Value> Evaluator::Eval( const Value* value )
             {
                 if( is_define_symbol( sym ) )
                 {
-                    return eval_define( this, combo );
+                    return eval_define( this, combo, environment );
                 }
 
                 if( is_lambda_symbol( sym ) )
                 {
-                    return eval_lambda( this, combo );
+                    return eval_lambda( combo );
                 }
             }
         }
 
         // If none of the special cases occurred, treat it as
         // a normal combination
-        return eval_combo( this, combo );
+        return eval_combo( this, combo, environment );
     }
 
     const SymbolValue* sym = dynamic_cast<const SymbolValue*>(
@@ -207,20 +214,10 @@ std::auto_ptr<Value> Evaluator::Eval( const Value* value )
 
     if( sym )
     {
-        return eval_symbol( this, sym );
+        return eval_symbol( sym, environment );
     }
 
     return auto_ptr<Value>( value->Clone() );
-}
-
-const Environment& Evaluator::GetGlobalEnvironment() const
-{
-    return global_environment_;
-}
-
-Environment& Evaluator::GetGlobalEnvironment()
-{
-    return global_environment_;
 }
 
 

@@ -14,6 +14,55 @@
 
 using namespace std;
 
+namespace
+{
+
+
+void process_args(
+    const CombinationValue* argnames,
+    const CombinationValue* combo,
+    SymbolValueMap& symbols )
+{
+    CombinationValue::const_iterator itargvalue = combo->begin();
+    // We have at least one thing in combo - the operator
+    assert( itargvalue != combo->end() );
+    // Skip the operator
+    ++itargvalue;
+    
+    // Process the arguments, adding them to our symbols table
+    for( CombinationValue::const_iterator itargname = argnames->begin();
+        itargname != argnames->end(); ++itargname, ++itargvalue )
+    {
+        if( itargvalue == combo->end() )
+        {
+            ostringstream err;
+            err << "Not enough arguments to procedure.  Expected "
+                << argnames->size() << " but got " << combo->size() - 1 << ".";
+            throw EvaluationError( err.str() );
+        }
+
+        const SymbolValue* argsym = dynamic_cast<const SymbolValue*>(
+            *itargname );
+        if( !argsym )
+        {
+            throw EvaluationError( "The argument '"
+                + PrettyPrinter::Print( *itargname )
+                + "' in a lambda expression is not a symbol." );
+        }
+        symbols[ argsym->GetStringValue() ] = (*itargvalue)->Clone();
+    }
+
+    if( itargvalue != combo->end() )
+    {
+        ostringstream err;
+        err << "Too many arguments to procedure.  Expected "
+            << argnames->size() << " but got " << combo->size() - 1 << ".";
+        throw EvaluationError( err.str() );
+    }
+}
+
+
+}
 
 UserDefinedProcedureValue::UserDefinedProcedureValue(
     CombinationValue* argnames,
@@ -40,42 +89,7 @@ std::auto_ptr<Value> UserDefinedProcedureValue::Run(
     // TODO: don't pollute the global namespace
     SymbolValueMap& symbols = ev->GetGlobalSymbolMap();
 
-    CombinationValue::const_iterator itargvalue = combo->begin();
-    // We have at least one thing in combo - the operator
-    assert( itargvalue != combo->end() );
-    // Skip the operator
-    ++itargvalue;
-    
-    // Process the arguments, adding them to our symbols table
-    for( CombinationValue::const_iterator itargname = argnames_->begin();
-        itargname != argnames_->end(); ++itargname, ++itargvalue )
-    {
-        if( itargvalue == combo->end() )
-        {
-            ostringstream err;
-            err << "Not enough arguments to procedure.  Expected "
-                << argnames_->size() << " but got " << combo->size() - 1 << ".";
-            throw EvaluationError( err.str() );
-        }
-
-        const SymbolValue* argsym = dynamic_cast<const SymbolValue*>(
-            *itargname );
-        if( !argsym )
-        {
-            throw EvaluationError( "The argument '"
-                + PrettyPrinter::Print( *itargname )
-                + "' in a lambda expression is not a symbol." );
-        }
-        symbols[ argsym->GetStringValue() ] = (*itargvalue)->Clone();
-    }
-
-    if( itargvalue != combo->end() )
-    {
-        ostringstream err;
-        err << "Too many arguments to procedure.  Expected "
-            << argnames_->size() << " but got " << combo->size() - 1 << ".";
-        throw EvaluationError( err.str() );
-    }
+    process_args( argnames_.get(), combo, symbols );
 
     for( CombinationValue::const_iterator it = body_->begin();
         it != body_->end(); ++it )

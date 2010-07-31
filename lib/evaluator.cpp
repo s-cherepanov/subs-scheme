@@ -84,8 +84,8 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo )
     assert( it != combo->end() );
 
     // TODO: not always global
-    SymbolValueMap& symbols = ev->GetGlobalSymbolMap();
-    symbols[ sym->GetStringValue() ] = ev->Eval( *it ).release();
+    Environment& environment = ev->GetGlobalEnvironment();
+    environment[ sym->GetStringValue() ] = ev->Eval( *it ).release();
 
     return auto_ptr<Value>( sym->Clone() );
 }
@@ -145,11 +145,11 @@ std::auto_ptr<Value> eval_combo( Evaluator* ev, const CombinationValue* combo )
 
 std::auto_ptr<Value> eval_symbol( Evaluator* ev, const SymbolValue* sym )
 {
-    const SymbolValueMap& symbols = ev->GetGlobalSymbolMap();
-    SymbolValueMap::const_iterator itFind = symbols.find(
+    const Environment& environment = ev->GetGlobalEnvironment();
+    Environment::const_iterator itFind = environment.find(
         sym->GetStringValue() );
 
-    if( itFind == symbols.end() )
+    if( itFind == environment.end() )
     {
         throw EvaluationError( "Undefined symbol '"
             + PrettyPrinter::Print( sym ) + "'." );
@@ -165,7 +165,7 @@ std::auto_ptr<Value> eval_symbol( Evaluator* ev, const SymbolValue* sym )
 Evaluator::Evaluator()
 : print_intermediates_( true )
 {
-    global_symbols_["+"] = new PlusProcedureValue();
+    global_environment_["+"] = new PlusProcedureValue();
 }
 
 std::auto_ptr<Value> Evaluator::Eval( const Value* value )
@@ -213,14 +213,14 @@ std::auto_ptr<Value> Evaluator::Eval( const Value* value )
     return auto_ptr<Value>( value->Clone() );
 }
 
-const SymbolValueMap& Evaluator::GetGlobalSymbolMap() const
+const Environment& Evaluator::GetGlobalEnvironment() const
 {
-    return global_symbols_;
+    return global_environment_;
 }
 
-SymbolValueMap& Evaluator::GetGlobalSymbolMap()
+Environment& Evaluator::GetGlobalEnvironment()
 {
-    return global_symbols_;
+    return global_environment_;
 }
 
 

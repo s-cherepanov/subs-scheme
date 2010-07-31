@@ -1,9 +1,9 @@
 
 #include "value.h"
 
-#include "symbolvaluemap.h"
+#include "environment.h"
 
-SymbolValueMap::~SymbolValueMap()
+Environment::~Environment()
 {
     for( iterator it = begin(); it != end(); ++it )
     {

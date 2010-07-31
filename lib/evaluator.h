@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "symbolvaluemap.h"
+#include "environment.h"
 
 class CombinationValue;
 class Value;
@@ -21,10 +21,10 @@ public:
      */
     std::auto_ptr<Value> Eval( const Value* value );
 
-    const SymbolValueMap& GetGlobalSymbolMap() const;
-    SymbolValueMap& GetGlobalSymbolMap();
+    const Environment& GetGlobalEnvironment() const;
+    Environment& GetGlobalEnvironment();
 private:
-    SymbolValueMap global_symbols_;
+    Environment global_environment_;
     bool print_intermediates_;
 };
 

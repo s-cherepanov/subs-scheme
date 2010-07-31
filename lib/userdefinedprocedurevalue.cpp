@@ -21,7 +21,7 @@ namespace
 void process_args(
     const CombinationValue* argnames,
     const CombinationValue* combo,
-    SymbolValueMap& symbols )
+    Environment& environment )
 {
     CombinationValue::const_iterator itargvalue = combo->begin();
     // We have at least one thing in combo - the operator
@@ -29,7 +29,7 @@ void process_args(
     // Skip the operator
     ++itargvalue;
     
-    // Process the arguments, adding them to our symbols table
+    // Process the arguments, adding them to our environment
     for( CombinationValue::const_iterator itargname = argnames->begin();
         itargname != argnames->end(); ++itargname, ++itargvalue )
     {
@@ -49,7 +49,7 @@ void process_args(
                 + PrettyPrinter::Print( *itargname )
                 + "' in a lambda expression is not a symbol." );
         }
-        symbols[ argsym->GetStringValue() ] = (*itargvalue)->Clone();
+        environment[ argsym->GetStringValue() ] = (*itargvalue)->Clone();
     }
 
     if( itargvalue != combo->end() )
@@ -87,9 +87,9 @@ std::auto_ptr<Value> UserDefinedProcedureValue::Run(
     auto_ptr<Value> ret;
 
     // TODO: don't pollute the global namespace
-    SymbolValueMap& symbols = ev->GetGlobalSymbolMap();
+    Environment& environment = ev->GetGlobalEnvironment();
 
-    process_args( argnames_.get(), combo, symbols );
+    process_args( argnames_.get(), combo, environment );
 
     for( CombinationValue::const_iterator it = body_->begin();
         it != body_->end(); ++it )

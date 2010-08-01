@@ -3,7 +3,7 @@
 
 #include "lib/evaluationerror.h"
 #include "test/assertionfailed.h"
-#include "test/testbuiltinfunctions.h"
+#include "test/testarithmetic.h"
 #include "test/testconstants.h"
 #include "test/testdefineprocedure.h"
 #include "test/testdefinesymbol.h"
@@ -30,7 +30,7 @@ int main()
         TestMemory(               ).Run();
         TestConstants(            ).Run();
         TestRepl(                 ).Run();
-        TestBuiltInFunctions(     ).Run();
+        TestArithmetic(           ).Run();
         TestEnvironment(          ).Run();
         TestDefineSymbol(         ).Run();
         TestLambda(               ).Run();

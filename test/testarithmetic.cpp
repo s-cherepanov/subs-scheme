@@ -2,7 +2,7 @@
 #include "assertmacros.h"
 #include "lib/subsinterpreter.h"
 
-#include "testbuiltinfunctions.h"
+#include "testarithmetic.h"
 
 namespace
 {
@@ -43,7 +43,7 @@ void nested_addition_works()
 
 }
 
-void TestBuiltInFunctions::Run() const
+void TestArithmetic::Run() const
 {
     addition_of_two_numbers_yields_correct_answer();
     addition_of_three_numbers_yields_correct_answer();

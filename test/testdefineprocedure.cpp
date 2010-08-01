@@ -160,6 +160,34 @@ void proc_arguments_dont_leak_out()
 
 
 
+void define_doesnt_leak_out()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (foo)"
+        "        (define x 3)"
+        "        x)"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(foo)" ), "3" );
+
+    bool exception_caught = false;
+    try
+    {
+        interpreter.Interpret( "x" );
+    }
+    catch( EvaluationError& e )
+    {
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_EQUAL( exception_caught, true );
+}
+
+
+
+
 }
 
 void TestDefineProcedure::Run() const
@@ -173,8 +201,8 @@ void TestDefineProcedure::Run() const
     error_when_supply_too_few_args();
     error_when_supply_too_many_args();
     proc_arguments_dont_leak_out();
+    define_doesnt_leak_out();
 }
 
 // TODO: test recursive procedures
-// TODO: test define inside procedure
 

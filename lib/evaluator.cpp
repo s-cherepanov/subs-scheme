@@ -49,6 +49,13 @@ bool is_define_symbol( const SymbolValue* sym )
 }
 
 
+bool is_if_symbol( const SymbolValue* sym )
+{
+    // TODO: case insensitive?
+    return ( sym->GetStringValue() == "if" );
+}
+
+
 bool is_lambda_symbol( const SymbolValue* sym )
 {
     // TODO: case insensitive?
@@ -234,6 +241,52 @@ std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
 }
 
 
+bool is_false( const Value* value )
+{
+    return dynamic_cast<const FalseValue*>( value );
+}
+
+
+std::auto_ptr<Value> eval_if( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment )
+{
+    if( combo->size() < 4 )
+    {
+        throw EvaluationError(
+            "Too few operands to if: there should be 3 (predicate, true-value, "
+            "else-value)." );
+    }
+
+    if( combo->size() > 4 )
+    {
+        throw EvaluationError(
+            "Too many operands to if: there should be 3 (predicate, "
+            "true-value, else-value)." );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // "if" - there are 4 items
+
+    ++it;
+    assert( it != combo->end() ); // predicate - there are 4 items
+    const Value* predicate = *it;
+
+    ++it; // Move to "true" value
+    assert( it != combo->end() );
+
+    std::auto_ptr<Value> evald_pred = ev->EvalInContext( predicate,
+        environment );
+
+    if( is_false( evald_pred.get() ) )
+    {
+        ++it; // Move to "false" value
+        assert( it != combo->end() );
+    }
+
+    return ev->EvalInContext( *it, environment );
+}
+
+
 }
 
 Evaluator::Evaluator()
@@ -277,6 +330,11 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
                 if( is_define_symbol( sym ) )
                 {
                     return eval_define( this, combo, environment );
+                }
+
+                if( is_if_symbol( sym ) )
+                {
+                    return eval_if( this, combo, environment );
                 }
 
                 if( is_lambda_symbol( sym ) )

@@ -28,7 +28,8 @@ void basic_if()
 void TestIf::Run() const
 {
     true_and_false();
-    //FAILS basic_if();
+    basic_if();
+    //TODO wrong_number_of_args_to_if_error_handled();
     //FAILS everything_is_true_except_hash_f();
 }
 

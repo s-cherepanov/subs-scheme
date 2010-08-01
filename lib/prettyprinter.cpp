@@ -4,9 +4,11 @@
 #include <typeinfo>
 
 #include "combinationvalue.h"
+#include "falsevalue.h"
 #include "integervalue.h"
 #include "procedurevalue.h"
 #include "symbolvalue.h"
+#include "truevalue.h"
 #include "value.h"
 
 #include "prettyprinter.h"
@@ -19,6 +21,18 @@ namespace
 void print_integer( const IntegerValue* value, ostream& result )
 {
     result << value->GetIntValue();
+}
+
+
+void print_true( const TrueValue*, ostream& result )
+{
+    result << "#t";
+}
+
+
+void print_false( const FalseValue*, ostream& result )
+{
+    result << "#f";
 }
 
 void print_combination( const CombinationValue* value, ostream& result )
@@ -82,6 +96,22 @@ void Print( const Value* value, std::ostream& result )
     if( integervalue )
     {
         print_integer( integervalue, result );
+        return;
+    }
+
+    const TrueValue* truevalue = dynamic_cast<const TrueValue*>(
+        value );
+    if( truevalue )
+    {
+        print_true( truevalue, result );
+        return;
+    }
+
+    const FalseValue* falsevalue = dynamic_cast<const FalseValue*>(
+        value );
+    if( falsevalue )
+    {
+        print_false( falsevalue, result );
         return;
     }
 

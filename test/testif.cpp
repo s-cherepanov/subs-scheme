@@ -9,7 +9,8 @@ namespace
 
 void true_and_false()
 {
-    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "#t" ), "<<True>>" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "#t" ), "#t" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "#f" ), "#f" );
 }
 
 void basic_if()
@@ -26,7 +27,7 @@ void basic_if()
 
 void TestIf::Run() const
 {
-    //FAILS true_and_false();
+    true_and_false();
     //FAILS basic_if();
     //FAILS everything_is_true_except_hash_f();
 }

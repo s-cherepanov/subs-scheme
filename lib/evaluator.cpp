@@ -3,10 +3,12 @@
 
 #include "combinationvalue.h"
 #include "evaluationerror.h"
+#include "falsevalue.h"
 #include "plusprocedurevalue.h"
 #include "procedurevalue.h"
 #include "prettyprinter.h"
 #include "symbolvalue.h"
+#include "truevalue.h"
 #include "userdefinedprocedurevalue.h"
 #include "value.h"
 
@@ -236,6 +238,10 @@ std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
 
 Evaluator::Evaluator()
 {
+    // TODO: don't allocate these on the stack?
+    // TODO: make some or all of these immutable and thus not copied or deleted?
+    global_environment_.InsertSymbol( "#t", new TrueValue() );
+    global_environment_.InsertSymbol( "#f", new FalseValue() );
     global_environment_.InsertSymbol( "+", new PlusProcedureValue() );
 }
 

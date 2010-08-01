@@ -186,6 +186,23 @@ void define_doesnt_leak_out()
 }
 
 
+void recursive_procedure()
+{
+    SubsInterpreter interpreter;
+
+    // SICP 1.2.1
+    interpreter.Interpret(
+        "(define (factorial n)"
+        "        (if (= n 1)"
+        "            1"
+        "            (* n (factorial (- n 1)))))"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(factorial 1)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(factorial 2)" ), "2" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(factorial 3)" ), "6" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(factorial 5)" ), "120" );
+}
 
 
 }
@@ -202,7 +219,7 @@ void TestDefineProcedure::Run() const
     error_when_supply_too_many_args();
     proc_arguments_dont_leak_out();
     define_doesnt_leak_out();
+    //FAILS recursive_procedure();
 }
 
-// TODO: test recursive procedures
 

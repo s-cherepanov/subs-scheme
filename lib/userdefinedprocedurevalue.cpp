@@ -71,9 +71,11 @@ Environment extend_environment_with_args(
 
 UserDefinedProcedureValue::UserDefinedProcedureValue(
     CombinationValue* argnames,
-    CombinationValue* body )
+    CombinationValue* body,
+    const std::string& name )
 : argnames_( argnames )
 , body_( body )
+, name_( name )
 {
     // TODO: validate that each of the elements of args is a symbol?
 }
@@ -82,6 +84,7 @@ UserDefinedProcedureValue::UserDefinedProcedureValue(
     const UserDefinedProcedureValue& other )
 : argnames_( other.argnames_->Clone() )
 , body_( other.body_->Clone() )
+, name_( other.name_ )
 {
 }
 
@@ -115,7 +118,13 @@ UserDefinedProcedureValue* UserDefinedProcedureValue::Clone() const
 //virtual
 std::string UserDefinedProcedureValue::GetName() const
 {
-    return "user-defined";
+    string ret = "user-defined";
+    if( !name_.empty() )
+    {
+        ret += ": ";
+        ret += name_;
+    }
+    return ret;
 }
 
 

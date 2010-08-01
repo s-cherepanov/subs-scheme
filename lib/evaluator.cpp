@@ -1,6 +1,5 @@
 
 #include <cassert>
-#include <iostream>
 
 #include "combinationvalue.h"
 #include "evaluationerror.h"
@@ -54,6 +53,52 @@ bool is_lambda_symbol( const SymbolValue* sym )
     return ( sym->GetStringValue() == "lambda" );
 }
 
+
+std::auto_ptr<Value> eval_define_symbol( Evaluator* ev,
+    Environment& environment, const SymbolValue* to_define,
+    const Value* definition )
+{
+    environment.InsertSymbol( to_define->GetStringValue(),
+        ev->EvalInContext( definition, environment ).release() );
+
+    return auto_ptr<Value>( to_define->Clone() );
+}
+
+
+
+
+/**
+ * Starting at it, clone Values into a new CombinationValue until we hit end.
+ *
+ * If the value of it supplied is the same as "begin()", this is identical
+ * to calling "Clone()" on the combination we are iterating through.
+ */
+auto_ptr<CombinationValue> clone_partial_combo(
+    CombinationValue::const_iterator it,
+    const CombinationValue::const_iterator& end )
+{
+    auto_ptr<CombinationValue> ret( new CombinationValue );
+    for( ; it != end; ++it )
+    {
+        ret->push_back( (*it)->Clone() );
+    }
+    return ret;
+}
+
+std::auto_ptr<Value> define_procedure(
+    CombinationValue::const_iterator itarg,
+    const CombinationValue::const_iterator& argsend,
+    CombinationValue::const_iterator itbody,
+    const CombinationValue::const_iterator& bodyend,
+    const std::string& name = "" )
+{
+    return auto_ptr<Value>( new UserDefinedProcedureValue(
+        clone_partial_combo( itarg, argsend ).release(),
+        clone_partial_combo( itbody, bodyend ).release(), name ) );
+}
+
+
+
 std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
     Environment& environment )
 {
@@ -63,33 +108,65 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
             "Too few operands to the define operator: there should be 2." );
     }
 
-    if( combo->size() > 3 )
-    {
-        throw EvaluationError(
-            "Too many operands to the define operator: there should be 2." );
-    }
-
     CombinationValue::const_iterator it = combo->begin();
     assert( it != combo->end() );
     ++it;
     assert( it != combo->end() );
 
-    const SymbolValue* sym = dynamic_cast<const SymbolValue*>( *it );
-    if( !sym )
-    {
-        throw EvaluationError( "The first operand to the define operator "
-            "must be a symbol.  (Note we don't yet support definining "
-            "procedures.)" );
-    }
+    const Value* to_define = *it;
 
     ++it;
     assert( it != combo->end() );
 
-    environment.InsertSymbol( sym->GetStringValue(),
-        ev->EvalInContext( *it, environment ).release() );
+    const CombinationValue* comb_to_define =
+        dynamic_cast<const CombinationValue*>( to_define );
 
-    return auto_ptr<Value>( sym->Clone() );
+    if( comb_to_define )
+    {
+        CombinationValue::const_iterator itarg = comb_to_define->begin();
+
+        if( itarg == comb_to_define->end() )
+        {
+            throw EvaluationError(
+                "The first operand to define must be a symbol or a non-empty "
+                "combination.  The combination supplied is empty." );
+        }
+
+        const SymbolValue* sym = dynamic_cast<const SymbolValue*>( *itarg );
+        if( !sym )
+        {
+            throw EvaluationError( "The first element in the list defining "
+                "a procedure must be a symbol - '" + PrettyPrinter::Print(
+                    to_define ) + "' is not a symbol." );
+        }
+
+        ++itarg; // Move on from the procedure name to the arguments
+
+        return eval_define_symbol( ev, environment, sym,
+            define_procedure( itarg, comb_to_define->end(), it,
+                combo->end(), sym->GetStringValue() ).get() );
+    }
+    else
+    {
+        if( combo->size() > 3 )
+        {
+            throw EvaluationError(
+                "Too many operands to the define operator: there should "
+                "be 2." );
+        }
+
+        const SymbolValue* sym = dynamic_cast<const SymbolValue*>( to_define );
+        if( !sym )
+        {
+            throw EvaluationError( "The first operand to the define operator "
+                "must be a symbol or a combination. '" + PrettyPrinter::Print(
+                    to_define ) + "' is neither." );
+        }
+
+        return eval_define_symbol( ev, environment, sym, *it );
+    }
 }
+
 
 
 std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
@@ -102,9 +179,9 @@ std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
     }
 
     CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() );
+    assert( it != combo->end() ); // First of at least 3 - "lambda" (ignore)
     ++it;
-    assert( it != combo->end() );
+    assert( it != combo->end() ); // Second of at least 3 - arguments
 
     const CombinationValue* args = dynamic_cast<const CombinationValue*>( *it );
     if( !args )
@@ -116,18 +193,12 @@ std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
     }
 
     ++it;
-    assert( it != combo->end() );
+    assert( it != combo->end() ); // Third of at least 3 - procedure body
 
-    // Copy the rest of the combo (unevaluated) as the
-    // body of the function
-    auto_ptr<CombinationValue> bodycombo( new CombinationValue );
-    for( ; it != combo->end(); ++it )
-    {
-        bodycombo->push_back( (*it)->Clone() );
-    }
-    
-    return auto_ptr<Value>( new UserDefinedProcedureValue( args->Clone(),
-        bodycombo.release() ) );
+    // Copy the whole arguments combo as the args of the procedure, and
+    // copy the rest of the main combo (unevaluated) as the body
+    // of the function
+    return define_procedure( args->begin(), args->end(), it, combo->end() );
 }
 
 

@@ -19,7 +19,7 @@ class UserDefinedProcedureValue : public ProcedureValue
 {
 public:
     UserDefinedProcedureValue( CombinationValue* argnames,
-        CombinationValue* body );
+        CombinationValue* body, const std::string& name );
 
     UserDefinedProcedureValue( const UserDefinedProcedureValue& other );
 
@@ -33,6 +33,7 @@ public:
 private:
     std::auto_ptr<CombinationValue> argnames_;
     std::auto_ptr<CombinationValue> body_;
+    std::string name_;
 };
 
 #endif

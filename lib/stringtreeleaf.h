@@ -9,9 +9,9 @@
 class StringTreeLeaf : public StringTree
 {
 public:
-    StringTreeLeaf( std::string symbolstring );
+    StringTreeLeaf( const std::string& symbolstring );
 
-    std::string str() const;
+    const std::string& str() const;
 
 private:
     std::string symbolstring_;

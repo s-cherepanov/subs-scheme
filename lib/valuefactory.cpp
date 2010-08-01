@@ -35,17 +35,18 @@ namespace ValueFactory
 
 std::auto_ptr<Value> CreateValue( const StringTreeLeaf* leaf )
 {
-    if( is_all_numbers( leaf->str() ) )
+    const std::string& leaf_str = leaf->str();
+    if( is_all_numbers( leaf_str ) )
     {
         // TODO: handle different sorts of int e.g larger, unsigned?
-        istringstream ss( leaf->str() );
+        istringstream ss( leaf_str );
         int intvalue;
         ss >> intvalue;
         return auto_ptr<Value>( new IntegerValue( intvalue ) );
     }
     else
     {
-        return auto_ptr<Value>( new SymbolValue( leaf->str() ) );
+        return auto_ptr<Value>( new SymbolValue( leaf_str ) );
     }
 }
 

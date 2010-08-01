@@ -235,7 +235,6 @@ std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
 }
 
 Evaluator::Evaluator()
-: print_intermediates_( true )
 {
     global_environment_.InsertSymbol( "+", new PlusProcedureValue() );
 }
@@ -249,6 +248,12 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
     Environment& environment )
 {
     // TODO: replace switch-style dispatch with a virtual method on Value
+
+    // When the user entered the empty string, we have a NULL value
+    if( !value )
+    {
+        return auto_ptr<Value>( NULL );
+    }
 
     const CombinationValue* combo = dynamic_cast<const CombinationValue*>(
         value );

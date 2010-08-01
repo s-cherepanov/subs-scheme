@@ -9,7 +9,7 @@
 class SymbolValue : public Value
 {
 public:
-    SymbolValue( std::string symbol );
+    SymbolValue( const std::string& symbol );
 
     const std::string& GetStringValue() const;
 

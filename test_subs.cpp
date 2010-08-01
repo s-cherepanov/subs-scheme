@@ -7,7 +7,9 @@
 #include "test/testconstants.h"
 #include "test/testdefineprocedure.h"
 #include "test/testdefinesymbol.h"
+#include "test/testenvironment.h"
 #include "test/testlambda.h"
+#include "test/testmemory.h"
 #include "test/testlexconstants.h"
 #include "test/testparseconstants.h"
 #include "test/testprettyprintconstants.h"
@@ -24,9 +26,11 @@ int main()
         TestLexConstants(         ).Run();
         TestParseConstants(       ).Run();
         TestPrettyPrintConstants( ).Run();
+        TestMemory(               ).Run();
         TestConstants(            ).Run();
         TestRepl(                 ).Run();
         TestBuiltInFunctions(     ).Run();
+        TestEnvironment(          ).Run();
         TestDefineSymbol(         ).Run();
         TestLambda(               ).Run();
         TestDefineProcedure(      ).Run();

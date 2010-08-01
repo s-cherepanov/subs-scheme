@@ -5,12 +5,12 @@
 
 using namespace std;
 
-StringTreeLeaf::StringTreeLeaf( std::string symbolstring )
+StringTreeLeaf::StringTreeLeaf( const std::string& symbolstring )
 : symbolstring_( symbolstring )
 {
 }
 
-std::string StringTreeLeaf::str() const
+const std::string& StringTreeLeaf::str() const
 {
     return symbolstring_;
 }

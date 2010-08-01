@@ -3,7 +3,7 @@
 
 #include "symbolvalue.h"
 
-SymbolValue::SymbolValue( std::string symbol )
+SymbolValue::SymbolValue( const std::string& symbol )
 :symbol_( symbol )
 {
 }

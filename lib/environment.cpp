@@ -27,7 +27,16 @@ Environment::~Environment()
 
 void Environment::InsertSymbol( const std::string& name, Value* value )
 {
-    symbols_[name] = value;
+    MapType::iterator itFind = symbols_.find( name );
+    if( itFind != symbols_.end() )
+    {
+        delete itFind->second;
+        itFind->second = value;
+    }
+    else
+    {
+        symbols_[name] = value;
+    }
 }
 
 const Value* Environment::FindSymbol( const std::string& name ) const

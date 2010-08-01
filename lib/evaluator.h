@@ -26,9 +26,6 @@ public:
 
 private:
     Environment global_environment_;
-
-    /** For debugging: print out all stages of the evaluation. */
-    bool print_intermediates_;
 };
 
 #endif

@@ -1,14 +1,13 @@
 
 #include <cassert>
 
+#include "builtins.h"
 #include "combinationvalue.h"
 #include "evaluationerror.h"
 #include "falsevalue.h"
-#include "plusprocedurevalue.h"
 #include "procedurevalue.h"
 #include "prettyprinter.h"
 #include "symbolvalue.h"
-#include "truevalue.h"
 #include "userdefinedprocedurevalue.h"
 #include "value.h"
 
@@ -291,11 +290,7 @@ std::auto_ptr<Value> eval_if( Evaluator* ev, const CombinationValue* combo,
 
 Evaluator::Evaluator()
 {
-    // TODO: don't allocate these on the stack?
-    // TODO: make some or all of these immutable and thus not copied or deleted?
-    global_environment_.InsertSymbol( "#t", new TrueValue() );
-    global_environment_.InsertSymbol( "#f", new FalseValue() );
-    global_environment_.InsertSymbol( "+", new PlusProcedureValue() );
+    BuiltIns::Init( global_environment_ );
 }
 
 std::auto_ptr<Value> Evaluator::Eval( const Value* value )

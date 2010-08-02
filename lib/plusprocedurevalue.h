@@ -2,8 +2,12 @@
 #ifndef PLUSPROCEDUREVALUE_H
 #define PLUSPROCEDUREVALUE_H
 
+#include <memory>
+#include <string>
+
 #include "procedurevalue.h"
 
+class CombinationValue;
 class Evaluator;
 class Environment;
 

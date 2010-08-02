@@ -6,4 +6,5 @@ subs
 .*.marks
 .test.passed
 .testv.passed
+\#*\#
 

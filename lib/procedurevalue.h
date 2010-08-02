@@ -3,9 +3,11 @@
 #define PROCEDUREVALUE_H
 
 #include <memory>
+#include <string>
 
 #include "value.h"
 
+class CombinationValue;
 class Evaluator;
 class Environment;
 

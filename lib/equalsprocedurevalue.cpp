@@ -79,7 +79,14 @@ EqualsProcedureValue* EqualsProcedureValue::Clone() const
 //virtual
 std::string EqualsProcedureValue::GetName() const
 {
-    return "=";
+    return StaticName();
+}
+
+//static
+const std::string& EqualsProcedureValue::StaticName()
+{
+    static const string static_name( "=" );
+    return static_name;
 }
 
 

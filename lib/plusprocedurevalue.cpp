@@ -52,7 +52,14 @@ PlusProcedureValue* PlusProcedureValue::Clone() const
 //virtual
 std::string PlusProcedureValue::GetName() const
 {
-    return "+";
+    return StaticName();
+}
+
+//static
+const std::string& PlusProcedureValue::StaticName()
+{
+    static const string static_name( "+" );
+    return static_name;
 }
 
 

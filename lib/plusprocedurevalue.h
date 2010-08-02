@@ -20,6 +20,8 @@ public:
     virtual PlusProcedureValue* Clone() const;
 
     virtual std::string GetName() const;
+
+    static const std::string& StaticName();
 };
 
 #endif

@@ -16,6 +16,8 @@ public:
     virtual EqualsProcedureValue* Clone() const;
 
     virtual std::string GetName() const;
+
+    static const std::string& StaticName();
 };
 
 #endif

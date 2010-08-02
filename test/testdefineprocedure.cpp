@@ -219,7 +219,7 @@ void TestDefineProcedure::Run() const
     error_when_supply_too_many_args();
     proc_arguments_dont_leak_out();
     define_doesnt_leak_out();
-    //FAILS recursive_procedure();
+    recursive_procedure();
 }
 
 

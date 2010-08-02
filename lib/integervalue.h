@@ -10,6 +10,7 @@ public:
     explicit IntegerValue( int value );
 
     IntegerValue& operator+=( const IntegerValue& other );
+    IntegerValue& operator-=( const IntegerValue& other );
     IntegerValue& operator*=( const IntegerValue& other );
 
     int GetIntValue() const;

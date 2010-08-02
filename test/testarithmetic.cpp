@@ -1,5 +1,6 @@
 
 #include "assertmacros.h"
+#include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
 
 #include "testarithmetic.h"
@@ -62,6 +63,36 @@ void single_number_multiplication_yields_that_number()
 }
 
 
+void subtraction_of_two_numbers_yields_correct_answer()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 3)" ), "1" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 6)" ), "-2" );
+}
+
+void subtraction_of_three_numbers_yields_correct_answer()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 1 1)" ), "2" );
+}
+
+void null_subtraction_is_an_error()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "(-)" );
+    }
+    catch( EvaluationError& e )
+    {
+        exception_caught = true;
+    }
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+void single_number_subtraction_negates_that_number()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4)" ), "-4" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- -4)" ), "4" );
+}
 
 
 }
@@ -78,5 +109,10 @@ void TestArithmetic::Run() const
     multiplication_of_three_numbers_yields_correct_answer();
     null_multiplication_yields_one();
     single_number_multiplication_yields_that_number();
+
+    subtraction_of_two_numbers_yields_correct_answer();
+    subtraction_of_three_numbers_yields_correct_answer();
+    null_subtraction_is_an_error();
+    single_number_subtraction_negates_that_number();
 }
 

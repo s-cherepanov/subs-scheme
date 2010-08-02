@@ -23,6 +23,11 @@ bool is_integer( const string& str )
     if( *it == '-' )
     {
         ++it;
+        // but not if it's on its own
+        if( it == str.end() )
+        {
+            return false;
+        }
     }
 
     for( ; it != str.end(); ++it )

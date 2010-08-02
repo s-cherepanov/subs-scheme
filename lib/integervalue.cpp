@@ -13,12 +13,21 @@ IntegerValue& IntegerValue::operator+=( const IntegerValue& other )
     return *this;
 }
 
+
+IntegerValue& IntegerValue::operator-=( const IntegerValue& other )
+{
+    value_ -= other.value_;
+    return *this;
+}
+
+
 IntegerValue& IntegerValue::operator*=( const IntegerValue& other )
 {
     // TODO: handle large integers
     value_ *= other.value_;
     return *this;
 }
+
 
 int IntegerValue::GetIntValue() const
 {

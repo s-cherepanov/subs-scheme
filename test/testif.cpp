@@ -57,6 +57,16 @@ void too_many_args_to_if_is_an_error()
     TEST_ASSERT_TRUE( exception_caught );
 }
 
+void everything_is_true_except_hash_f()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(if 0 6 7)" ), "6" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(if 1 6 7)" ), "6" );
+    //FAILS TEST_ASSERT_EQUAL( interpreter.Interpret( "(if \"#t\" 6 7)" ),
+    //    "6" );
+    //FAILS TEST_ASSERT_EQUAL( interpreter.Interpret( "(if -1 6 7)" ), "6" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(if #f 6 7)" ), "7" );
+}
 
 
 }
@@ -67,6 +77,7 @@ void TestIf::Run() const
     basic_if();
     too_few_args_to_if_is_an_error();
     too_many_args_to_if_is_an_error();
-    //FAILS everything_is_true_except_hash_f();
+    everything_is_true_except_hash_f();
+    //NOTDONE comparator_works_in_if();
 }
 

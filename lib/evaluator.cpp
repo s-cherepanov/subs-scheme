@@ -253,8 +253,8 @@ std::auto_ptr<Value> eval_if( Evaluator* ev, const CombinationValue* combo,
     if( combo->size() < 4 )
     {
         throw EvaluationError(
-            "Too few operands to if: there should be 3 (predicate, true-value, "
-            "else-value)." );
+            "Not enough operands to if: there should be 3 (predicate, "
+            "true-value, else-value)." );
     }
 
     if( combo->size() > 4 )

@@ -25,4 +25,13 @@ IntegerValue* IntegerValue::Clone() const
 }
 
 
+bool operator==( const IntegerValue& left, const IntegerValue& right )
+{
+    return ( left.value_ == right.value_ );
+}
+
+bool operator!=( const IntegerValue& left, const IntegerValue& right )
+{
+    return ( left.value_ != right.value_ );
+}
 

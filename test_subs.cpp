@@ -4,6 +4,7 @@
 #include "lib/evaluationerror.h"
 #include "test/assertionfailed.h"
 #include "test/testarithmetic.h"
+#include "test/testcomparators.h"
 #include "test/testconstants.h"
 #include "test/testdefineprocedure.h"
 #include "test/testdefinesymbol.h"
@@ -36,6 +37,7 @@ int main()
         TestLambda(               ).Run();
         TestDefineProcedure(      ).Run();
         TestIf(                   ).Run();
+        TestComparators(          ).Run();
     }
     catch( AssertionFailed& e )
     {

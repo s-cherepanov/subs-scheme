@@ -15,6 +15,12 @@ public:
 
     virtual IntegerValue* Clone() const;
 
+    friend bool operator==( const IntegerValue& left,
+        const IntegerValue& right );
+
+    friend bool operator!=( const IntegerValue& left,
+        const IntegerValue& right );
+
 private:
     int value_;
 };

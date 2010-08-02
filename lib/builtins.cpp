@@ -1,5 +1,6 @@
 
 #include "environment.h"
+#include "equalsprocedurevalue.h"
 #include "falsevalue.h"
 #include "truevalue.h"
 #include "plusprocedurevalue.h"
@@ -16,6 +17,7 @@ void Init( Environment& environment )
     environment.InsertSymbol( "#t", new TrueValue() );
     environment.InsertSymbol( "#f", new FalseValue() );
     environment.InsertSymbol( "+", new PlusProcedureValue() );
+    environment.InsertSymbol( "=", new EqualsProcedureValue() );
 }
 
 }

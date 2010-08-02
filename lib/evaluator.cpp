@@ -4,6 +4,7 @@
 #include "builtins.h"
 #include "combinationvalue.h"
 #include "evaluationerror.h"
+#include "equalsprocedurevalue.h"
 #include "falsevalue.h"
 #include "procedurevalue.h"
 #include "prettyprinter.h"

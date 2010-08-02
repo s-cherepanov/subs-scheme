@@ -2,6 +2,7 @@
 #include "environment.h"
 #include "equalsprocedurevalue.h"
 #include "falsevalue.h"
+#include "timesprocedurevalue.h"
 #include "truevalue.h"
 #include "plusprocedurevalue.h"
 
@@ -33,6 +34,8 @@ void Init( Environment& environment )
 
     // Arithmetic operations
     InsertProcedure<PlusProcedureValue>( environment );
+    InsertProcedure<TimesProcedureValue>( environment );
+
 
     // Comparators
     InsertProcedure<EqualsProcedureValue>( environment );

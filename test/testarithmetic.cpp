@@ -39,6 +39,29 @@ void nested_addition_works()
 
 
 
+void multiplication_of_two_numbers_yields_correct_answer()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1 2)" ), "2" );
+}
+
+
+void multiplication_of_three_numbers_yields_correct_answer()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1 2 6)" ), "12" );
+}
+
+
+void null_multiplication_yields_one()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(*)" ), "1" );
+}
+
+void single_number_multiplication_yields_that_number()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 4)" ), "4" );
+}
+
+
 
 
 }
@@ -50,5 +73,10 @@ void TestArithmetic::Run() const
     null_addition_yields_zero();
     single_number_addition_yields_that_number();
     nested_addition_works();
+
+    multiplication_of_two_numbers_yields_correct_answer();
+    multiplication_of_three_numbers_yields_correct_answer();
+    null_multiplication_yields_one();
+    single_number_multiplication_yields_that_number();
 }
 

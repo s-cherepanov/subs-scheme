@@ -4,4 +4,6 @@
 test_subs
 subs
 .*.marks
+.test.passed
+.testv.passed
 

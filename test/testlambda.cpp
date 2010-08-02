@@ -117,7 +117,7 @@ void error_when_supply_too_few_args()
         exception_caught = true;
     }
 
-    TEST_ASSERT_EQUAL( exception_caught, true );
+    TEST_ASSERT_TRUE( exception_caught )
 }
 
 
@@ -140,7 +140,7 @@ void error_when_supply_too_many_args()
         exception_caught = true;
     }
 
-    TEST_ASSERT_EQUAL( exception_caught, true );
+    TEST_ASSERT_TRUE( exception_caught )
 }
 
 

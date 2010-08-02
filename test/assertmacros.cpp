@@ -144,5 +144,32 @@ void null( std::string file, unsigned int line,
 }
 
 
+void is_true( std::string file, unsigned int line,
+    std::string name,
+    bool arg )
+{
+    if( !arg )
+    {
+        ostringstream ss;
+        ss << name << " is not true (failed because " << name << " is false)";
+        throw AssertionFailed( file, line, ss.str() );
+    }
+}
+
+
+void is_false( std::string file, unsigned int line,
+    std::string name,
+    bool arg )
+{
+    if( arg )
+    {
+        ostringstream ss;
+        ss << name << " is not false (failed because " << name << " is true)";
+        throw AssertionFailed( file, line, ss.str() );
+    }
+}
+
+
+
 
 }

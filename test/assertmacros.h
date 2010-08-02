@@ -17,6 +17,12 @@
 #define TEST_ASSERT_NULL(ARG) \
     assertfns::null(__FILE__, __LINE__, #ARG, ARG );
 
+#define TEST_ASSERT_TRUE(ARG) \
+    assertfns::is_true(__FILE__, __LINE__, #ARG, ARG );
+
+#define TEST_ASSERT_FALSE(ARG) \
+    assertfns::is_true(__FILE__, __LINE__, #ARG, ARG );
+
 namespace assertfns
 {
 
@@ -50,6 +56,13 @@ void not_null( std::string file, unsigned int line,
 
 void null( std::string file, unsigned int line,
     std::string name, void* arg );
+
+
+void is_true( std::string file, unsigned int line,
+    std::string name, bool arg );
+
+void is_false( std::string file, unsigned int line,
+    std::string name, bool arg );
 
 }
 

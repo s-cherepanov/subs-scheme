@@ -205,6 +205,31 @@ void recursive_procedure()
 }
 
 
+
+void double_recursive_procedure()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (bad-fib n)"
+        "        (if (= n 1)"
+        "            1"
+        "            (if (= n 2)"
+        "                1"
+        "                (+ (bad-fib (- n 1)) (bad-fib (- n 2))))))"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(bad-fib 1)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(bad-fib 2)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(bad-fib 3)" ), "2" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(bad-fib 4)" ), "3" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(bad-fib 5)" ), "5" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(bad-fib 6)" ), "8" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(bad-fib 7)" ), "13" );
+}
+
+
+
 }
 
 void TestDefineProcedure::Run() const
@@ -220,6 +245,7 @@ void TestDefineProcedure::Run() const
     proc_arguments_dont_leak_out();
     define_doesnt_leak_out();
     recursive_procedure();
+    double_recursive_procedure();
 }
 
 

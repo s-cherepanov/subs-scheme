@@ -5,13 +5,13 @@
 #include "builtins.h"
 #include "combinationvalue.h"
 #include "evaluationerror.h"
-#include "equalsprocedurevalue.h"
+#include "equalsnativefunctionvalue.h"
 #include "falsevalue.h"
-#include "procedurevalue.h"
+#include "nativefunctionvalue.h"
 #include "prettyprinter.h"
 #include "symbolvalue.h"
 #include "tracer.h"
-#include "userdefinedprocedurevalue.h"
+#include "compoundprocedurevalue.h"
 #include "value.h"
 
 #include "evaluator.h"
@@ -83,7 +83,7 @@ std::auto_ptr<Value> define_procedure(
     const CombinationValue::const_iterator& bodyend,
     const std::string& name = "" )
 {
-    return auto_ptr<Value>( new UserDefinedProcedureValue(
+    return auto_ptr<Value>( new CompoundProcedureValue(
         clone_partial_combo( itarg, argsend ).release(),
         clone_partial_combo( itbody, bodyend ).release(), name ) );
 }
@@ -367,7 +367,7 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
         }
 
         // If it's a built-in procedure, simply run it
-        const ProcedureValue* bip = dynamic_cast<const ProcedureValue*>(
+        const NativeFunctionValue* bip = dynamic_cast<const NativeFunctionValue*>(
             evaldoptr.get() );
 
         if( bip )
@@ -377,9 +377,9 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
 
         // Otherwise, it's something we can tail-call optimise:
 
-        // Or a user-defined procedure
-        const UserDefinedProcedureValue* proc = dynamic_cast<
-            const UserDefinedProcedureValue*>( evaldoptr.get() );
+        // Or a compound procedure
+        const CompoundProcedureValue* proc = dynamic_cast<
+            const CompoundProcedureValue*>( evaldoptr.get() );
 
         if( !proc )
         {

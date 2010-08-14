@@ -5,7 +5,7 @@
 #include "assertmacros.h"
 #include "evaldepthtracer.h"
 #include "lib/subsinterpreter.h"
-#include "lib/userdefinedprocedurevalue.h"
+#include "lib/compoundprocedurevalue.h"
 
 #include "testtailcalloptimisation.h"
 

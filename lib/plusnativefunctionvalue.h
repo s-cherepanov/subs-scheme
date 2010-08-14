@@ -1,22 +1,22 @@
 
-#ifndef TIMESPROCEDUREVALUE_H
-#define TIMESPROCEDUREVALUE_H
+#ifndef PLUSNATIVEFUNCTIONVALUE_H
+#define PLUSNATIVEFUNCTIONVALUE_H
 
 #include <memory>
 #include <string>
 
-#include "procedurevalue.h"
+#include "nativefunctionvalue.h"
 
 class CombinationValue;
 class Environment;
 
-class TimesProcedureValue : public ProcedureValue
+class PlusNativeFunctionValue : public NativeFunctionValue
 {
 public:
     virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues,
         const Environment& environment ) const;
 
-    virtual TimesProcedureValue* Clone() const;
+    virtual PlusNativeFunctionValue* Clone() const;
 
     virtual std::string GetName() const;
 

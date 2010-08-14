@@ -22,7 +22,7 @@ void define_lambda_noargs()
         "foo" );
 
     TEST_ASSERT_EQUAL( interpreter.Interpret( "foo" ),
-        "<<PROCEDURE user-defined>>" );
+        "<<COMPOUND-PROCEDURE>>" );
 }
 
 
@@ -37,7 +37,7 @@ void define_lambda_args()
         "foo" );
 
     TEST_ASSERT_EQUAL( interpreter.Interpret( "foo" ),
-        "<<PROCEDURE user-defined>>" );
+        "<<COMPOUND-PROCEDURE>>" );
 }
 
 

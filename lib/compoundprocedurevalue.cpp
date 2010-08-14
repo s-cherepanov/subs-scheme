@@ -10,11 +10,11 @@
 #include "symbolvalue.h"
 #include "value.h"
 
-#include "userdefinedprocedurevalue.h"
+#include "compoundprocedurevalue.h"
 
 using namespace std;
 
-UserDefinedProcedureValue::UserDefinedProcedureValue(
+CompoundProcedureValue::CompoundProcedureValue(
     CombinationValue* argnames,
     CombinationValue* body,
     const std::string& name )
@@ -25,8 +25,8 @@ UserDefinedProcedureValue::UserDefinedProcedureValue(
     // TODO: validate that each of the elements of args is a symbol?
 }
 
-UserDefinedProcedureValue::UserDefinedProcedureValue(
-    const UserDefinedProcedureValue& other )
+CompoundProcedureValue::CompoundProcedureValue(
+    const CompoundProcedureValue& other )
 : argnames_( other.argnames_->Clone() )
 , body_( other.body_->Clone() )
 , name_( other.name_ )
@@ -35,32 +35,32 @@ UserDefinedProcedureValue::UserDefinedProcedureValue(
 
 
 //virtual
-UserDefinedProcedureValue* UserDefinedProcedureValue::Clone() const
+CompoundProcedureValue* CompoundProcedureValue::Clone() const
 {
-    return new UserDefinedProcedureValue( *this );
+    return new CompoundProcedureValue( *this );
 }
 
 
 //virtual
-std::string UserDefinedProcedureValue::GetName() const
+std::string CompoundProcedureValue::GetName() const
 {
-    string ret = "user-defined";
+    string ret = "COMPOUND-PROCEDURE";
     if( !name_.empty() )
     {
-        ret += ": ";
+        ret += " ";
         ret += name_;
     }
     return ret;
 }
 
 
-const CombinationValue* UserDefinedProcedureValue::GetBody() const
+const CombinationValue* CompoundProcedureValue::GetBody() const
 {
     return body_.get();
 }
 
 
-std::auto_ptr<Environment> UserDefinedProcedureValue::ExtendEnvironmentWithArgs(
+std::auto_ptr<Environment> CompoundProcedureValue::ExtendEnvironmentWithArgs(
     const CombinationValue* argvalues, const Environment& environment ) const
 {
     // Set up an environment that extends the existing one

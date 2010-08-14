@@ -1,6 +1,6 @@
 
-#ifndef PROCEDUREVALUE_H
-#define PROCEDUREVALUE_H
+#ifndef NATIVEFUNCTIONVALUE_H
+#define NATIVEFUNCTIONVALUE_H
 
 #include <memory>
 #include <string>
@@ -10,7 +10,7 @@
 class CombinationValue;
 class Environment;
 
-class ProcedureValue : public Value
+class NativeFunctionValue : public Value
 {
 public:
     /**

@@ -8,17 +8,17 @@
 #include "prettyprinter.h"
 #include "value.h"
 
-#include "timesprocedurevalue.h"
+#include "plusnativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> TimesProcedureValue::Run(
+std::auto_ptr<Value> PlusNativeFunctionValue::Run(
     const CombinationValue* argvalues, const Environment& environment ) const
 {
     // TODO: values other than integers
 
-    auto_ptr<IntegerValue> result( new IntegerValue( 1 ) );
+    auto_ptr<IntegerValue> result( new IntegerValue( 0 ) );
 
     CombinationValue::const_iterator it = argvalues->begin();
 
@@ -28,11 +28,11 @@ std::auto_ptr<Value> TimesProcedureValue::Run(
         if( !operand )
         {
             // TODO: remove need for PrettyPrinter scattered all over the code
-            throw EvaluationError( "Invalid argument for *: '"
+            throw EvaluationError( "Invalid argument for +: '"
                 + PrettyPrinter::Print( *it ) + "' is not an integer." );
         }
 
-        *result *= *operand;
+        *result += *operand;
     }
 
     return auto_ptr<Value>( result.release() );
@@ -40,22 +40,22 @@ std::auto_ptr<Value> TimesProcedureValue::Run(
 
 
 //virtual
-TimesProcedureValue* TimesProcedureValue::Clone() const
+PlusNativeFunctionValue* PlusNativeFunctionValue::Clone() const
 {
-    return new TimesProcedureValue( *this );
+    return new PlusNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string TimesProcedureValue::GetName() const
+std::string PlusNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& TimesProcedureValue::StaticName()
+const std::string& PlusNativeFunctionValue::StaticName()
 {
-    static const string static_name( "*" );
+    static const string static_name( "+" );
     return static_name;
 }
 

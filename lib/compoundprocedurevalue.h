@@ -1,28 +1,28 @@
 
-#ifndef USERDEFINEDPROCEDUREVALUE_H
-#define USERDEFINEDPROCEDUREVALUE_H
+#ifndef COMPOUNDPROCEDUREVALUE_H
+#define COMPOUNDPROCEDUREVALUE_H
 
 #include <memory>
 
-#include "procedurevalue.h"
+#include "nativefunctionvalue.h"
 
 class Environment;
 
 /**
- * A procedure defined by the user using lambda or the define
+ * A procedure defined in Scheme using lambda or the define
  * syntactic sugar.
  *
  * This class takes ownership of the two CombinationValues you pass to it.
  */
- class UserDefinedProcedureValue : public Value
+ class CompoundProcedureValue : public Value
 {
 public:
-    UserDefinedProcedureValue( CombinationValue* argnames,
+    CompoundProcedureValue( CombinationValue* argnames,
         CombinationValue* body, const std::string& name );
 
-    UserDefinedProcedureValue( const UserDefinedProcedureValue& other );
+    CompoundProcedureValue( const CompoundProcedureValue& other );
 
-    virtual UserDefinedProcedureValue* Clone() const;
+    virtual CompoundProcedureValue* Clone() const;
 
     virtual std::string GetName() const;
 

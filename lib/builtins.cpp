@@ -1,10 +1,10 @@
 
 #include "environment.h"
-#include "equalsprocedurevalue.h"
+#include "equalsnativefunctionvalue.h"
 #include "falsevalue.h"
-#include "minusprocedurevalue.h"
-#include "plusprocedurevalue.h"
-#include "timesprocedurevalue.h"
+#include "minusnativefunctionvalue.h"
+#include "plusnativefunctionvalue.h"
+#include "timesnativefunctionvalue.h"
 #include "truevalue.h"
 
 #include "builtins.h"
@@ -34,13 +34,13 @@ void Init( Environment& environment )
     environment.InsertSymbol( "#f", new FalseValue );
 
     // Arithmetic operations
-    InsertProcedure<PlusProcedureValue>( environment );
-    InsertProcedure<MinusProcedureValue>( environment );
-    InsertProcedure<TimesProcedureValue>( environment );
+    InsertProcedure<PlusNativeFunctionValue>( environment );
+    InsertProcedure<MinusNativeFunctionValue>( environment );
+    InsertProcedure<TimesNativeFunctionValue>( environment );
 
 
     // Comparators
-    InsertProcedure<EqualsProcedureValue>( environment );
+    InsertProcedure<EqualsNativeFunctionValue>( environment );
 }
 
 }

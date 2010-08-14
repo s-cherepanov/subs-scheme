@@ -10,12 +10,12 @@
 #include "truevalue.h"
 #include "value.h"
 
-#include "equalsprocedurevalue.h"
+#include "equalsnativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> EqualsProcedureValue::Run(
+std::auto_ptr<Value> EqualsNativeFunctionValue::Run(
     const CombinationValue* argvalues, const Environment& environment ) const
 {
     // TODO: values other than integers
@@ -67,20 +67,20 @@ std::auto_ptr<Value> EqualsProcedureValue::Run(
 
 
 //virtual
-EqualsProcedureValue* EqualsProcedureValue::Clone() const
+EqualsNativeFunctionValue* EqualsNativeFunctionValue::Clone() const
 {
-    return new EqualsProcedureValue( *this );
+    return new EqualsNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string EqualsProcedureValue::GetName() const
+std::string EqualsNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& EqualsProcedureValue::StaticName()
+const std::string& EqualsNativeFunctionValue::StaticName()
 {
     static const string static_name( "=" );
     return static_name;

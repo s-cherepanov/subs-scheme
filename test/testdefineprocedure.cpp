@@ -22,7 +22,7 @@ void define_proc_noargs()
         "foo" );
 
     TEST_ASSERT_EQUAL( interpreter.Interpret( "foo" ),
-        "<<PROCEDURE user-defined: foo>>" );
+        "<<COMPOUND-PROCEDURE foo>>" );
 }
 
 
@@ -37,7 +37,7 @@ void define_proc_args()
         "foo" );
 
     TEST_ASSERT_EQUAL( interpreter.Interpret( "foo" ),
-        "<<PROCEDURE user-defined: foo>>" );
+        "<<COMPOUND-PROCEDURE foo>>" );
 }
 
 

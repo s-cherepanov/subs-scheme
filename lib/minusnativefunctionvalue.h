@@ -1,22 +1,22 @@
 
-#ifndef MINUSPROCEDUREVALUE_H
-#define MINUSPROCEDUREVALUE_H
+#ifndef MINUSNATIVEFUNCTIONVALUE_H
+#define MINUSNATIVEFUNCTIONVALUE_H
 
 #include <memory>
 #include <string>
 
-#include "procedurevalue.h"
+#include "nativefunctionvalue.h"
 
 class CombinationValue;
 class Environment;
 
-class MinusProcedureValue : public ProcedureValue
+class MinusNativeFunctionValue : public NativeFunctionValue
 {
 public:
     virtual std::auto_ptr<Value> Run( const CombinationValue* combo,
         const Environment& environment ) const;
 
-    virtual MinusProcedureValue* Clone() const;
+    virtual MinusNativeFunctionValue* Clone() const;
 
     virtual std::string GetName() const;
 

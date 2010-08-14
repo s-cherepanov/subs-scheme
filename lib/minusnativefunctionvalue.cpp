@@ -8,12 +8,12 @@
 #include "prettyprinter.h"
 #include "value.h"
 
-#include "minusprocedurevalue.h"
+#include "minusnativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> MinusProcedureValue::Run(
+std::auto_ptr<Value> MinusNativeFunctionValue::Run(
     const CombinationValue* argvalues, const Environment& environment ) const
 {
     // TODO: values other than integers
@@ -62,20 +62,20 @@ std::auto_ptr<Value> MinusProcedureValue::Run(
 
 
 //virtual
-MinusProcedureValue* MinusProcedureValue::Clone() const
+MinusNativeFunctionValue* MinusNativeFunctionValue::Clone() const
 {
-    return new MinusProcedureValue( *this );
+    return new MinusNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string MinusProcedureValue::GetName() const
+std::string MinusNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& MinusProcedureValue::StaticName()
+const std::string& MinusNativeFunctionValue::StaticName()
 {
     static const string static_name( "-" );
     return static_name;

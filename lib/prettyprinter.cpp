@@ -6,10 +6,10 @@
 #include "combinationvalue.h"
 #include "falsevalue.h"
 #include "integervalue.h"
-#include "procedurevalue.h"
+#include "nativefunctionvalue.h"
 #include "symbolvalue.h"
 #include "truevalue.h"
-#include "userdefinedprocedurevalue.h"
+#include "compoundprocedurevalue.h"
 #include "value.h"
 
 #include "prettyprinter.h"
@@ -65,16 +65,16 @@ void print_symbol( const SymbolValue* value, ostream& result )
 }
 
 
-void print_built_in_procedure( const ProcedureValue* value, ostream& result )
+void print_built_in_procedure( const NativeFunctionValue* value, ostream& result )
 {
-    result << "<<PROCEDURE " << value->GetName() << ">>";
+    result << "<<NATIVE-PROCEDURE " << value->GetName() << ">>";
 }
 
 
-void print_user_defined_procedure( const UserDefinedProcedureValue* value,
+void print_compound_procedure( const CompoundProcedureValue* value,
     ostream& result )
 {
-    result << "<<PROCEDURE " << value->GetName() << ">>";
+    result << "<<" << value->GetName() << ">>";
 }
 
 
@@ -140,19 +140,19 @@ void Print( const Value* value, std::ostream& result )
         return;
     }
 
-    const ProcedureValue* procedurevalue = dynamic_cast<
-        const ProcedureValue*>( value );
-    if( procedurevalue )
+    const NativeFunctionValue* fnvalue = dynamic_cast<
+        const NativeFunctionValue*>( value );
+    if( fnvalue )
     {
-        print_built_in_procedure( procedurevalue, result );
+        print_built_in_procedure( fnvalue, result );
         return;
     }
 
-    const UserDefinedProcedureValue* udprocedurevalue = dynamic_cast<
-        const UserDefinedProcedureValue*>( value );
-    if( udprocedurevalue )
+    const CompoundProcedureValue* procvalue = dynamic_cast<
+        const CompoundProcedureValue*>( value );
+    if( procvalue )
     {
-        print_user_defined_procedure( udprocedurevalue, result );
+        print_compound_procedure( procvalue, result );
         return;
     }
 

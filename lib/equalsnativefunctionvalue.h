@@ -1,22 +1,18 @@
 
-#ifndef PLUSPROCEDUREVALUE_H
-#define PLUSPROCEDUREVALUE_H
+#ifndef EQUALSNATIVEFUNCTIONVALUE_H
+#define EQUALSNATIVEFUNCTIONVALUE_H
 
-#include <memory>
-#include <string>
+#include "nativefunctionvalue.h"
 
-#include "procedurevalue.h"
-
-class CombinationValue;
 class Environment;
 
-class PlusProcedureValue : public ProcedureValue
+class EqualsNativeFunctionValue : public NativeFunctionValue
 {
 public:
     virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues,
         const Environment& environment ) const;
 
-    virtual PlusProcedureValue* Clone() const;
+    virtual EqualsNativeFunctionValue* Clone() const;
 
     virtual std::string GetName() const;
 

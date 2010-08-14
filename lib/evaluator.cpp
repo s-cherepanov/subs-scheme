@@ -291,12 +291,7 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
     while( true )
     {
 
-        // When the user entered the empty string, we have a NULL value
-        // If value is NULL, we simply return NULL
-        if( !value )
-        {
-            return auto_ptr<Value>( NULL );
-        }
+
 
         // If value is a symbol, we look it up and return the result
         const SymbolValue* plainsym = dynamic_cast<const SymbolValue*>(
@@ -427,7 +422,16 @@ Evaluator::Evaluator()
 
 std::auto_ptr<Value> Evaluator::Eval( const Value* value )
 {
-    return eval_in_context( this, value, global_environment_ );
+    // When the user entered the empty string, we have a NULL value.
+    // In this case, we simply return NULL here.
+    if( value )
+    {
+        return eval_in_context( this, value, global_environment_ );
+    }
+    else
+    {
+        return auto_ptr<Value>( NULL );
+    }
 }
 
 void Evaluator::SetTracer( Tracer* tracer )

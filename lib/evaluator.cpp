@@ -279,6 +279,19 @@ private:
 std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
     Environment& environment )
 {
+    /*
+
+    Apologies for the length of this function.  The logic of tail-call
+    optimisation plus my desire for efficiency (i.e. direct returns rather
+    than function calls followed by conditional returns) leaves me thinking
+    that the only way I could break it up would be with gotos, which I think
+    would damage rather than enhance comprehensibility.
+
+    If anyone has any ideas how to break this up without damaging efficiency
+    I would very much like to hear them.
+
+    */
+
     EvalDepthMarker dm( ev->GetTracer() );
 
     // TODO: replace switch-style dispatch with a virtual method on Value
@@ -290,8 +303,6 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
     // This loop continues every time we can do a tail-call optimisation.
     while( true )
     {
-
-
 
         // If value is a symbol, we look it up and return the result
         const SymbolValue* plainsym = dynamic_cast<const SymbolValue*>(
@@ -370,21 +381,23 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
             return bip->Run( argvalues.get(), *env_ptr );
         }
 
-        // Otherwise, it's something we can tail-call optimise:
-
-        // Or a compound procedure
+        // Otherwise, it must be a compound procedure
         const CompoundProcedureValue* proc = dynamic_cast<
             const CompoundProcedureValue*>( evaldoptr.get() );
 
         if( !proc )
         {
+            // TODO: shouldn't need pretty printer in places like here
             throw EvaluationError( "Attempted to run '"
                 + PrettyPrinter::Print( evaldoptr.get() )
                 + "', which is not a procedure." );
         }
 
-        new_env = proc->ExtendEnvironmentWithArgs( argvalues.get(), environment
-            );
+        // Replace the current environment with one containing the
+        // original environment and the argument values of the new
+        // procedure.
+        new_env = proc->ExtendEnvironmentWithArgs( argvalues.get(),
+            environment );
         env_ptr = new_env.get();
 
         CombinationValue::const_iterator itbody = proc->GetBody()->begin();

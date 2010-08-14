@@ -16,6 +16,7 @@
 #include "test/testparseconstants.h"
 #include "test/testprettyprintconstants.h"
 #include "test/testrepl.h"
+#include "test/testtailcalloptimisation.h"
 #include "test/testwordlexer.h"
 
 using namespace std;
@@ -38,6 +39,7 @@ int main()
         TestDefineProcedure(      ).Run();
         TestIf(                   ).Run();
         TestComparators(          ).Run();
+        TestTailCallOptimisation( ).Run();
     }
     catch( AssertionFailed& e )
     {

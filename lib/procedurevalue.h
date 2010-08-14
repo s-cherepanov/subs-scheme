@@ -8,7 +8,6 @@
 #include "value.h"
 
 class CombinationValue;
-class Evaluator;
 class Environment;
 
 class ProcedureValue : public Value
@@ -20,8 +19,8 @@ public:
      *
      * @arg combo is the combination of the operator and operands.
      */
-    virtual std::auto_ptr<Value> Run( Evaluator* ev,
-        const CombinationValue* combo, Environment& environment ) = 0;
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues,
+        const Environment& environment ) const = 0;
 
     virtual std::string GetName() const = 0;
 };

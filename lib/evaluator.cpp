@@ -1,5 +1,6 @@
 
 #include <cassert>
+#include <typeinfo>
 
 #include "builtins.h"
 #include "combinationvalue.h"
@@ -9,6 +10,7 @@
 #include "procedurevalue.h"
 #include "prettyprinter.h"
 #include "symbolvalue.h"
+#include "tracer.h"
 #include "userdefinedprocedurevalue.h"
 #include "value.h"
 
@@ -19,47 +21,27 @@ using namespace std;
 namespace
 {
 
-
-std::auto_ptr<Value> apply( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
-{
-    if( combo->empty() )
-    {
-        // TODO: supply line number, file etc.
-        throw EvaluationError( "Attepted to evaluate an empty combination" );
-    }
-
-    ProcedureValue* operator_proc = dynamic_cast<ProcedureValue*>(
-        (*combo)[0] );
-
-    if( !operator_proc )
-    {
-        throw EvaluationError( "Attempted to run procedure '"
-            + PrettyPrinter::Print( (*combo)[0] )
-            + "', which is not a symbol." );
-    }
-
-    return operator_proc->Run( ev, combo, environment );
-}
-
+std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
+    Environment& environment );
+    
 bool is_define_symbol( const SymbolValue* sym )
 {
     // TODO: case insensitive?
-    return ( sym->GetStringValue() == "define" );
+    return ( sym && sym->GetStringValue() == "define" );
 }
 
 
 bool is_if_symbol( const SymbolValue* sym )
 {
     // TODO: case insensitive?
-    return ( sym->GetStringValue() == "if" );
+    return ( sym && sym->GetStringValue() == "if" );
 }
 
 
 bool is_lambda_symbol( const SymbolValue* sym )
 {
     // TODO: case insensitive?
-    return ( sym->GetStringValue() == "lambda" );
+    return ( sym && sym->GetStringValue() == "lambda" );
 }
 
 
@@ -68,7 +50,7 @@ std::auto_ptr<Value> eval_define_symbol( Evaluator* ev,
     const Value* definition )
 {
     environment.InsertSymbol( to_define->GetStringValue(),
-        ev->EvalInContext( definition, environment ).release() );
+        eval_in_context( ev, definition, environment ).release() );
 
     return auto_ptr<Value>( to_define->Clone() );
 }
@@ -211,20 +193,6 @@ std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
 }
 
 
-std::auto_ptr<Value> eval_combo( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
-{
-    auto_ptr<CombinationValue> new_combo( new CombinationValue );
-    for( CombinationValue::const_iterator it = combo->begin();
-        it != combo->end(); ++it )
-    {
-        new_combo->push_back( ev->EvalInContext( *it, environment ).release() );
-    }
-
-    return apply( ev, new_combo.get(), environment );
-
-}
-
 std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
     Environment& environment )
 {
@@ -247,9 +215,11 @@ bool is_false( const Value* value )
 }
 
 
-std::auto_ptr<Value> eval_if( Evaluator* ev, const CombinationValue* combo,
+const Value* process_if( Evaluator* ev, const CombinationValue* combo,
     Environment& environment )
 {
+    // TODO: only one if needed here (in the normal case)
+
     if( combo->size() < 4 )
     {
         throw EvaluationError(
@@ -274,7 +244,7 @@ std::auto_ptr<Value> eval_if( Evaluator* ev, const CombinationValue* combo,
     ++it; // Move to "true" value
     assert( it != combo->end() );
 
-    std::auto_ptr<Value> evald_pred = ev->EvalInContext( predicate,
+    std::auto_ptr<Value> evald_pred = eval_in_context( ev, predicate,
         environment );
 
     if( is_false( evald_pred.get() ) )
@@ -283,7 +253,167 @@ std::auto_ptr<Value> eval_if( Evaluator* ev, const CombinationValue* combo,
         assert( it != combo->end() );
     }
 
-    return ev->EvalInContext( *it, environment );
+    return *it;
+}
+
+
+
+class EvalDepthMarker
+{
+public:
+    EvalDepthMarker( Tracer* tracer )
+    : tracer_( tracer )
+    {
+        tracer_->IncreaseEvalDepth();
+    }
+
+    ~EvalDepthMarker()
+    {
+       tracer_->DecreaseEvalDepth();
+    }
+
+private:
+    Tracer* tracer_;
+};
+
+std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
+    Environment& environment )
+{
+    EvalDepthMarker dm( ev->GetTracer() );
+
+    // TODO: replace switch-style dispatch with a virtual method on Value
+
+    auto_ptr<Value> new_value;
+    auto_ptr<Environment> new_env;
+    Environment* env_ptr = &environment;
+
+    // This loop continues every time we can do a tail-call optimisation.
+    while( true )
+    {
+
+        // When the user entered the empty string, we have a NULL value
+        // If value is NULL, we simply return NULL
+        if( !value )
+        {
+            return auto_ptr<Value>( NULL );
+        }
+
+        // If value is a symbol, we look it up and return the result
+        const SymbolValue* plainsym = dynamic_cast<const SymbolValue*>(
+            value );
+        if( plainsym )
+        {
+            return eval_symbol( plainsym, *env_ptr );
+        }
+
+        // Maybe value is a combination?
+        const CombinationValue* combo = dynamic_cast<const CombinationValue*>(
+            value );
+
+        // If it's not a combination it must be a simple value like
+        // an Integer or a Procedure.  Return a copy of it.
+        if( !combo )
+        {
+            return auto_ptr<Value>( value->Clone() );
+        }
+
+        // Now we deal with a combination.
+
+        // First check it's non-empty
+        if( combo->empty() )
+        {
+            // TODO: supply line number, file etc.
+            throw EvaluationError(
+                "Attepted to evaluate an empty combination" );
+        }
+
+        // Get hold of the operand
+        CombinationValue::const_iterator cmbit = combo->begin();
+        const Value* optr = *cmbit;
+
+        // Check to see whether it's a special symbol
+
+        const SymbolValue* sym = dynamic_cast<const SymbolValue*>( optr );
+
+        if( is_define_symbol( sym ) )
+        {
+            return eval_define( ev, combo, *env_ptr );
+        }
+
+        if( is_lambda_symbol( sym ) )
+        {
+            return eval_lambda( combo );
+        }
+
+        if( is_if_symbol( sym ) )
+        {
+            // If it's an if, we set value and go around the loop again
+            // (tail-call optimisation)
+            value = process_if( ev, combo, *env_ptr );
+            continue;
+        }
+
+        // Otherwise we evaluate the operator
+        auto_ptr<Value> evaldoptr = eval_in_context( ev, optr, *env_ptr );
+
+        ++cmbit; // Skip past the procedure to the arguments
+
+        // Evaluate the arguments into a new combo
+        auto_ptr<CombinationValue> argvalues( new CombinationValue );
+        for( ; cmbit != combo->end(); ++cmbit )
+        {
+            argvalues->push_back( eval_in_context( ev, *cmbit, *env_ptr
+                ).release() );
+        }
+
+        // If it's a built-in procedure, simply run it
+        const ProcedureValue* bip = dynamic_cast<const ProcedureValue*>(
+            evaldoptr.get() );
+
+        if( bip )
+        {
+            return bip->Run( argvalues.get(), *env_ptr );
+        }
+
+        // Otherwise, it's something we can tail-call optimise:
+
+        // Or a user-defined procedure
+        const UserDefinedProcedureValue* proc = dynamic_cast<
+            const UserDefinedProcedureValue*>( evaldoptr.get() );
+
+        if( !proc )
+        {
+            throw EvaluationError( "Attempted to run '"
+                + PrettyPrinter::Print( evaldoptr.get() )
+                + "', which is not a procedure." );
+        }
+
+        new_env = proc->ExtendEnvironmentWithArgs( argvalues.get(), environment
+            );
+        env_ptr = new_env.get();
+
+        CombinationValue::const_iterator itbody = proc->GetBody()->begin();
+        CombinationValue::const_iterator itbodyend = proc->GetBody()->end();
+        assert( itbody != itbodyend ); // Since this procedure must have a body
+
+        // Step back one - the last section of the body is handled differently
+        --itbodyend;
+
+        // Evaluate all elements except the last one
+        for( ; itbody != itbodyend; ++itbody )
+        {
+            // eval_in_context returns an auto_ptr, so
+            // each returned value will be deleted.
+            eval_in_context( ev, *itbody, *env_ptr );
+        }
+
+        // Now we have the last bit of the body, which is the bit
+        // we will tail-call optimise by setting value to it, and
+        // going around the loop again.
+        new_value.reset( (*itbody)->Clone() );
+        value = new_value.get();
+    }
+
 }
 
 
@@ -291,69 +421,22 @@ std::auto_ptr<Value> eval_if( Evaluator* ev, const CombinationValue* combo,
 
 Evaluator::Evaluator()
 {
+    tracer_ = &null_tracer_;
     BuiltIns::Init( global_environment_ );
 }
 
 std::auto_ptr<Value> Evaluator::Eval( const Value* value )
 {
-    return EvalInContext( value, global_environment_ );
+    return eval_in_context( this, value, global_environment_ );
 }
 
-std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
-    Environment& environment )
+void Evaluator::SetTracer( Tracer* tracer )
 {
-    // TODO: replace switch-style dispatch with a virtual method on Value
-
-    // When the user entered the empty string, we have a NULL value
-    if( !value )
-    {
-        return auto_ptr<Value>( NULL );
-    }
-
-    const CombinationValue* combo = dynamic_cast<const CombinationValue*>(
-        value );
-    if( combo )
-    {
-        // Check for special keywords
-
-        if( combo->begin() != combo->end() )
-        {
-            const SymbolValue* sym = dynamic_cast<const SymbolValue*>(
-                (*combo)[0] );
-
-            if( sym )
-            {
-                if( is_define_symbol( sym ) )
-                {
-                    return eval_define( this, combo, environment );
-                }
-
-                if( is_if_symbol( sym ) )
-                {
-                    return eval_if( this, combo, environment );
-                }
-
-                if( is_lambda_symbol( sym ) )
-                {
-                    return eval_lambda( combo );
-                }
-            }
-        }
-
-        // If none of the special cases occurred, treat it as
-        // a normal combination
-        return eval_combo( this, combo, environment );
-    }
-
-    const SymbolValue* sym = dynamic_cast<const SymbolValue*>(
-        value );
-
-    if( sym )
-    {
-        return eval_symbol( sym, environment );
-    }
-
-    return auto_ptr<Value>( value->Clone() );
+    tracer_ = tracer;
 }
 
+Tracer* Evaluator::GetTracer()
+{
+    return tracer_;
+}
 

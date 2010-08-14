@@ -17,3 +17,9 @@ std::string SubsInterpreter::Interpret( const std::string& codestring )
             Lexer().Lex( codestring ).get() ).get() ).get() );
 }
 
+void SubsInterpreter::SetTracer( Tracer* tracer )
+{
+    evaluator_.SetTracer( tracer );
+}
+
+

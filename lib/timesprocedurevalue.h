@@ -8,14 +8,13 @@
 #include "procedurevalue.h"
 
 class CombinationValue;
-class Evaluator;
 class Environment;
 
 class TimesProcedureValue : public ProcedureValue
 {
 public:
-    virtual std::auto_ptr<Value> Run( Evaluator* ev,
-        const CombinationValue* combo, Environment& environment );
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues,
+        const Environment& environment ) const;
 
     virtual TimesProcedureValue* Clone() const;
 

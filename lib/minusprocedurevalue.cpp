@@ -13,17 +13,14 @@
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> MinusProcedureValue::Run( Evaluator* ev,
-    const CombinationValue* combo, Environment& environment )
+std::auto_ptr<Value> MinusProcedureValue::Run(
+    const CombinationValue* argvalues, const Environment& environment ) const
 {
     // TODO: values other than integers
 
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() ); // We don't get here unless there
-                                 // is an operator
-    ++it; // Skip the operator, move on to the operands
+    CombinationValue::const_iterator it = argvalues->begin();
 
-    if( it == combo->end() )
+    if( it == argvalues->end() )
     {
         throw EvaluationError( "Not enough operands for '-' - there must "
             "be at least 1." );
@@ -31,7 +28,7 @@ std::auto_ptr<Value> MinusProcedureValue::Run( Evaluator* ev,
 
     int initial_value = 0;
 
-    if( combo->size() > 2 )
+    if( argvalues->size() > 1 )
     {
         const IntegerValue* operand = dynamic_cast<IntegerValue*>( *it );
         if( !operand )
@@ -43,12 +40,12 @@ std::auto_ptr<Value> MinusProcedureValue::Run( Evaluator* ev,
         initial_value = operand->GetIntValue();
 
         ++it;
-        assert( it != combo->end() ); // We have just checked there are more
+        assert( it != argvalues->end() ); // We have just checked there are more
     }
 
     auto_ptr<IntegerValue> result( new IntegerValue( initial_value ) );
 
-    for( ; it != combo->end(); ++it )
+    for( ; it != argvalues->end(); ++it )
     {
         const IntegerValue* operand = dynamic_cast<IntegerValue*>( *it );
         if( !operand )

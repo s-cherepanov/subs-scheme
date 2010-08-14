@@ -4,14 +4,13 @@
 
 #include "procedurevalue.h"
 
-class Evaluator;
 class Environment;
 
 class EqualsProcedureValue : public ProcedureValue
 {
 public:
-    virtual std::auto_ptr<Value> Run( Evaluator* ev,
-        const CombinationValue* combo, Environment& environment );
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues,
+        const Environment& environment ) const;
 
     virtual EqualsProcedureValue* Clone() const;
 

@@ -6,7 +6,6 @@
 
 #include "procedurevalue.h"
 
-class Evaluator;
 class Environment;
 
 /**
@@ -15,7 +14,7 @@ class Environment;
  *
  * This class takes ownership of the two CombinationValues you pass to it.
  */
-class UserDefinedProcedureValue : public ProcedureValue
+ class UserDefinedProcedureValue : public Value
 {
 public:
     UserDefinedProcedureValue( CombinationValue* argnames,
@@ -23,12 +22,15 @@ public:
 
     UserDefinedProcedureValue( const UserDefinedProcedureValue& other );
 
-    virtual std::auto_ptr<Value> Run( Evaluator* ev,
-        const CombinationValue* combo, Environment& environment );
-
     virtual UserDefinedProcedureValue* Clone() const;
 
     virtual std::string GetName() const;
+
+    const CombinationValue* GetBody() const;
+
+    std::auto_ptr<Environment> ExtendEnvironmentWithArgs(
+        const CombinationValue* argvalues, const Environment& environment
+        ) const;
 
 private:
     std::auto_ptr<CombinationValue> argnames_;

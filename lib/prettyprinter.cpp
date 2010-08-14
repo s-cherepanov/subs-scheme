@@ -9,6 +9,7 @@
 #include "procedurevalue.h"
 #include "symbolvalue.h"
 #include "truevalue.h"
+#include "userdefinedprocedurevalue.h"
 #include "value.h"
 
 #include "prettyprinter.h"
@@ -39,7 +40,7 @@ void print_combination( const CombinationValue* value, ostream& result )
 {
     result << "(";
     CombinationValue::const_iterator it = value->begin();
-    while( true )
+    while( it != value->end() )
     {
         PrettyPrinter::Print( *it, result );
 
@@ -64,10 +65,18 @@ void print_symbol( const SymbolValue* value, ostream& result )
 }
 
 
-void print_procedure( const ProcedureValue* value, ostream& result )
+void print_built_in_procedure( const ProcedureValue* value, ostream& result )
 {
     result << "<<PROCEDURE " << value->GetName() << ">>";
 }
+
+
+void print_user_defined_procedure( const UserDefinedProcedureValue* value,
+    ostream& result )
+{
+    result << "<<PROCEDURE " << value->GetName() << ">>";
+}
+
 
 
 }
@@ -135,7 +144,15 @@ void Print( const Value* value, std::ostream& result )
         const ProcedureValue*>( value );
     if( procedurevalue )
     {
-        print_procedure( procedurevalue, result );
+        print_built_in_procedure( procedurevalue, result );
+        return;
+    }
+
+    const UserDefinedProcedureValue* udprocedurevalue = dynamic_cast<
+        const UserDefinedProcedureValue*>( value );
+    if( udprocedurevalue )
+    {
+        print_user_defined_procedure( udprocedurevalue, result );
         return;
     }
 

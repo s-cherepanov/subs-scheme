@@ -15,17 +15,14 @@
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> EqualsProcedureValue::Run( Evaluator* ev,
-    const CombinationValue* combo, Environment& environment )
+std::auto_ptr<Value> EqualsProcedureValue::Run(
+    const CombinationValue* argvalues, const Environment& environment ) const
 {
     // TODO: values other than integers
 
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() ); // We don't get here unless there
-                                 // is an operator
-    ++it; // Skip the operator, move on to the operands
+    CombinationValue::const_iterator it = argvalues->begin();
 
-    if( it == combo->end() )
+    if( it == argvalues->end() )
     {
         throw EvaluationError( "Not enough operands to =: there should "
             "be at least 2." );
@@ -42,13 +39,13 @@ std::auto_ptr<Value> EqualsProcedureValue::Run( Evaluator* ev,
 
     ++it;
 
-    if( it == combo->end() )
+    if( it == argvalues->end() )
     {
         throw EvaluationError( "Not enough operands to =: there should "
             "be at least 2." );
     }
 
-    for( ; it != combo->end(); ++it )
+    for( ; it != argvalues->end(); ++it )
     {
         const IntegerValue* operand = dynamic_cast<IntegerValue*>( *it );
         if( !operand )

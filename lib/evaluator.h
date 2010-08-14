@@ -5,8 +5,10 @@
 #include <memory>
 
 #include "environment.h"
+#include "nulltracer.h"
 
 class CombinationValue;
+class Tracer;
 class Value;
 
 class Evaluator
@@ -21,11 +23,15 @@ public:
      */
     std::auto_ptr<Value> Eval( const Value* value );
 
-    std::auto_ptr<Value> EvalInContext( const Value* value,
-        Environment& environment );
+    void SetTracer( Tracer* tracer );
+    Tracer* GetTracer();
 
 private:
+
     Environment global_environment_;
+
+    Tracer* tracer_;
+    NullTracer null_tracer_;
 };
 
 #endif

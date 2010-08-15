@@ -95,6 +95,38 @@ void single_number_subtraction_negates_that_number()
 }
 
 
+void exact_division_of_two_integers_yields_integer_answer()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 6 2)" ), "3" );
+}
+
+
+void inexact_division_of_two_integers_yields_decimal_answer()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 2 8)" ), "0.25" );
+}
+
+void null_division_is_an_error()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "(/)" );
+    }
+    catch( EvaluationError& e )
+    {
+        exception_caught = true;
+    }
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+
+void single_number_division_yields_reciprocal()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 2)" ), "0.5" );
+}
+
+
 }
 
 void TestArithmetic::Run() const
@@ -114,5 +146,11 @@ void TestArithmetic::Run() const
     subtraction_of_three_numbers_yields_correct_answer();
     null_subtraction_is_an_error();
     single_number_subtraction_negates_that_number();
+
+    exact_division_of_two_integers_yields_integer_answer();
+    inexact_division_of_two_integers_yields_decimal_answer();
+    null_division_is_an_error();
+    single_number_division_yields_reciprocal();
+    //TODO: division_involving_decimal_yields_decimal_answer();
 }
 

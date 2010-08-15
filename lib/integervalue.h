@@ -2,6 +2,8 @@
 #ifndef INTEGERVALUE_H
 #define INTEGERVALUE_H
 
+#include <memory>
+
 #include "value.h"
 
 class IntegerValue : public Value
@@ -23,6 +25,8 @@ public:
     friend bool operator!=( const IntegerValue& left,
         const IntegerValue& right );
 
+    friend std::auto_ptr<Value> operator/( const IntegerValue& left,
+        const IntegerValue& right );
 private:
     int value_;
 };

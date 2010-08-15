@@ -1,5 +1,8 @@
 
+#include "decimalvalue.h"
 #include "integervalue.h"
+
+using namespace std;
 
 IntegerValue::IntegerValue( int value )
 : value_( value )
@@ -49,5 +52,20 @@ bool operator==( const IntegerValue& left, const IntegerValue& right )
 bool operator!=( const IntegerValue& left, const IntegerValue& right )
 {
     return ( left.value_ != right.value_ );
+}
+
+std::auto_ptr<Value> operator/( const IntegerValue& left,
+    const IntegerValue& right )
+{
+    if( left.value_ % right.value_ )
+    {
+        return auto_ptr<Value>( new DecimalValue( static_cast<double>(
+            left.value_ ) / static_cast<double>( right.value_ ) ) );
+    }
+    else
+    {
+        return auto_ptr<Value>( new IntegerValue( left.value_ / right.value_ )
+            );
+    }
 }
 

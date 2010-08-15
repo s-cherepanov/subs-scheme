@@ -4,6 +4,7 @@
 #include <typeinfo>
 
 #include "combinationvalue.h"
+#include "decimalvalue.h"
 #include "falsevalue.h"
 #include "integervalue.h"
 #include "nativefunctionvalue.h"
@@ -23,6 +24,13 @@ void print_integer( const IntegerValue* value, ostream& result )
 {
     result << value->GetIntValue();
 }
+
+
+void print_decimal( const DecimalValue* value, ostream& result )
+{
+    result << value->GetDoubleValue();
+}
+
 
 
 void print_true( const TrueValue*, ostream& result )
@@ -105,6 +113,14 @@ void Print( const Value* value, std::ostream& result )
     if( integervalue )
     {
         print_integer( integervalue, result );
+        return;
+    }
+
+    const DecimalValue* decimalvalue = dynamic_cast<const DecimalValue*>(
+        value );
+    if( decimalvalue )
+    {
+        print_decimal( decimalvalue, result );
         return;
     }
 

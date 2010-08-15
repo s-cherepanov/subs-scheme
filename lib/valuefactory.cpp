@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 
+#include "decimalvalue.h"
 #include "integervalue.h"
 #include "stringtreeleaf.h"
 #include "symbolvalue.h"
@@ -15,8 +16,17 @@ using namespace std;
 namespace
 {
 
-bool is_integer( const string& str )
+enum ENumericType
 {
+      nonnumeric
+    , integer
+    , decimal
+};
+
+ENumericType get_numeric_type( const string& str )
+{
+    bool seen_dot = false;
+
     string::const_iterator it = str.begin();
 
     // Minus sign is valid at the beginning
@@ -26,19 +36,36 @@ bool is_integer( const string& str )
         // but not if it's on its own
         if( it == str.end() )
         {
-            return false;
+            return nonnumeric;
         }
     }
 
     for( ; it != str.end(); ++it )
     {
         char ch = *it;
-        if( ch < '0' or ch > '9' )
+
+        if( ch == '.' )
         {
-            return false;
+            if( seen_dot )
+            {
+                return nonnumeric;
+            }
+            seen_dot = true;
+        }
+        else if( ch < '0' or ch > '9' )
+        {
+            return nonnumeric;
         }
     }
-    return true;
+
+    if( seen_dot )
+    {
+        return decimal;
+    }
+    else
+    {
+        return integer;
+    }
 }
 
 }
@@ -49,17 +76,29 @@ namespace ValueFactory
 std::auto_ptr<Value> CreateValue( const StringTreeLeaf* leaf )
 {
     const std::string& leaf_str = leaf->str();
-    if( is_integer( leaf_str ) )
+
+    switch( get_numeric_type( leaf_str ) )
     {
-        // TODO: handle different sorts of int e.g larger, unsigned?
-        istringstream ss( leaf_str );
-        int intvalue;
-        ss >> intvalue;
-        return auto_ptr<Value>( new IntegerValue( intvalue ) );
-    }
-    else
-    {
-        return auto_ptr<Value>( new SymbolValue( leaf_str ) );
+        case integer:
+        {
+            // TODO: handle large integers
+            istringstream ss( leaf_str );
+            int intvalue;
+            ss >> intvalue;
+            return auto_ptr<Value>( new IntegerValue( intvalue ) );
+        }
+        case decimal:
+        {
+            // TODO: handle large decimals
+            istringstream ss( leaf_str );
+            double doublevalue;
+            ss >> doublevalue;
+            return auto_ptr<Value>( new DecimalValue( doublevalue ) );
+        }
+        default:
+        {
+            return auto_ptr<Value>( new SymbolValue( leaf_str ) );
+        }
     }
 }
 

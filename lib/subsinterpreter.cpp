@@ -35,10 +35,13 @@ int SubsInterpreter::InterpretStream( std::istream& instream,
             cont = !lexer.LexPartial( string( buffer ) );
         }
 
-        outstream
-            << PrettyPrinter::Print( evaluator_.Eval( Parser().Parse(
-                lexer.GetCombination().get() ).get() ).get() )
-            << endl;
+        string output = PrettyPrinter::Print( evaluator_.Eval( Parser().Parse(
+            lexer.GetCombination().get() ).get() ).get() );
+
+        if( !output.empty() )
+        {
+            outstream << output << endl;
+        }
     }
 
     return 0;

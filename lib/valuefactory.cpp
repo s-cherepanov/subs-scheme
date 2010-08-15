@@ -26,6 +26,7 @@ enum ENumericType
 ENumericType get_numeric_type( const string& str )
 {
     bool seen_dot = false;
+    bool this_is_dot = false;
 
     string::const_iterator it = str.begin();
 
@@ -42,6 +43,8 @@ ENumericType get_numeric_type( const string& str )
 
     for( ; it != str.end(); ++it )
     {
+        this_is_dot = false;
+
         char ch = *it;
 
         if( ch == '.' )
@@ -51,6 +54,7 @@ ENumericType get_numeric_type( const string& str )
                 return nonnumeric;
             }
             seen_dot = true;
+            this_is_dot = true;
         }
         else if( ch < '0' or ch > '9' )
         {
@@ -58,7 +62,11 @@ ENumericType get_numeric_type( const string& str )
         }
     }
 
-    if( seen_dot )
+    if( this_is_dot )
+    {
+        return nonnumeric;
+    }
+    else if( seen_dot )
     {
         return decimal;
     }

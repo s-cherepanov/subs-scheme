@@ -1,5 +1,6 @@
 
 #include "assertmacros.h"
+#include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
 
 #include "testconstants.h"
@@ -29,7 +30,42 @@ void negative_number_yields_itself()
 void decimal_number_yields_itself()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "1.45" ), "1.45" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( ".45" ), "0.45" );
 }
+
+
+void end_in_dot_is_failure()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "1." );
+    }
+    catch( EvaluationError& )
+    {
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+
+
+void two_dots_is_failure()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "1.4.5" );
+    }
+    catch( EvaluationError& )
+    {
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
 
 
 
@@ -56,6 +92,8 @@ void TestConstants::Run() const
     bare_number_yields_itself();
     negative_number_yields_itself();
     decimal_number_yields_itself();
+    end_in_dot_is_failure();
+    two_dots_is_failure();
     //TODO unparseable_integer_is_an_error();
     //INCORRECT could quote combo_yields_itself();
     //INCORRECT could quote combo_of_combos_yields_itself();

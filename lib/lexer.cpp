@@ -36,3 +36,15 @@ std::auto_ptr<StringTree> Lexer::Lex( const std::string& codestring ) const
     return wordlexer.GetRootTreeItem();
 }
 
+bool Lexer::LexPartial( const std::string& next_string )
+{
+    lexed_tree_ = Lex( next_string );
+    return true;
+}
+
+std::auto_ptr<StringTree> Lexer::GetCombination()
+{
+    return lexed_tree_;
+}
+
+

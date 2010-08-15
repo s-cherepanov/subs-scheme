@@ -127,6 +127,16 @@ void single_number_division_yields_reciprocal()
 }
 
 
+void division_involving_decimal_yields_decimal_answer()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 2.0)" ), "0.5" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 0.5)" ), "2.0" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 1.5 2)" ), "0.75" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 6 1.5)" ), "4.0" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 1.5 3)" ), "0.5" );
+}
+
+
 }
 
 void TestArithmetic::Run() const
@@ -151,6 +161,7 @@ void TestArithmetic::Run() const
     inexact_division_of_two_integers_yields_decimal_answer();
     null_division_is_an_error();
     single_number_division_yields_reciprocal();
-    //TODO: division_involving_decimal_yields_decimal_answer();
+    division_involving_decimal_yields_decimal_answer();
+    //TODO: division_of_three_numbers_yields_correct_answer();
 }
 

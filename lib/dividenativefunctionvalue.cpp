@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "combinationvalue.h"
+#include "decimalvalue.h"
 #include "evaluationerror.h"
 #include "integervalue.h"
 #include "prettyprinter.h"
@@ -15,13 +16,31 @@ using namespace std;
 namespace
 {
 
-const IntegerValue* get_integer_value( CombinationValue::const_iterator& it )
+const Value* get_numeric_value( CombinationValue::const_iterator& it )
 {
-    const IntegerValue* result = dynamic_cast<IntegerValue*>( *it );
+    const Value* value = *it;
+    const Value* result = dynamic_cast<const IntegerValue*>( value );
+    if( !result )
+    {
+        result = dynamic_cast<const DecimalValue*>( value );
+        if( !result )
+        {
+            throw EvaluationError( "Invalid argument for /: '"
+                + PrettyPrinter::Print( value )
+                + "' is not an integer or a decimal." );
+        }
+    }
+    return result;
+}
+
+const DecimalValue* get_decimal_value( const Value* value )
+{
+    const DecimalValue* result = dynamic_cast<const DecimalValue*>( value );
     if( !result )
     {
         throw EvaluationError( "Invalid argument for /: '"
-            + PrettyPrinter::Print( *it ) + "' is not an integer." );
+            + PrettyPrinter::Print( value )
+            + "' is not an integer or a decimal." );
     }
     return result;
 }
@@ -45,7 +64,7 @@ std::auto_ptr<Value> DivideNativeFunctionValue::Run(
 
     if( argvalues->size() > 1 )
     {
-        result.reset( get_integer_value( it )->Clone() );
+        result.reset( get_numeric_value( it )->Clone() );
         ++it;
     }
     else
@@ -55,12 +74,29 @@ std::auto_ptr<Value> DivideNativeFunctionValue::Run(
 
     for( ; it != argvalues->end(); ++it )
     {
-        const IntegerValue* operand = get_integer_value( it );
+        const Value* operand = get_numeric_value( it );
 
-        IntegerValue* intres = dynamic_cast<IntegerValue*>( result.get() );
-        if( intres )
+        // TODO: some kind of double dispatch?
+        const IntegerValue* intop = dynamic_cast<const IntegerValue*>(
+            operand );
+        const IntegerValue* intres = dynamic_cast<const IntegerValue*>(
+            result.get() );
+
+        if( intres && intop )
         {
-            result = *intres / *operand;
+            result = *intres / *intop;
+        }
+        else if( intres )
+        {
+            result = *intres / *get_decimal_value( operand );
+        }
+        else if( intop )
+        {
+            result = *get_decimal_value( result.get() ) / *intop;
+        }
+        else
+        {
+            *get_decimal_value( result.get() ) / *get_decimal_value( operand );
         }
     }
 

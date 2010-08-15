@@ -1,11 +1,11 @@
 
-#include <getopt.h>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
 #include "lib/cmdlineargs.h"
-#include "lib/fileinterpreter.h"
+#include "lib/subsinterpreter.h"
 #include "lib/subsrepl.h"
 
 using namespace std;
@@ -24,11 +24,21 @@ int main( int argc, char * const argv[] )
     }
     else
     {
+        SubsInterpreter interpreter;
         int ret = 0;
         for( vector<string>::const_iterator it = nonoptions.begin();
             it != nonoptions.end(); ++it )
         {
-            ret = FileInterpreter( *it ).Interpret( cout );
+            if( *it == "-" )
+            {
+                ret = interpreter.InterpretStream( cin, cout );
+            }
+            else
+            {
+                ifstream instream( it->c_str() );
+                ret = interpreter.InterpretStream( instream, cout );
+            }
+
             if( ret != 0 )
             {
                 break;

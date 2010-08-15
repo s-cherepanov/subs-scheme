@@ -28,7 +28,14 @@ void print_integer( const IntegerValue* value, ostream& result )
 
 void print_decimal( const DecimalValue* value, ostream& result )
 {
-    result << value->GetDoubleValue();
+    double doublevalue = value->GetDoubleValue();
+
+    result << doublevalue;
+
+    if( doublevalue == static_cast<int>( doublevalue ) )
+    {
+        result << ".0";
+    }
 }
 
 

@@ -67,6 +67,29 @@ void two_dots_is_failure()
 }
 
 
+void unparseable_integer_is_an_error()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "10,000" );
+    }
+    catch( EvaluationError& )
+    {
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+
+void decimal_equal_to_integer_ends_in_point_zero()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "2.0" ), "2.0" );
+}
+
+
+
 
 
 //void combo_yields_itself()
@@ -94,7 +117,8 @@ void TestConstants::Run() const
     decimal_number_yields_itself();
     end_in_dot_is_failure();
     two_dots_is_failure();
-    //TODO unparseable_integer_is_an_error();
+    unparseable_integer_is_an_error();
+    decimal_equal_to_integer_ends_in_point_zero();
     //INCORRECT could quote combo_yields_itself();
     //INCORRECT could quote combo_of_combos_yields_itself();
 }

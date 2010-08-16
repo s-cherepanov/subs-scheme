@@ -15,6 +15,9 @@ namespace
 void addition_of_two_numbers_yields_correct_answer()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 1 2)" ), "3" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 1.5 2.1)" ), "3.6" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 1 2.1)" ), "3.1" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 1.5 2)" ), "3.5" );
 }
 
 

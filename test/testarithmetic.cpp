@@ -1,9 +1,13 @@
 
+#include <string>
+
 #include "assertmacros.h"
 #include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
 
 #include "testarithmetic.h"
+
+using namespace std;
 
 namespace
 {
@@ -136,6 +140,17 @@ void division_involving_decimal_yields_decimal_answer()
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 1.5 3)" ), "0.5" );
 }
 
+void division_of_three_numbers_yields_correct_answer()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 6 2 3)" ), "1" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 1 2 2)" ), "0.25" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 6.0 2 3)" ), "1.0" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(/ 6 1.5 1.6)" ), "2.5" );
+
+    string ans = SubsInterpreter().Interpret( "(/ 23.2 2.1 3.1)" );
+    TEST_ASSERT_EQUAL( ans.substr( 0, 4 ), "3.56" ); //TODO: arbitrary precision
+}
+
 
 }
 
@@ -162,6 +177,6 @@ void TestArithmetic::Run() const
     null_division_is_an_error();
     single_number_division_yields_reciprocal();
     division_involving_decimal_yields_decimal_answer();
-    //TODO: division_of_three_numbers_yields_correct_answer();
+    division_of_three_numbers_yields_correct_answer();
 }
 

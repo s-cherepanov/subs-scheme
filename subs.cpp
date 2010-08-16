@@ -36,7 +36,16 @@ int main( int argc, char * const argv[] )
             else
             {
                 ifstream instream( it->c_str() );
-                ret = interpreter.InterpretStream( instream, cout );
+                if( instream.good() )
+                {
+                    ret = interpreter.InterpretStream( instream, cout );
+                }
+                else
+                {
+                    cerr << "subs: Error: unable to open file '"
+                        << *it << "'." << endl;
+                    ret = 1;
+                }
             }
 
             if( ret != 0 )

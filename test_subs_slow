@@ -11,6 +11,9 @@ function assert_equal()
     }; fi
 }
 
+# If the file doesn't exist we should fail
+./subs nonexistentfile 2> /dev/null && exit 1
+
 assert_equal `./subs testslow/fifteen.scm` "15"
 
 assert_equal `./subs testslow/two_plus_three.scm` "5"

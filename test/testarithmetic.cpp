@@ -24,6 +24,10 @@ void addition_of_two_numbers_yields_correct_answer()
 void addition_of_three_numbers_yields_correct_answer()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 1 2 6)" ), "9" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 1 2.1 6)" ), "9.1" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 1.2 2 6)" ), "9.2" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 1.2 2.1 6.3)" ),
+        "9.6" );
 }
 
 
@@ -35,6 +39,7 @@ void null_addition_yields_zero()
 void single_number_addition_yields_that_number()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 4)" ), "4" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(+ 4.3)" ), "4.3" );
 }
 
 

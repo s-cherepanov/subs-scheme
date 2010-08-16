@@ -55,12 +55,19 @@ void nested_addition_works()
 void multiplication_of_two_numbers_yields_correct_answer()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1 2)" ), "2" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1.2 2)" ), "2.4" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1 2.3)" ), "2.3" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1.1 2.3)" ), "2.53" );
 }
 
 
 void multiplication_of_three_numbers_yields_correct_answer()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1 2 6)" ), "12" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1 2.1 6)" ), "12.6" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 2 2 6.2)" ), "24.8" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 1.1 2.2 6.3)" ),
+        "15.246" );
 }
 
 
@@ -72,6 +79,7 @@ void null_multiplication_yields_one()
 void single_number_multiplication_yields_that_number()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 4)" ), "4" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(* 4.3)" ), "4.3" );
 }
 
 

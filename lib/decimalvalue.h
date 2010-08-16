@@ -20,6 +20,9 @@ public:
 
     DecimalValue& operator+=( const IntegerValue& other );
     DecimalValue& operator+=( const DecimalValue& other );
+
+    DecimalValue& operator*=( const IntegerValue& other );
+    DecimalValue& operator*=( const DecimalValue& other );
     DecimalValue& operator/=( const IntegerValue& other );
     DecimalValue& operator/=( const DecimalValue& other );
 

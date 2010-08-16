@@ -51,7 +51,6 @@ const DecimalValue* get_decimal_value( const Value* value )
 std::auto_ptr<Value> DivideNativeFunctionValue::Run(
     const CombinationValue* argvalues, const Environment& environment ) const
 {
-    // TODO: values other than integers
     auto_ptr<Value> result;
 
     CombinationValue::const_iterator it = argvalues->begin();
@@ -74,7 +73,7 @@ std::auto_ptr<Value> DivideNativeFunctionValue::Run(
 
     for( ; it != argvalues->end(); ++it )
     {
-        const Value* operand = get_numeric_value( it );
+        const Value* operand = *it;
 
         // TODO: some kind of double dispatch?
         const IntegerValue* intop = dynamic_cast<const IntegerValue*>(
@@ -82,21 +81,30 @@ std::auto_ptr<Value> DivideNativeFunctionValue::Run(
         const IntegerValue* intres = dynamic_cast<const IntegerValue*>(
             result.get() );
 
-        if( intres && intop )
+        if( intres )
         {
-            result = *intres / *intop;
-        }
-        else if( intres )
-        {
-            result = *intres / *get_decimal_value( operand );
-        }
-        else if( intop )
-        {
-            result = *get_decimal_value( result.get() ) / *intop;
+            if( intop )
+            {
+                result = *intres / *intop;
+            }
+            else
+            {
+                result = *intres / *get_decimal_value( operand );
+            }
         }
         else
         {
-            *get_decimal_value( result.get() ) / *get_decimal_value( operand );
+            DecimalValue* decres = dynamic_cast<DecimalValue*>( result.get() );
+            assert( decres ); // result must be a decimal if it's not an int
+
+            if( intop )
+            {
+                *decres /= *intop;
+            }
+            else
+            {
+                *decres /= *get_decimal_value( operand );
+            }
         }
     }
 

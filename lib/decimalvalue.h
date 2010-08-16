@@ -17,8 +17,9 @@ public:
 
     virtual DecimalValue* Clone() const;
 
-    friend std::auto_ptr<Value> operator/( const DecimalValue& left,
-        const IntegerValue& right );
+    DecimalValue& operator/=( const IntegerValue& other );
+    DecimalValue& operator/=( const DecimalValue& other );
+
 
     friend std::auto_ptr<Value> operator/( const IntegerValue& left,
         const DecimalValue& right );

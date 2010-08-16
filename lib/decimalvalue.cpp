@@ -23,13 +23,18 @@ DecimalValue* DecimalValue::Clone() const
     return new DecimalValue( *this );
 }
 
-
-std::auto_ptr<Value> operator/( const DecimalValue& left,
-    const IntegerValue& right )
+DecimalValue& DecimalValue::operator/=( const IntegerValue& other )
 {
-    return auto_ptr<Value>( new DecimalValue(
-        left.GetDoubleValue() / static_cast<double>( right.GetIntValue() ) ) );
+    value_ /= static_cast<double>( other.GetIntValue() );
+    return *this;
 }
+
+DecimalValue& DecimalValue::operator/=( const DecimalValue& other )
+{
+    value_ /= other.value_;
+    return *this;
+}
+
 
 std::auto_ptr<Value> operator/( const IntegerValue& left,
     const DecimalValue& right )

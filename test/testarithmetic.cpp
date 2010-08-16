@@ -87,11 +87,21 @@ void subtraction_of_two_numbers_yields_correct_answer()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 3)" ), "1" );
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 6)" ), "-2" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4.1 3)" ), "1.1" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4.1 6)" ), "-1.9" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 3.1)" ), "0.9" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 6.1)" ), "-2.1" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4.1 3.1)" ), "1.0" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4.2 6.1)" ), "-1.9" );
 }
 
 void subtraction_of_three_numbers_yields_correct_answer()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 1 1)" ), "2" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4 1.1 1)" ), "1.9" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4.1 1 1)" ), "2.1" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4.1 1.1 1.1)" ),
+        "1.9" );
 }
 
 void null_subtraction_is_an_error()
@@ -112,6 +122,8 @@ void single_number_subtraction_negates_that_number()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4)" ), "-4" );
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- -4)" ), "4" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- 4.7)" ), "-4.7" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(- -4.7)" ), "4.7" );
 }
 
 

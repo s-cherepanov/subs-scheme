@@ -30,9 +30,13 @@ void print_decimal( const DecimalValue* value, ostream& result )
 {
     double doublevalue = value->GetDoubleValue();
 
-    result << doublevalue;
+    ostringstream ss;
+    ss << doublevalue;
+    string str = ss.str();
 
-    if( doublevalue == static_cast<int>( doublevalue ) )
+    result << str;
+
+    if( str.find( '.' ) == string::npos )
     {
         result << ".0";
     }

@@ -13,6 +13,7 @@ class DecimalValue : public Value
 public:
     explicit DecimalValue( double value );
     explicit DecimalValue( const IntegerValue& integer_value );
+    // Compiler-provided copy constructor is fine
 
     double GetDoubleValue() const;
 
@@ -20,7 +21,8 @@ public:
 
     DecimalValue& operator+=( const IntegerValue& other );
     DecimalValue& operator+=( const DecimalValue& other );
-
+    DecimalValue& operator-=( const IntegerValue& other );
+    DecimalValue& operator-=( const DecimalValue& other );
     DecimalValue& operator*=( const IntegerValue& other );
     DecimalValue& operator*=( const DecimalValue& other );
     DecimalValue& operator/=( const IntegerValue& other );

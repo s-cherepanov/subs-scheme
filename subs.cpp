@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "lib/cmdlineargs.h"
+#include "lib/replsessiontester.h"
 #include "lib/subsinterpreter.h"
 #include "lib/subsrepl.h"
 
@@ -18,7 +19,11 @@ int main( int argc, char * const argv[] )
 
     const vector<string>& nonoptions = args.GetNonOptions();
 
-    if( nonoptions.empty() )
+    if( args.GetSessionTest() )
+    {
+        return ReplSessionTester().Run( nonoptions );
+    }
+    else if( nonoptions.empty() )
     {
         return SubsRepl().Run( cin, cout, cerr );
     }

@@ -17,6 +17,27 @@ function assert_equal()
 # If we run an empty file we succeed
 ./subs testslow/empty.scm 2> /dev/null || exit 1
 
+
+
+
+# Basic running a file
+assert_equal `./subs testslow/fifteen.scm` "15"
+assert_equal `./subs testslow/two_plus_three.scm` "5"
+
+# FAILS: Running a file containing multiple lines returns last result
+#assert_equal `./subs testslow/multiple_lines.scm` "-1"
+
+# TODO: Running a file containing multi-line input succeeds
+
+
+
+
+# Running from stdin
+assert_equal `echo "(- 12 3)" | ./subs -` "9"
+
+
+
+
 # If we try to do a session-test with a file that doesn't exist we should fail
 ./subs --session-test nonexistentfile 2> /dev/null && exit 1
 
@@ -27,13 +48,5 @@ function assert_equal()
 ./subs --session-test testslow/incorrect.scmsession 2> /dev/null && exit 1
 ./subs --session-test testslow/incorrect_later.scmsession 2> /dev/null && exit 1
 
-# Basic running a file
-assert_equal `./subs testslow/fifteen.scm` "15"
-assert_equal `./subs testslow/two_plus_three.scm` "5"
-
-# FAILS: Basic running a file containing multiple lines
-#assert_equal `./subs testslow/multiple_lines.scm` "-1"
-
-# Running from stdin
-assert_equal `echo "(- 12 3)" | ./subs -` "9"
+# TODO: Running a session-test containing multi-line input succeeds
 

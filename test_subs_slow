@@ -50,3 +50,5 @@ assert_equal `echo "(- 12 3)" | ./subs -` "9"
 
 # TODO: Running a session-test containing multi-line input succeeds
 
+# Exit with a success code: prevent error value leaking from above
+exit 0

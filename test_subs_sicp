@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Tests running through examples in Strucure and Interpretation of Computer
+# Programs
+
+./subs --session-test testsicp/*.scmsession
+

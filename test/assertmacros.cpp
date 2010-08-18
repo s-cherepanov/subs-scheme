@@ -170,6 +170,19 @@ void is_false( std::string file, unsigned int line,
 }
 
 
+void can_find( std::string file, unsigned int line,
+    std::string lookinname, std::string lookforname,
+    std::string lookin, std::string lookfor )
+{
+    if( lookin.find( lookfor ) == string::npos )
+    {
+        ostringstream ss;
+        ss << "Cannot find '" << lookfor << "' in '" << lookin << "'.";
+        throw AssertionFailed( file, line, ss.str() );
+    }
+}
+
+
 
 
 }

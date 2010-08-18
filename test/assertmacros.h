@@ -23,6 +23,9 @@
 #define TEST_ASSERT_FALSE(ARG) \
     assertfns::is_true(__FILE__, __LINE__, #ARG, ARG );
 
+#define TEST_ASSERT_CAN_FIND(LOOKIN,LOOKFOR) \
+    assertfns::can_find(__FILE__, __LINE__, #LOOKIN, #LOOKFOR, LOOKIN, LOOKFOR);
+
 namespace assertfns
 {
 
@@ -63,6 +66,10 @@ void is_true( std::string file, unsigned int line,
 
 void is_false( std::string file, unsigned int line,
     std::string name, bool arg );
+
+void can_find( std::string file, unsigned int line,
+    std::string lookinname, std::string lookforname,
+    std::string lookin, std::string lookfor );
 
 }
 

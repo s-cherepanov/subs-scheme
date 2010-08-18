@@ -33,8 +33,7 @@ void too_few_args_to_if_is_an_error()
     }
     catch( EvaluationError& e )
     {
-        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Not enough" ),
-            string::npos );
+        TEST_ASSERT_CAN_FIND( e.ToString(), "Not enough" );
         exception_caught = true;
     }
 
@@ -50,7 +49,7 @@ void too_many_args_to_if_is_an_error()
     }
     catch( EvaluationError& e )
     {
-        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Too many" ), string::npos );
+        TEST_ASSERT_CAN_FIND( e.ToString(), "Too many" );
         exception_caught = true;
     }
 

@@ -110,10 +110,8 @@ void error_when_supply_too_few_args()
     }
     catch( EvaluationError& e )
     {
-        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Not enough" ),
-            string::npos );
-        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Expected 3 but got 2" ),
-            string::npos );
+        TEST_ASSERT_CAN_FIND( e.ToString(), "Not enough" );
+        TEST_ASSERT_CAN_FIND( e.ToString(), "Expected 3 but got 2" );
         exception_caught = true;
     }
 
@@ -134,9 +132,8 @@ void error_when_supply_too_many_args()
     }
     catch( EvaluationError& e )
     {
-        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Too many" ), string::npos );
-        TEST_ASSERT_NOT_EQUAL( e.ToString().find( "Expected 3 but got 4" ),
-            string::npos );
+        TEST_ASSERT_CAN_FIND( e.ToString(), "Too many" );
+        TEST_ASSERT_CAN_FIND( e.ToString(), "Expected 3 but got 4" );
         exception_caught = true;
     }
 

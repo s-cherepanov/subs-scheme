@@ -1,5 +1,6 @@
 
 #include <memory>
+#include <sstream>
 #include <typeinfo>
 
 #include "assertmacros.h"
@@ -7,6 +8,8 @@
 #include "lib/evaluator.h"
 #include "lib/lexer.h"
 #include "lib/parser.h"
+#include "lib/newlexer.h"
+#include "lib/newparser.h"
 #include "lib/stringtreeleaf.h"
 #include "lib/symbolvalue.h"
 #include "lib/valuefactory.h"
@@ -50,6 +53,18 @@ void parse_emptystringtree_value()
 }
 
 
+void newparse_emptystringtree_value()
+{
+    istringstream ss( "" );
+    NewLexer lexer( ss );
+    NewParser parser( lexer );
+    std::auto_ptr<Value> parsed = parser.NextValue();
+
+    TEST_ASSERT_NULL( parsed.get() );
+}
+
+
+
 void evaluate_null_value()
 {
     std::auto_ptr<Value> evald = Evaluator().Eval( NULL );
@@ -68,6 +83,7 @@ void TestMemory::Run() const
     create_symbolvalue();
     valuefactory_create_plus();
     parse_emptystringtree_value();
+    newparse_emptystringtree_value();
     evaluate_null_value();
 }
 

@@ -110,5 +110,32 @@ std::auto_ptr<Value> CreateValue( const StringTreeLeaf* leaf )
     }
 }
 
+std::auto_ptr<Value> CreateValue( const std::string& token_name )
+{
+    switch( get_numeric_type( token_name ) )
+    {
+        case integer:
+        {
+            // TODO: handle large integers
+            istringstream ss( token_name );
+            int intvalue;
+            ss >> intvalue;
+            return auto_ptr<Value>( new IntegerValue( intvalue ) );
+        }
+        case decimal:
+        {
+            // TODO: handle large decimals
+            istringstream ss( token_name );
+            double doublevalue;
+            ss >> doublevalue;
+            return auto_ptr<Value>( new DecimalValue( doublevalue ) );
+        }
+        default:
+        {
+            return auto_ptr<Value>( new SymbolValue( token_name ) );
+        }
+    }
+}
+
 };
 

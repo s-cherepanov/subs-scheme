@@ -6,6 +6,7 @@
 
 NewLexer::NewLexer( std::istream& instream )
 : instream_( instream )
+, spill_char_( 0 )
 {
 }
 
@@ -13,12 +14,40 @@ Token NewLexer::NextToken()
 {
     Token ret;
 
+    // If the last lex found a character we need to return this time,
+    // return it straight away.
+    if( spill_char_ )
+    {
+        ret.name += spill_char_;
+        spill_char_ = 0;
+        return ret;
+    }
+
+    // Otherwise, read from the stream in the normal way
     int i = instream_.get();
     while( i != -1 )
     {
         char c = static_cast<char>( i );
         switch( c )
         {
+            case '(':
+            case ')':
+            {
+                // If bracket is the first thing we find, just return it
+                if( ret.name.empty() )
+                {
+                    ret.name += c;
+                    return ret;
+                }
+                else
+                {
+                    // Otherwise return what we have, and remember
+                    // the bracket
+                    spill_char_ = c;
+                    return ret;
+                }
+                break;
+            }
             case '\n':
             case ' ':
             {

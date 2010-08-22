@@ -70,6 +70,54 @@ void tokens_separated_by_newline()
 
 
 
+void open_bracket_next_to_token()
+{
+    istringstream ss( "(if" );
+    NewLexer lexer( ss );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "(" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "if" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
+void close_bracket_next_to_token()
+{
+    istringstream ss( "foo)" );
+    NewLexer lexer( ss );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "foo" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
+void brackets_within_words()
+{
+    istringstream ss( "foo(bar)baz" );
+    NewLexer lexer( ss );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "foo" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "(" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "bar" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "baz" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
+
+void brackets_on_their_own()
+{
+    istringstream ss( "\n)\n ) \n(\n )\n" );
+    NewLexer lexer( ss );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "(" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
+
+
 
 
 }
@@ -81,5 +129,9 @@ void TestLexer::Run() const
     single_token();
     tokens_separated_by_space();
     tokens_separated_by_newline();
+    open_bracket_next_to_token();
+    close_bracket_next_to_token();
+    brackets_within_words();
+    brackets_on_their_own();
 }
 

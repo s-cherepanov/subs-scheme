@@ -15,6 +15,7 @@ public:
 
 private:
     std::istream& instream_;
+    char spill_char_;
 };
 
 #endif

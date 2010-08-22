@@ -3,7 +3,7 @@
 #include <sstream>
 
 #include "assertmacros.h"
-#include "lib/newlexer.h"
+#include "lib/lexer.h"
 #include "lib/token.h"
 
 #include "testlexer.h"
@@ -16,7 +16,7 @@ namespace
 void empty_string_returns_empty_token()
 {
     istringstream ss( "" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
 }
 
@@ -24,7 +24,7 @@ void empty_string_returns_empty_token()
 void single_char()
 {
     istringstream ss( "a" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "a" );
 }
 
@@ -32,7 +32,7 @@ void single_char()
 void single_token()
 {
     istringstream ss( "my-token" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "my-token" );
 }
 
@@ -40,14 +40,14 @@ void single_token()
 void tokens_separated_by_space()
 {
     istringstream ss( " 1 foo bar" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "1" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "foo" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "bar" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
 
     istringstream ss2( "foo  3 bar a ");
-    NewLexer lexer2( ss2 );
+    Lexer lexer2( ss2 );
     TEST_ASSERT_EQUAL( lexer2.NextToken().name, "foo" );
     TEST_ASSERT_EQUAL( lexer2.NextToken().name, "3" );
     TEST_ASSERT_EQUAL( lexer2.NextToken().name, "bar" );
@@ -60,7 +60,7 @@ void tokens_separated_by_space()
 void tokens_separated_by_newline()
 {
     istringstream ss( " \n  1\n\n \n\nfoo\n \nbar baz \n\n" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "1" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "foo" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "bar" );
@@ -73,7 +73,7 @@ void tokens_separated_by_newline()
 void open_bracket_next_to_token()
 {
     istringstream ss( "(if" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "(" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "if" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
@@ -83,7 +83,7 @@ void open_bracket_next_to_token()
 void close_bracket_next_to_token()
 {
     istringstream ss( "foo)" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "foo" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
@@ -93,7 +93,7 @@ void close_bracket_next_to_token()
 void brackets_within_words()
 {
     istringstream ss( "foo(bar)baz" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "foo" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "(" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "bar" );
@@ -107,7 +107,7 @@ void brackets_within_words()
 void brackets_on_their_own()
 {
     istringstream ss( "\n)\n ) \n(\n )\n" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "(" );

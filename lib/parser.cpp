@@ -2,8 +2,8 @@
 #include <memory>
 
 #include "combinationvalue.h"
-#include "newlexer.h"
-#include "newparser.h"
+#include "lexer.h"
+#include "parser.h"
 #include "token.h"
 #include "valuefactory.h"
 
@@ -12,7 +12,7 @@ using namespace std;
 namespace
 {
 
-std::auto_ptr<Value> next_value_from_token( NewLexer& lexer,
+std::auto_ptr<Value> next_value_from_token( Lexer& lexer,
     Token token )
 {
     if( token.name.empty() )
@@ -45,12 +45,12 @@ std::auto_ptr<Value> next_value_from_token( NewLexer& lexer,
 
 }
 
-NewParser::NewParser( NewLexer& lexer )
+Parser::Parser( Lexer& lexer )
 : lexer_( lexer )
 {
 }
 
-std::auto_ptr<Value> NewParser::NextValue()
+std::auto_ptr<Value> Parser::NextValue()
 {
     return next_value_from_token( lexer_, lexer_.NextToken() );
 }

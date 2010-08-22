@@ -5,8 +5,8 @@
 #include "assertmacros.h"
 #include "lib/combinationvalue.h"
 #include "lib/integervalue.h"
-#include "lib/newlexer.h"
-#include "lib/newparser.h"
+#include "lib/lexer.h"
+#include "lib/parser.h"
 #include "lib/symbolvalue.h"
 #include "lib/value.h"
 
@@ -20,8 +20,8 @@ namespace
 void bare_number_becomes_single_value()
 {
     istringstream ss( "5" );
-    NewLexer lexer( ss );
-    NewParser parser( lexer );
+    Lexer lexer( ss );
+    Parser parser( lexer );
     auto_ptr<Value> v = parser.NextValue();
 
     IntegerValue* parsed_5 = dynamic_cast<IntegerValue*>( v.get() );
@@ -37,8 +37,8 @@ void bare_number_becomes_single_value()
 void branch_becomes_combination_value()
 {
     istringstream ss( "(31 32 33)" );
-    NewLexer lexer( ss );
-    NewParser parser( lexer );
+    Lexer lexer( ss );
+    Parser parser( lexer );
 
     auto_ptr<Value> v = parser.NextValue();
 
@@ -67,8 +67,8 @@ void branch_becomes_combination_value()
 void name_becomes_symbol_value()
 {
     istringstream ss( "foo" );
-    NewLexer lexer( ss );
-    NewParser parser( lexer );
+    Lexer lexer( ss );
+    Parser parser( lexer );
 
     auto_ptr<Value> v = parser.NextValue();
 
@@ -85,8 +85,8 @@ void name_becomes_symbol_value()
 void plus_becomes_symbol_value()
 {
     istringstream ss( "+" );
-    NewLexer lexer( ss );
-    NewParser parser( lexer );
+    Lexer lexer( ss );
+    Parser parser( lexer );
 
     auto_ptr<Value> v = parser.NextValue();
 

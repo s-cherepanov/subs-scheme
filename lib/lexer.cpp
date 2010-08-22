@@ -1,16 +1,16 @@
 
 #include <iostream>
 
-#include "newlexer.h"
+#include "lexer.h"
 #include "token.h"
 
-NewLexer::NewLexer( std::istream& instream )
+Lexer::Lexer( std::istream& instream )
 : instream_( instream )
 , spill_char_( 0 )
 {
 }
 
-Token NewLexer::NextToken()
+Token Lexer::NextToken()
 {
     Token ret;
 

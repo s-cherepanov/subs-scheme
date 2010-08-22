@@ -5,8 +5,8 @@
 #include <string>
 
 #include "evaluator.h"
-#include "newlexer.h"
-#include "newparser.h"
+#include "lexer.h"
+#include "parser.h"
 #include "prettyprinter.h"
 #include "subsinterpreter.h"
 
@@ -15,8 +15,8 @@ using namespace std;
 std::string SubsInterpreter::Interpret( const std::string& codestring )
 {
     istringstream ss( codestring );
-    NewLexer lexer( ss );
-    NewParser parser( lexer );
+    Lexer lexer( ss );
+    Parser parser( lexer );
 
     return PrettyPrinter::Print( evaluator_.Eval( parser.NextValue().get()
         ).get() );
@@ -25,8 +25,8 @@ std::string SubsInterpreter::Interpret( const std::string& codestring )
 int SubsInterpreter::InterpretStream( std::istream& instream,
     std::ostream& outstream )
 {
-    NewLexer lexer( instream );
-    NewParser parser( lexer );
+    Lexer lexer( instream );
+    Parser parser( lexer );
 
     auto_ptr<Value> value = parser.NextValue();
     while( value.get() )

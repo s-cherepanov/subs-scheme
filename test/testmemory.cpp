@@ -5,8 +5,8 @@
 
 #include "assertmacros.h"
 #include "lib/evaluator.h"
-#include "lib/newlexer.h"
-#include "lib/newparser.h"
+#include "lib/lexer.h"
+#include "lib/parser.h"
 #include "lib/symbolvalue.h"
 #include "lib/token.h"
 #include "lib/valuefactory.h"
@@ -21,7 +21,7 @@ namespace
 void lex_empty_string()
 {
     istringstream ss( "" );
-    NewLexer lexer( ss );
+    Lexer lexer( ss );
 
     TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
 }
@@ -41,8 +41,8 @@ void valuefactory_create_plus()
 void parse_emptystring()
 {
     istringstream ss( "" );
-    NewLexer lexer( ss );
-    NewParser parser( lexer );
+    Lexer lexer( ss );
+    Parser parser( lexer );
     std::auto_ptr<Value> parsed = parser.NextValue();
 
     TEST_ASSERT_NULL( parsed.get() );

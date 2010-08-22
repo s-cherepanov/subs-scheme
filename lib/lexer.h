@@ -1,15 +1,15 @@
 
-#ifndef NEWLEXER_H
-#define NEWLEXER_H
+#ifndef LEXER_H
+#define LEXER_H
 
 #include <iostream>
 
 struct Token;
 
-class NewLexer
+class Lexer
 {
 public:
-    NewLexer( std::istream& instream );
+    Lexer( std::istream& instream );
 
     Token NextToken();
 

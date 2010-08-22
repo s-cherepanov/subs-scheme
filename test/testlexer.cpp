@@ -17,7 +17,15 @@ void empty_string_returns_empty_token()
 {
     istringstream ss( "" );
     NewLexer lexer( ss );
-    TEST_ASSERT_TRUE( lexer.NextToken().name.empty() );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
+void single_char()
+{
+    istringstream ss( "a" );
+    NewLexer lexer( ss );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "a" );
 }
 
 
@@ -27,5 +35,6 @@ void empty_string_returns_empty_token()
 void TestLexer::Run() const
 {
     empty_string_returns_empty_token();
+    single_char();
 }
 

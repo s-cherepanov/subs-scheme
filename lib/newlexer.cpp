@@ -13,6 +13,12 @@ Token NewLexer::NextToken()
 {
     Token ret;
 
+    int i = instream_.get();
+    if( i != -1 )
+    {
+        ret.name += static_cast<char>( i );
+    }
+
     return ret;
 }
 

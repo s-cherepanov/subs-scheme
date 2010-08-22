@@ -11,6 +11,7 @@
 #include "test/testenvironment.h"
 #include "test/testif.h"
 #include "test/testlambda.h"
+#include "test/testlexer.h"
 #include "test/testmemory.h"
 #include "test/testlexconstants.h"
 #include "test/testparseconstants.h"
@@ -25,6 +26,7 @@ int main()
 {
     try
     {
+        TestLexer(                ).Run();
         TestWordLexer(            ).Run();
         TestLexConstants(         ).Run();
         TestParseConstants(       ).Run();

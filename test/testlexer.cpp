@@ -57,6 +57,18 @@ void tokens_separated_by_space()
 
 
 
+void tokens_separated_by_newline()
+{
+    istringstream ss( " \n  1\n\n \n\nfoo\n \nbar baz \n\n" );
+    NewLexer lexer( ss );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "1" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "foo" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "bar" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "baz" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
 
 
 
@@ -68,5 +80,6 @@ void TestLexer::Run() const
     single_char();
     single_token();
     tokens_separated_by_space();
+    tokens_separated_by_newline();
 }
 

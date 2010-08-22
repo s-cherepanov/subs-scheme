@@ -19,6 +19,7 @@ Token NewLexer::NextToken()
         char c = static_cast<char>( i );
         switch( c )
         {
+            case '\n':
             case ' ':
             {
                 // Skip spaces at beginning

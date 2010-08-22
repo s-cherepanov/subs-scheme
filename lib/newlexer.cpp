@@ -16,7 +16,25 @@ Token NewLexer::NextToken()
     int i = instream_.get();
     while( i != -1 )
     {
-        ret.name += static_cast<char>( i );
+        char c = static_cast<char>( i );
+        switch( c )
+        {
+            case ' ':
+            {
+                // Skip spaces at beginning
+                if( !ret.name.empty() )
+                {
+                    // But if we're not at the beginning, we
+                    // have finished our token.
+                    return ret;
+                }
+                break;
+            }
+            default:
+            {
+                ret.name += c;
+            }
+        }
         i = instream_.get();
     }
 

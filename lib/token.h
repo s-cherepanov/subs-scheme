@@ -8,9 +8,9 @@ struct Token
 {
     std::string name;
 
-    std::string filename;
-    unsigned int line_number;
-    unsigned int column_number;
+    //TODO: std::string filename;
+    //TODO: unsigned int line_number;
+    //TODO: unsigned int column_number;
 };
 
 #endif

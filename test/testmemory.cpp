@@ -4,14 +4,11 @@
 #include <typeinfo>
 
 #include "assertmacros.h"
-#include "lib/emptystringtree.h"
 #include "lib/evaluator.h"
-#include "lib/lexer.h"
-#include "lib/parser.h"
 #include "lib/newlexer.h"
 #include "lib/newparser.h"
-#include "lib/stringtreeleaf.h"
 #include "lib/symbolvalue.h"
+#include "lib/token.h"
 #include "lib/valuefactory.h"
 
 #include "testmemory.h"
@@ -23,37 +20,25 @@ namespace
 
 void lex_empty_string()
 {
-    std::auto_ptr<StringTree> lexed = Lexer().Lex( "" );
+    istringstream ss( "" );
+    NewLexer lexer( ss );
 
-    TEST_ASSERT_EQUAL( typeid( *lexed ), typeid( EmptyStringTree ) );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
 }
 
 
 void create_symbolvalue()
 {
-    StringTreeLeaf leaf( "+" );
-    auto_ptr<Value> v( new SymbolValue( leaf.str() ) );
+    auto_ptr<Value> v( new SymbolValue( "+" ) );
 }
 
 
 void valuefactory_create_plus()
 {
-    StringTreeLeaf leaf( "+" );
-    ValueFactory::CreateValue( &leaf );
+    ValueFactory::CreateValue( "+" );
 }
 
-
-
-void parse_emptystringtree_value()
-{
-    EmptyStringTree tree;
-    std::auto_ptr<Value> parsed = Parser().Parse( &tree );
-
-    TEST_ASSERT_NULL( parsed.get() );
-}
-
-
-void newparse_emptystringtree_value()
+void parse_emptystring()
 {
     istringstream ss( "" );
     NewLexer lexer( ss );
@@ -82,8 +67,7 @@ void TestMemory::Run() const
     lex_empty_string();
     create_symbolvalue();
     valuefactory_create_plus();
-    parse_emptystringtree_value();
-    newparse_emptystringtree_value();
+    parse_emptystring();
     evaluate_null_value();
 }
 

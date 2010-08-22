@@ -1,10 +1,12 @@
 
+#include <iostream>
 #include <memory>
+#include <sstream>
 #include <string>
 
 #include "evaluator.h"
-#include "lexer.h"
-#include "parser.h"
+#include "newlexer.h"
+#include "newparser.h"
 #include "prettyprinter.h"
 #include "subsinterpreter.h"
 
@@ -12,37 +14,35 @@ using namespace std;
 
 std::string SubsInterpreter::Interpret( const std::string& codestring )
 {
-    return PrettyPrinter::Print( evaluator_.Eval(
-        Parser().Parse(
-            Lexer().Lex( codestring ).get() ).get() ).get() );
+    istringstream ss( codestring );
+    NewLexer lexer( ss );
+    NewParser parser( lexer );
+
+    return PrettyPrinter::Print( evaluator_.Eval( parser.NextValue().get()
+        ).get() );
 }
 
 int SubsInterpreter::InterpretStream( std::istream& instream,
     std::ostream& outstream )
 {
-    Lexer lexer;
+    NewLexer lexer( instream );
+    NewParser parser( lexer );
 
-    while( instream.good() )
+    auto_ptr<Value> value = parser.NextValue();
+    while( value.get() )
     {
-        char buffer[1024];
-
-        bool cont = true;
-        
-        // Read from the stream until we hit a closing bracket
-        while( cont )
-        {
-            instream.getline( buffer, sizeof( buffer ) );
-            cont = !lexer.LexPartial( string( buffer ) );
-        }
-
-        string output = PrettyPrinter::Print( evaluator_.Eval( Parser().Parse(
-            lexer.GetCombination().get() ).get() ).get() );
+        string output = PrettyPrinter::Print( evaluator_.Eval( value.get()
+            ).get() );
 
         if( !output.empty() )
         {
             outstream << output << endl;
         }
+
+        value = parser.NextValue();
     }
+
+    // TODO: handle parse errors
 
     return 0;
 }

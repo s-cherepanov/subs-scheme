@@ -5,7 +5,6 @@
 
 #include "decimalvalue.h"
 #include "integervalue.h"
-#include "stringtreeleaf.h"
 #include "symbolvalue.h"
 #include "value.h"
 
@@ -80,35 +79,6 @@ ENumericType get_numeric_type( const string& str )
 
 namespace ValueFactory
 {
-
-std::auto_ptr<Value> CreateValue( const StringTreeLeaf* leaf )
-{
-    const std::string& leaf_str = leaf->str();
-
-    switch( get_numeric_type( leaf_str ) )
-    {
-        case integer:
-        {
-            // TODO: handle large integers
-            istringstream ss( leaf_str );
-            int intvalue;
-            ss >> intvalue;
-            return auto_ptr<Value>( new IntegerValue( intvalue ) );
-        }
-        case decimal:
-        {
-            // TODO: handle large decimals
-            istringstream ss( leaf_str );
-            double doublevalue;
-            ss >> doublevalue;
-            return auto_ptr<Value>( new DecimalValue( doublevalue ) );
-        }
-        default:
-        {
-            return auto_ptr<Value>( new SymbolValue( leaf_str ) );
-        }
-    }
-}
 
 std::auto_ptr<Value> CreateValue( const std::string& token_name )
 {

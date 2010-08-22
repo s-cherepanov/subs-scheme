@@ -13,12 +13,10 @@
 #include "test/testlambda.h"
 #include "test/testlexer.h"
 #include "test/testmemory.h"
-#include "test/testlexconstants.h"
 #include "test/testparseconstants.h"
 #include "test/testprettyprintconstants.h"
 #include "test/testrepl.h"
 #include "test/testtailcalloptimisation.h"
-#include "test/testwordlexer.h"
 
 using namespace std;
 
@@ -27,8 +25,6 @@ int main()
     try
     {
         TestLexer(                ).Run();
-        TestWordLexer(            ).Run();
-        TestLexConstants(         ).Run();
         TestParseConstants(       ).Run();
         TestPrettyPrintConstants( ).Run();
         TestMemory(               ).Run();

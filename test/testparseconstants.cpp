@@ -7,7 +7,9 @@
 #include "lib/integervalue.h"
 #include "lib/lexer.h"
 #include "lib/parser.h"
+#include "lib/parsingerror.h"
 #include "lib/symbolvalue.h"
+#include "lib/unfinishedcombinationexception.h"
 #include "lib/value.h"
 
 #include "testparseconstants.h"
@@ -100,6 +102,51 @@ void plus_becomes_symbol_value()
 }
 
 
+void unclosed_bracket_throws()
+{
+    istringstream ss( "(if 1" );
+    Lexer lexer( ss );
+    Parser parser( lexer );
+
+    bool exception_caught = false;
+    try
+    {
+        parser.NextValue();
+    }
+    catch( UnfinishedCombinationException& )
+    {
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+
+
+void too_many_close_brackets_throws()
+{
+    istringstream ss( "(if 1 3) 4)" );
+    Lexer lexer( ss );
+    Parser parser( lexer );
+
+    bool exception_caught = false;
+    try
+    {
+        // Call NextValue until we finally hit the close bracket
+        parser.NextValue();
+        parser.NextValue();
+        parser.NextValue();
+    }
+    catch( ParsingError& )
+    {
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+
+
 }
 
 void TestParseConstants::Run() const
@@ -108,6 +155,7 @@ void TestParseConstants::Run() const
     branch_becomes_combination_value();
     name_becomes_symbol_value();
     plus_becomes_symbol_value();
-    // TODO: catch parser errors
+    unclosed_bracket_throws();
+    too_many_close_brackets_throws();
 }
 

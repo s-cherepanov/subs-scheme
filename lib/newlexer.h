@@ -3,7 +3,6 @@
 #define NEWLEXER_H
 
 #include <iostream>
-#include <memory>
 
 struct Token;
 
@@ -12,7 +11,7 @@ class NewLexer
 public:
     NewLexer( std::istream& instream );
 
-    std::auto_ptr<Token> NextToken();
+    Token NextToken();
 
 private:
     std::istream& instream_;

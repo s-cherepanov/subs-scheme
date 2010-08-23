@@ -50,5 +50,10 @@ assert_equal `echo "(- 12 3)" | ./subs -` "9"
 
 # TODO: Running a session-test containing multi-line input succeeds
 
+# TODO: running a file with too many open brackets fails
+# TODO: running a file with too many close brackets fails
+
+
+
 # Exit with a success code: prevent error value leaking from above
 exit 0

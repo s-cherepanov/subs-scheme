@@ -21,7 +21,7 @@
     assertfns::is_true(__FILE__, __LINE__, #ARG, ARG );
 
 #define TEST_ASSERT_FALSE(ARG) \
-    assertfns::is_true(__FILE__, __LINE__, #ARG, ARG );
+    assertfns::is_false(__FILE__, __LINE__, #ARG, ARG );
 
 #define TEST_ASSERT_CAN_FIND(LOOKIN,LOOKFOR) \
     assertfns::can_find(__FILE__, __LINE__, #LOOKIN, #LOOKFOR, LOOKIN, LOOKFOR);

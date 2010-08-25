@@ -20,7 +20,7 @@ SubsRepl::SubsRepl( bool print_prompt /*= true */)
 int SubsRepl::Run( istream& in, ostream& out, ostream& err )
 {
     Lexer lexer( in );
-    BracketMatcher matcher( lexer, out );
+    BracketMatcher matcher( lexer, out, print_prompt_ );
     SubsInterpreter interpreter;
 
     try

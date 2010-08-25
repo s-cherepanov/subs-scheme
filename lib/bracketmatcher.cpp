@@ -5,11 +5,15 @@
 #include "lexer.h"
 #include "tokenlist.h"
 
-BracketMatcher::BracketMatcher( Lexer& lexer, std::ostream& out )
+BracketMatcher::BracketMatcher( Lexer& lexer, std::ostream& out,
+    bool print_prompt )
 : lexer_( lexer )
 , newline_processor_( out )
 {
-    lexer_.SetNewLineProcessor( &newline_processor_ );
+    if( print_prompt )
+    {
+        lexer_.SetNewLineProcessor( &newline_processor_ );
+    }
 }
 
 BracketMatcher::~BracketMatcher()

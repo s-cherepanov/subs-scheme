@@ -79,6 +79,11 @@ int process_file_loop( const string& firstline, istream& instream,
 
             expected.clear();
         }
+        else if( line.substr( 0, 2 ) == ". " )
+        {
+            inputline += line.substr( 2 );
+            inputline += '\n';
+        }
         else if( !line.empty() )
         {
             expected += line;

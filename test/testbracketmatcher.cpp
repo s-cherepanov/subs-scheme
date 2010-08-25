@@ -19,7 +19,7 @@ void empty_input_yields_empty_list()
     istringstream ss( "" );
     ostringstream outss;
     Lexer lexer( ss );
-    BracketMatcher matcher( lexer, outss );
+    BracketMatcher matcher( lexer, outss, true );
 
     TEST_ASSERT_TRUE( matcher.ReadCombination().empty() );
 
@@ -32,7 +32,7 @@ void single_token_yields_one_item_list()
     istringstream ss( "foo" );
     ostringstream outss;
     Lexer lexer( ss );
-    BracketMatcher matcher( lexer, outss );
+    BracketMatcher matcher( lexer, outss, true );
 
     TokenList tokens = matcher.ReadCombination();
 
@@ -47,7 +47,7 @@ void multiple_tokens_yield_multiple_one_item_lists()
     istringstream ss( "foo bar" );
     ostringstream outss;
     Lexer lexer( ss );
-    BracketMatcher matcher( lexer, outss );
+    BracketMatcher matcher( lexer, outss, true );
 
     TokenList tokens = matcher.ReadCombination();
 
@@ -68,7 +68,7 @@ void combination_yields_all_tokens()
     istringstream ss( "(foo bar)" );
     ostringstream outss;
     Lexer lexer( ss );
-    BracketMatcher matcher( lexer, outss );
+    BracketMatcher matcher( lexer, outss, true );
 
     TokenList tokens = matcher.ReadCombination();
     TEST_ASSERT_EQUAL( outss.str(), "" );
@@ -86,7 +86,7 @@ void nested_combination_yields_all_tokens()
     istringstream ss( "(foo (bar) baz) po" );
     ostringstream outss;
     Lexer lexer( ss );
-    BracketMatcher matcher( lexer, outss );
+    BracketMatcher matcher( lexer, outss, true );
 
     TokenList tokens = matcher.ReadCombination();
     TEST_ASSERT_EQUAL( outss.str(), "" );
@@ -107,7 +107,7 @@ void incomplete_combo_yields_empty_list()
     istringstream ss( "(foo (bar) baz" );
     ostringstream outss;
     Lexer lexer( ss );
-    BracketMatcher matcher( lexer, outss );
+    BracketMatcher matcher( lexer, outss, true );
 
     TokenList tokens = matcher.ReadCombination();
 
@@ -122,7 +122,7 @@ void multiline_combo_yields_all_tokens_and_indents()
     istringstream ss( "(foo bar\nbaz)" );
     ostringstream outss;
     Lexer lexer( ss );
-    BracketMatcher matcher( lexer, outss );
+    BracketMatcher matcher( lexer, outss, true );
 
     TokenList tokens = matcher.ReadCombination();
     TEST_ASSERT_EQUAL( outss.str(), ".      " );
@@ -141,7 +141,7 @@ void multiline_multicombo_indents()
     istringstream ss( "(foo bar ( baz 4 \n)\n)" );
     ostringstream outss;
     Lexer lexer( ss );
-    BracketMatcher matcher( lexer, outss );
+    BracketMatcher matcher( lexer, outss, true );
 
     TokenList tokens = matcher.ReadCombination();
     TEST_ASSERT_EQUAL( outss.str(),
@@ -163,5 +163,6 @@ void TestBracketMatcher::Run() const
     incomplete_combo_yields_empty_list();
     multiline_combo_yields_all_tokens_and_indents();
     multiline_multicombo_indents();
+    // TODO: test passing false for print_prompt
 }
 

@@ -12,7 +12,7 @@ class Lexer;
 class BracketMatcher
 {
 public:
-    BracketMatcher( Lexer& lexer, std::ostream& out );
+    BracketMatcher( Lexer& lexer, std::ostream& out, bool print_prompt );
 
     ~BracketMatcher();
 

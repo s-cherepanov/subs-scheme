@@ -4,7 +4,8 @@
 
 #include <iosfwd>
 
-// TODO rename this and SubInterpreter to remove "Subs"
+// TODO: rename this and SubInterpreter to remove "Subs"
+// TODO: move this and supporting classes into a subdir
 class SubsRepl
 {
 public:

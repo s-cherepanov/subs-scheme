@@ -10,7 +10,7 @@ struct Token
 
     //TODO: std::string filename;
     //TODO: unsigned int line_number;
-    //TODO: unsigned int column_number;
+    unsigned int column;
 };
 
 #endif

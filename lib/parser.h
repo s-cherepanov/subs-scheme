@@ -4,19 +4,19 @@
 
 #include <memory>
 
-class Lexer;
+class ILexer;
 class Value;
 
 class Parser
 {
 public:
-    Parser( Lexer& lexer );
+    Parser( ILexer& lexer );
 
     std::auto_ptr<Value> NextValue();
 
 private:
 
-    Lexer& lexer_;
+    ILexer& lexer_;
 };
 
 #endif

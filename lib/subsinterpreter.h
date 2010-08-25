@@ -8,12 +8,15 @@
 
 #include "evaluator.h"
 
+class TokenList;
 class Tracer;
 
 class SubsInterpreter
 {
 public:
     std::string Interpret( const std::string& codestring );
+
+    std::string InterpretTokens( TokenList& tokens );
 
     int InterpretStream( std::istream& instream, std::ostream& outstream );
 

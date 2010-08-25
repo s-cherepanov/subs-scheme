@@ -9,6 +9,7 @@
 #include "parser.h"
 #include "prettyprinter.h"
 #include "subsinterpreter.h"
+#include "tokenlist.h"
 
 using namespace std;
 
@@ -17,6 +18,14 @@ std::string SubsInterpreter::Interpret( const std::string& codestring )
     istringstream ss( codestring );
     Lexer lexer( ss );
     Parser parser( lexer );
+
+    return PrettyPrinter::Print( evaluator_.Eval( parser.NextValue().get()
+        ).get() );
+}
+
+std::string SubsInterpreter::InterpretTokens( TokenList& tokens )
+{
+    Parser parser( tokens );
 
     return PrettyPrinter::Print( evaluator_.Eval( parser.NextValue().get()
         ).get() );

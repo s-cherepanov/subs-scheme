@@ -4,6 +4,7 @@
 #include "lib/evaluationerror.h"
 #include "test/assertionfailed.h"
 #include "test/testarithmetic.h"
+#include "test/testbracketmatcher.h"
 #include "test/testcomparators.h"
 #include "test/testconstants.h"
 #include "test/testdefineprocedure.h"
@@ -13,10 +14,12 @@
 #include "test/testlambda.h"
 #include "test/testlexer.h"
 #include "test/testmemory.h"
+#include "test/testnewlineprocessor.h"
 #include "test/testparseconstants.h"
 #include "test/testprettyprintconstants.h"
 #include "test/testrepl.h"
 #include "test/testtailcalloptimisation.h"
+#include "test/testtokenlist.h"
 
 using namespace std;
 
@@ -29,6 +32,9 @@ int main()
         TestPrettyPrintConstants( ).Run();
         TestMemory(               ).Run();
         TestConstants(            ).Run();
+        TestTokenList(            ).Run();
+        TestNewLineProcessor(     ).Run();
+        TestBracketMatcher(       ).Run();
         TestRepl(                 ).Run();
         TestArithmetic(           ).Run();
         TestEnvironment(          ).Run();

@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "combinationvalue.h"
-#include "lexer.h"
+#include "ilexer.h"
 #include "parsingerror.h"
 #include "parser.h"
 #include "token.h"
@@ -14,7 +14,7 @@ using namespace std;
 namespace
 {
 
-std::auto_ptr<Value> next_value_from_token( Lexer& lexer,
+std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
     Token token )
 {
     if( token.name.empty() )
@@ -56,7 +56,7 @@ std::auto_ptr<Value> next_value_from_token( Lexer& lexer,
 
 }
 
-Parser::Parser( Lexer& lexer )
+Parser::Parser( ILexer& lexer )
 : lexer_( lexer )
 {
 }

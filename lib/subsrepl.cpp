@@ -2,10 +2,13 @@
 #include <iostream>
 #include <sstream>
 
+#include "bracketmatcher.h"
 #include "evaluationerror.h"
+#include "lexer.h"
+#include "prettyprinter.h"
 #include "subsinterpreter.h"
-
 #include "subsrepl.h"
+#include "tokenlist.h"
 
 using namespace std;
 
@@ -16,31 +19,36 @@ SubsRepl::SubsRepl( bool print_prompt /*= true */)
 
 int SubsRepl::Run( istream& in, ostream& out, ostream& err )
 {
-    static const int bufferlength = 1024;
-    char buffer[bufferlength];
+    Lexer lexer( in );
+    BracketMatcher matcher( lexer, out );
     SubsInterpreter interpreter;
 
-    while( in.good() )
+    try
     {
-        if( print_prompt_ )
+        while( !matcher.eof() )
         {
-            out << "> ";
-        }
+            if( print_prompt_ )
+            {
+                out << "> ";
+            }
 
-        // TODO: handle lines longer than bufferlength.
-        in.getline( buffer, bufferlength );
+            lexer.SkipWhitespace();
 
-        try
-        {
-            out << interpreter.Interpret( buffer );
-        }
-        catch( EvaluationError& e )
-        {
-            err << "Error: " << e.ToString() << endl;
-        }
+            TokenList tokens = matcher.ReadCombination();
 
-        out << endl;
+            string output = interpreter.InterpretTokens( tokens );
+
+            if( !output.empty() )
+            {
+                out << output << endl;
+            }
+        }
     }
+    catch( EvaluationError& e )
+    {
+        err << "Error: " << e.ToString() << endl;
+    }
+    // TODO: catch parse errors too - all under one base class?
 
     return 0;
 }

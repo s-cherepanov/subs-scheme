@@ -54,6 +54,11 @@ assert_equal "$RES" "5 -1"
 # Running from stdin
 assert_equal `echo "(- 12 3)" | ./subs -` "9"
 
+# Printing the warranty is not an error
+# TODO: echo "warranty" | ./subs > /dev/null 2>&1 || exit 1
+
+# Printing the copying message is not an error
+# TODO: echo "copying" | ./subs > /dev/null 2>&1 || exit 1
 
 
 

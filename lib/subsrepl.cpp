@@ -36,11 +36,16 @@ namespace
 void write_welcome( ostream& out )
 {
     out << "Subs Scheme Interpreter, Copyright (C) 2010 Andy Balaam" << endl
-        << "Subs comes with ABSOLUTELY NO WARRANTY; for details type "
-            "'warranty'." << endl
+        << "Subs comes with ABSOLUTELY NO WARRANTY"
+            "."
+            // TODO: support warranty "; for details type 'warranty'."
+            << endl
         << "This is free software, and you are welcome to redistribute it"
             << endl
-        << "under certain conditions; type `copying' for details." << endl;
+        << "under certain conditions"
+            "."
+            // TODO: support copying "; type `copying' for details."
+            << endl;
 }
 
 }

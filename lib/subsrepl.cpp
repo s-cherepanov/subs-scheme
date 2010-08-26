@@ -32,8 +32,6 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
                 out << "> ";
             }
 
-            lexer.SkipWhitespace();
-
             TokenList tokens = matcher.ReadCombination();
 
             string output = interpreter.InterpretTokens( tokens );
@@ -42,6 +40,7 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
             {
                 out << output << endl;
             }
+            lexer.SkipWhitespaceToNewline();
         }
     }
     catch( EvaluationError& e )

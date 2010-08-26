@@ -16,7 +16,7 @@ public:
 
     virtual Token NextToken();
 
-    void SkipWhitespace();
+    void SkipWhitespaceToNewline();
 
     void SetNewLineProcessor( NewLineProcessor* newline_processor );
 

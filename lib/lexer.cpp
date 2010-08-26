@@ -102,7 +102,7 @@ Token Lexer::NextToken()
     return ret;
 }
 
-void Lexer::SkipWhitespace()
+void Lexer::SkipWhitespaceToNewline()
 {
     int i = instream_.peek();
 
@@ -110,6 +110,10 @@ void Lexer::SkipWhitespace()
     while( i != -1 && ( i == 32 || i == 10 ) )
     {
         instream_.get();
+        if( i == 10 )
+        {
+            break;
+        }
         i = instream_.peek();
     }
 }

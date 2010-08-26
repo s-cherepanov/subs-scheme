@@ -122,6 +122,20 @@ void response_comes_even_when_stream_is_not_closed()
 }
 
 
+void pressing_return_emits_dot()
+{
+    istringstream in( "\n" );
+    ostringstream out;
+    ostringstream err;
+
+    int retval = SubsRepl().Run( in, out, err );
+
+    TEST_ASSERT_EQUAL( retval, 0 );
+    TEST_ASSERT_EQUAL( err.str(), "" );
+    TEST_ASSERT_EQUAL( out.str(), "> . " );
+}
+
+
 
 }
 
@@ -136,5 +150,6 @@ void TestRepl::Run() const
     unclosed_combination_indents();
     define_can_be_used_later();
     response_comes_even_when_stream_is_not_closed();
+    pressing_return_emits_dot();
 }
 

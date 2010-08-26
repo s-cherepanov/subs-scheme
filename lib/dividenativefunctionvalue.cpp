@@ -67,7 +67,7 @@ const DecimalValue* get_decimal_value( const Value* value )
 
 //virtual
 std::auto_ptr<Value> DivideNativeFunctionValue::Run(
-    const CombinationValue* argvalues, const Environment& environment ) const
+    const CombinationValue* argvalues ) const
 {
     auto_ptr<Value> result;
 

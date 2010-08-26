@@ -69,10 +69,8 @@ std::auto_ptr<Value> run_decimal( const IntegerValue* intres,
 
 //virtual
 std::auto_ptr<Value> TimesNativeFunctionValue::Run(
-    const CombinationValue* argvalues, const Environment& environment ) const
+    const CombinationValue* argvalues ) const
 {
-    // TODO: no need to pass in environment?
-
     auto_ptr<IntegerValue> result( new IntegerValue( 1 ) );
 
     CombinationValue::const_iterator it = argvalues->begin();

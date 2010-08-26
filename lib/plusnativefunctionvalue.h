@@ -31,8 +31,7 @@ class Environment;
 class PlusNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues,
-        const Environment& environment ) const;
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
 
     virtual PlusNativeFunctionValue* Clone() const;
 

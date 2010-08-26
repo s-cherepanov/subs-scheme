@@ -396,7 +396,7 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
 
         if( bip )
         {
-            return bip->Run( argvalues.get(), *env_ptr );
+            return bip->Run( argvalues.get() );
         }
 
         // Otherwise, it must be a compound procedure

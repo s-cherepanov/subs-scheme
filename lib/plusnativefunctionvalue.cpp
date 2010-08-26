@@ -70,7 +70,7 @@ std::auto_ptr<Value> run_decimal( const IntegerValue* intres,
 
 //virtual
 std::auto_ptr<Value> PlusNativeFunctionValue::Run(
-    const CombinationValue* argvalues, const Environment& environment ) const
+    const CombinationValue* argvalues ) const
 {
     auto_ptr<IntegerValue> result( new IntegerValue( 0 ) );
 

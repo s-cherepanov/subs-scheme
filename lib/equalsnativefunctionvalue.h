@@ -27,8 +27,7 @@ class Environment;
 class EqualsNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues,
-        const Environment& environment ) const;
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
 
     virtual EqualsNativeFunctionValue* Clone() const;
 

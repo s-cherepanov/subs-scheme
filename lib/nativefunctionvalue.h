@@ -37,8 +37,7 @@ public:
      *
      * @arg combo is the combination of the operator and operands.
      */
-    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues,
-        const Environment& environment ) const = 0;
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const = 0;
 
     virtual std::string GetName() const = 0;
 };

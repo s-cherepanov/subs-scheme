@@ -77,7 +77,7 @@ void bare_undefined_symbol_reports_error()
 
     int retval = SubsRepl( false, false ).Run( in, out, err );
 
-    TEST_ASSERT_EQUAL( retval, 0 );
+    TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
 }
 
@@ -90,7 +90,7 @@ void undefined_symbol_operator_reports_error()
 
     int retval = SubsRepl( false, false ).Run( in, out, err );
 
-    TEST_ASSERT_EQUAL( retval, 0 );
+    TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
 }
 
@@ -103,7 +103,7 @@ void undefined_symbol_operand_reports_error()
 
     int retval = SubsRepl( false, false ).Run( in, out, err );
 
-    TEST_ASSERT_EQUAL( retval, 0 );
+    TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
 }
 

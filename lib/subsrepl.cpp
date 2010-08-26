@@ -86,6 +86,7 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
     catch( EvaluationError& e )
     {
         err << "Error: " << e.ToString() << endl;
+        return 1;
     }
     // TODO: catch parse errors too - all under one base class?
 

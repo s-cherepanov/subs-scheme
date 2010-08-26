@@ -159,7 +159,7 @@ int process_file( istream& instream, SubsRepl& repl, const string& filename )
 
 int ReplSessionTester::Run( const std::vector<std::string>& filenames )
 {
-    SubsRepl repl( false );
+    SubsRepl repl( false, false );
 
     int ret = 0;
     for( vector<string>::const_iterator it = filenames.begin();

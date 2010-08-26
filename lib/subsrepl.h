@@ -27,12 +27,13 @@
 class SubsRepl
 {
 public:
-    SubsRepl( bool print_prompt = true );
+    SubsRepl( bool print_prompt = true, bool print_welcome = true );
 
     int Run( std::istream& in, std::ostream& out, std::ostream& err );
 
 private:
     bool print_prompt_;
+    bool print_welcome_;
 };
 
 #endif

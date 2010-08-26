@@ -30,13 +30,35 @@
 
 using namespace std;
 
-SubsRepl::SubsRepl( bool print_prompt /*= true */)
+namespace
+{
+
+void write_welcome( ostream& out )
+{
+    out << "Subs Scheme Interpreter, Copyright (C) 2010 Andy Balaam" << endl
+        << "Subs comes with ABSOLUTELY NO WARRANTY; for details type "
+            "'warranty'." << endl
+        << "This is free software, and you are welcome to redistribute it"
+            << endl
+        << "under certain conditions; type `copying' for details." << endl;
+}
+
+}
+
+SubsRepl::SubsRepl( bool print_prompt /*= true */,
+    bool print_welcome /*= true*/ )
 : print_prompt_( print_prompt )
+, print_welcome_( print_welcome )
 {
 }
 
 int SubsRepl::Run( istream& in, ostream& out, ostream& err )
 {
+    if( print_welcome_ )
+    {
+        write_welcome( out );
+    }
+
     Lexer lexer( in );
     BracketMatcher matcher( lexer, out, print_prompt_ );
     SubsInterpreter interpreter;

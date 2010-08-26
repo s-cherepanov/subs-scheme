@@ -43,10 +43,10 @@ function assert_equal()
 assert_equal `./subs testslow/fifteen.scm` "15"
 assert_equal `./subs testslow/two_plus_three.scm` "5"
 
-# FAILS: Running a file containing multiple lines returns last result
-#assert_equal `./subs testslow/multiple_lines.scm` "-1"
-
-# TODO: Running a file containing multi-line input succeeds
+# Running a file containing multiple lines prints all results
+RES=`./subs testslow/multiple_lines.scm`
+RES=`echo -n $RES` # convert newline to space?
+assert_equal "$RES" "5 -1"
 
 
 

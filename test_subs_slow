@@ -67,7 +67,7 @@ assert_equal `echo "(- 12 3)" | ./subs -` "9"
 ./subs --session-test testslow/incorrect.scmsession 2> /dev/null && exit 1
 ./subs --session-test testslow/incorrect_later.scmsession 2> /dev/null && exit 1
 
-# TODO: Running a session-test containing multi-line input succeeds
+assert_equal `./subs testslow/multiline_combination.scm` "26"
 
 # TODO: running a file with too many open brackets fails
 # TODO: running a file with too many close brackets fails

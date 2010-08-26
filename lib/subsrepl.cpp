@@ -66,7 +66,6 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
 
     Lexer lexer( in );
     BracketMatcher matcher( lexer, out, print_prompt_ );
-    SubsInterpreter interpreter;
 
     try
     {
@@ -79,7 +78,7 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
 
             TokenList tokens = matcher.ReadCombination();
 
-            string output = interpreter.InterpretTokens( tokens );
+            string output = interpreter_.InterpretTokens( tokens );
 
             if( !output.empty() )
             {

@@ -22,6 +22,8 @@
 
 #include <iosfwd>
 
+#include "subsinterpreter.h"
+
 // TODO: rename this and SubInterpreter to remove "Subs"
 // TODO: move this and supporting classes into a subdir
 class SubsRepl
@@ -32,6 +34,8 @@ public:
     int Run( std::istream& in, std::ostream& out, std::ostream& err );
 
 private:
+    SubsInterpreter interpreter_;
+
     bool print_prompt_;
     bool print_welcome_;
 };

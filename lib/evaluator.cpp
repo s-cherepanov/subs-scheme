@@ -25,9 +25,9 @@
 #include "combinationvalue.h"
 #include "evaluationerror.h"
 #include "equalsnativefunctionvalue.h"
-#include "falsevalue.h"
 #include "nativefunctionvalue.h"
 #include "prettyprinter.h"
+#include "specialsymbolevaluator.h"
 #include "symbolvalue.h"
 #include "tracer.h"
 #include "compoundprocedurevalue.h"
@@ -39,184 +39,6 @@ using namespace std;
 
 namespace
 {
-
-std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
-    Environment& environment );
-    
-bool is_define_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "define" );
-}
-
-
-bool is_if_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "if" );
-}
-
-bool is_cond_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "cond" );
-}
-
-
-bool is_lambda_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "lambda" );
-}
-
-
-std::auto_ptr<Value> eval_define_symbol( Evaluator* ev,
-    Environment& environment, const SymbolValue* to_define,
-    const Value* definition )
-{
-    environment.InsertSymbol( to_define->GetStringValue(),
-        eval_in_context( ev, definition, environment ).release() );
-
-    return auto_ptr<Value>( to_define->Clone() );
-}
-
-
-
-
-/**
- * Starting at it, clone Values into a new CombinationValue until we hit end.
- *
- * If the value of it supplied is the same as "begin()", this is identical
- * to calling "Clone()" on the combination we are iterating through.
- */
-auto_ptr<CombinationValue> clone_partial_combo(
-    CombinationValue::const_iterator it,
-    const CombinationValue::const_iterator& end )
-{
-    auto_ptr<CombinationValue> ret( new CombinationValue );
-    for( ; it != end; ++it )
-    {
-        ret->push_back( (*it)->Clone() );
-    }
-    return ret;
-}
-
-std::auto_ptr<Value> define_procedure(
-    CombinationValue::const_iterator itarg,
-    const CombinationValue::const_iterator& argsend,
-    CombinationValue::const_iterator itbody,
-    const CombinationValue::const_iterator& bodyend,
-    const std::string& name = "" )
-{
-    return auto_ptr<Value>( new CompoundProcedureValue(
-        clone_partial_combo( itarg, argsend ).release(),
-        clone_partial_combo( itbody, bodyend ).release(), name ) );
-}
-
-
-
-std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
-{
-    if( combo->size() < 3 )
-    {
-        throw EvaluationError(
-            "Too few operands to the define operator: there should be 2." );
-    }
-
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() );
-    ++it;
-    assert( it != combo->end() );
-
-    const Value* to_define = *it;
-
-    ++it;
-    assert( it != combo->end() );
-
-    const CombinationValue* comb_to_define =
-        dynamic_cast<const CombinationValue*>( to_define );
-
-    if( comb_to_define )
-    {
-        CombinationValue::const_iterator itarg = comb_to_define->begin();
-
-        if( itarg == comb_to_define->end() )
-        {
-            throw EvaluationError(
-                "The first operand to define must be a symbol or a non-empty "
-                "combination.  The combination supplied is empty." );
-        }
-
-        const SymbolValue* sym = dynamic_cast<const SymbolValue*>( *itarg );
-        if( !sym )
-        {
-            throw EvaluationError( "The first element in the list defining "
-                "a procedure must be a symbol - '" + PrettyPrinter::Print(
-                    to_define ) + "' is not a symbol." );
-        }
-
-        ++itarg; // Move on from the procedure name to the arguments
-
-        return eval_define_symbol( ev, environment, sym,
-            define_procedure( itarg, comb_to_define->end(), it,
-                combo->end(), sym->GetStringValue() ).get() );
-    }
-    else
-    {
-        if( combo->size() > 3 )
-        {
-            throw EvaluationError(
-                "Too many operands to the define operator: there should "
-                "be 2." );
-        }
-
-        const SymbolValue* sym = dynamic_cast<const SymbolValue*>( to_define );
-        if( !sym )
-        {
-            throw EvaluationError( "The first operand to the define operator "
-                "must be a symbol or a combination. '" + PrettyPrinter::Print(
-                    to_define ) + "' is neither." );
-        }
-
-        return eval_define_symbol( ev, environment, sym, *it );
-    }
-}
-
-
-
-std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
-{
-    if( combo->size() < 3 )
-    {
-        throw EvaluationError(
-            "Too few operands to the lambda operator: there should "
-            "be  at least 2." );
-    }
-
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() ); // First of at least 3 - "lambda" (ignore)
-    ++it;
-    assert( it != combo->end() ); // Second of at least 3 - arguments
-
-    const CombinationValue* args = dynamic_cast<const CombinationValue*>( *it );
-    if( !args )
-    {
-        throw EvaluationError( "The first operand to the lambda operator "
-            "must be a combination naming its arguments.  '"
-            + PrettyPrinter::Print( *it )
-            + "' is not a combination." );
-    }
-
-    ++it;
-    assert( it != combo->end() ); // Third of at least 3 - procedure body
-
-    // Copy the whole arguments combo as the args of the procedure, and
-    // copy the rest of the main combo (unevaluated) as the body
-    // of the function
-    return define_procedure( args->begin(), args->end(), it, combo->end() );
-}
-
 
 std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
     Environment& environment )
@@ -233,167 +55,6 @@ std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
     return auto_ptr<Value>( value->Clone() );
 }
 
-
-bool is_false( const Value* value )
-{
-    return dynamic_cast<const FalseValue*>( value );
-}
-
-bool is_true( const Value* value )
-{
-    return !is_false( value );
-}
-
-
-const Value* process_if( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
-{
-    // TODO: only one if needed here (in the normal case)
-
-    if( combo->size() < 4 )
-    {
-        throw EvaluationError(
-            "Not enough operands to if: there should be 3 (predicate, "
-            "true-value, else-value)." );
-    }
-
-    if( combo->size() > 4 )
-    {
-        throw EvaluationError(
-            "Too many operands to if: there should be 3 (predicate, "
-            "true-value, else-value)." );
-    }
-
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() ); // "if" - there are 4 items
-
-    ++it;
-    assert( it != combo->end() ); // predicate - there are 4 items
-    const Value* predicate = *it;
-
-    ++it; // Move to "true" value
-    assert( it != combo->end() );
-
-    std::auto_ptr<Value> evald_pred = eval_in_context( ev, predicate,
-        environment );
-
-    if( is_false( evald_pred.get() ) )
-    {
-        ++it; // Move to "false" value
-        assert( it != combo->end() );
-    }
-
-    return *it;
-}
-
-
-
-const Value* get_test_from_testvalue_pair( const Value* pair )
-{
-    const CombinationValue* paircombo = dynamic_cast<const CombinationValue*>(
-        pair );
-
-    if( !paircombo )
-    {
-        throw EvaluationError( "The operands to 'cond' must be pairs.  '"
-            + PrettyPrinter::Print( pair )
-            + "' is not a combination." );
-    }
-
-    if( paircombo->size() != 2 )
-    {
-        ostringstream ss;
-        ss  << "The operands to 'cond' must be pairs.  '"
-            << PrettyPrinter::Print( pair )
-            << "' has " << paircombo->size()
-            << " elements, where it should have 2.";
-
-        throw EvaluationError( ss.str() );
-    }
-
-    return *paircombo->begin();
-}
-
-const Value* get_value_from_testvalue_pair( const Value* pair )
-{
-    // TODO: avoid doing the same cast here and in get_test_from_testvalue_pair
-    const CombinationValue* paircombo = dynamic_cast<const CombinationValue*>(
-        pair );
-
-    assert( paircombo ); // We shouldn't get here without checking this in
-                         // get_test_from_testvalue_pair
-    assert( paircombo->size() == 2 ); // We shouldn't get here without
-                                      // checking this in
-                                      // get_test_from_testvalue_pair
-
-    CombinationValue::const_iterator it = paircombo->begin();
-    ++it;
-
-    return *it;
-}
-
-bool is_else( const Value* value )
-{
-    // TODO: break this file into several (and test these functions?)
-
-    const SymbolValue* sym = dynamic_cast<const SymbolValue*>( value );
-
-    // TODO: case insensitive?
-    return ( sym && sym->GetStringValue() == "else" );
-}
-
-const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
-{
-    // Look for pairs of predicate and value
-    // or "else" and value, which must be last.
-
-    if( combo->size() < 2 )
-    {
-        throw EvaluationError(
-            "Not enough operands to cond: there should be at least 1 "
-            "test-value pair." );
-    }
-
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() ); // "cond" - there are at least 2 items
-
-    ++it;
-    assert( it != combo->end() ); // test-value pair - there must be at least 1
-
-    for( ; it != combo->end(); ++it )
-    {
-        const Value* test_value_pair = *it;
-
-        const Value* test = get_test_from_testvalue_pair( test_value_pair );
-
-        if( is_else( test ) )
-        {
-            ++it;
-            if( it != combo->end() )
-            {
-                throw EvaluationError( "The else pair must be the last pair "
-                    "in a 'cond' expression.  This value was found after the "
-                    "else: '" + PrettyPrinter::Print( *it ) + "'." );
-            }
-
-            return get_value_from_testvalue_pair( test_value_pair );
-        }
-        else
-        {
-            std::auto_ptr<Value> evald_test = eval_in_context( ev, test,
-                environment );
-
-            if( is_true( evald_test.get() ) )
-            {
-                return get_value_from_testvalue_pair( test_value_pair );
-            }
-        }
-    }
-
-    // None of the conditions were true and there was no else - return NULL.
-    return NULL;
-}
 
 
 class EvalDepthMarker
@@ -414,23 +75,34 @@ private:
     Tracer* tracer_;
 };
 
-std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
+
+}
+
+Evaluator::Evaluator()
+{
+    tracer_ = &null_tracer_;
+    BuiltIns::Init( global_environment_ );
+}
+
+std::auto_ptr<Value> Evaluator::Eval( const Value* value )
+{
+    // When the user entered the empty string, we have a NULL value.
+    // In this case, we simply return NULL here.
+    if( value )
+    {
+        return EvalInContext( value, global_environment_ );
+    }
+    else
+    {
+        return auto_ptr<Value>( NULL );
+    }
+}
+
+
+std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
     Environment& environment )
 {
-    /*
-
-    Apologies for the length of this function.  The logic of tail-call
-    optimisation plus my desire for efficiency (i.e. direct returns rather
-    than function calls followed by conditional returns) leaves me thinking
-    that the only way I could break it up would be with gotos, which I think
-    would damage rather than enhance comprehensibility.
-
-    If anyone has any ideas how to break this up without damaging efficiency
-    I would very much like to hear them.
-
-    */
-
-    EvalDepthMarker dm( ev->GetTracer() );
+    EvalDepthMarker dm( GetTracer() );
 
     // TODO: replace switch-style dispatch with a virtual method on Value
 
@@ -471,53 +143,47 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
                 "Attepted to evaluate an empty combination" );
         }
 
-        // Get hold of the operand
-        CombinationValue::const_iterator cmbit = combo->begin();
-        const Value* optr = *cmbit;
+        SpecialSymbolEvaluator special_symbol_evaluator( this );
 
-        // Check to see whether it's a special symbol
-        const SymbolValue* sym = dynamic_cast<const SymbolValue*>( optr );
-        if( sym )
+        switch( special_symbol_evaluator.ProcessSpecialSymbol( combo,
+            *env_ptr ) )
         {
-            const SymbolValue& symref = *sym;
-            if( is_define_symbol( symref ) )
+            case SpecialSymbolEvaluator::eReturnNewValue:
             {
-                return eval_define( ev, combo, *env_ptr );
+                // This special symbol gave us a result - return it
+                // (e.g. define, lambda)
+                return special_symbol_evaluator.NewValue();
             }
-
-            if( is_lambda_symbol( symref ) )
+            case SpecialSymbolEvaluator::eEvaluateExistingSymbol:
             {
-                return eval_lambda( combo );
-            }
-
-            if( is_if_symbol( symref ) )
-            {
-                // If it's an if, we set value and go around the loop again
-                // (tail-call optimisation)
-                value = process_if( ev, combo, *env_ptr );
-                continue;
-            }
-
-            if( is_cond_symbol( symref ) )
-            {
-                // If it's a cond, we set value and go around the loop again
-                // (tail-call optimisation)
-                value = process_cond( ev, combo, *env_ptr );
+                // This was an if or cond or similar, and we can
+                // go straight on to evaluate a sub-clause (allowing
+                // tail-call optimisation), change value, and jump
+                // back to the next time around the loop.
+                value = special_symbol_evaluator.ExistingValue();
                 if( value )
                 {
                     continue;
                 }
                 else
                 {
-                    // If none of the cond tests were true, we got a NULL
-                    // back, so we jump straight out here with a NULL too.
+                    // Some expressions result in NULL, e.g. a cond where
+                    // no condition matched.  If so, return NULL directly.
                     return auto_ptr<Value>( NULL );
                 }
             }
+            default:
+            {
+                // Otherwise this was not a special symbol, so continue
+                // to dealing with a compouund procedure.
+                break;
+            }
         }
 
+        CombinationValue::const_iterator cmbit = combo->begin();
+
         // Otherwise we evaluate the operator
-        auto_ptr<Value> evaldoptr = eval_in_context( ev, optr, *env_ptr );
+        auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, *env_ptr );
 
         ++cmbit; // Skip past the procedure to the arguments
 
@@ -525,8 +191,7 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
         auto_ptr<CombinationValue> argvalues( new CombinationValue );
         for( ; cmbit != combo->end(); ++cmbit )
         {
-            argvalues->push_back( eval_in_context( ev, *cmbit, *env_ptr
-                ).release() );
+            argvalues->push_back( EvalInContext( *cmbit, *env_ptr ).release() );
         }
 
         // If it's a built-in procedure, simply run it
@@ -569,7 +234,7 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
         {
             // eval_in_context returns an auto_ptr, so
             // each returned value will be deleted.
-            eval_in_context( ev, *itbody, *env_ptr );
+            EvalInContext( *itbody, *env_ptr );
         }
 
         // Now we have the last bit of the body, which is the bit
@@ -581,28 +246,6 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
 
 }
 
-
-}
-
-Evaluator::Evaluator()
-{
-    tracer_ = &null_tracer_;
-    BuiltIns::Init( global_environment_ );
-}
-
-std::auto_ptr<Value> Evaluator::Eval( const Value* value )
-{
-    // When the user entered the empty string, we have a NULL value.
-    // In this case, we simply return NULL here.
-    if( value )
-    {
-        return eval_in_context( this, value, global_environment_ );
-    }
-    else
-    {
-        return auto_ptr<Value>( NULL );
-    }
-}
 
 void Evaluator::SetTracer( Tracer* tracer )
 {

@@ -18,6 +18,7 @@
 **/
 
 #include <cassert>
+#include <sstream>
 #include <typeinfo>
 
 #include "builtins.h"
@@ -53,6 +54,12 @@ bool is_if_symbol( const SymbolValue* sym )
 {
     // TODO: case insensitive?
     return ( sym && sym->GetStringValue() == "if" );
+}
+
+bool is_cond_symbol( const SymbolValue* sym )
+{
+    // TODO: case insensitive?
+    return ( sym && sym->GetStringValue() == "cond" );
 }
 
 
@@ -232,6 +239,11 @@ bool is_false( const Value* value )
     return dynamic_cast<const FalseValue*>( value );
 }
 
+bool is_true( const Value* value )
+{
+    return !is_false( value );
+}
+
 
 const Value* process_if( Evaluator* ev, const CombinationValue* combo,
     Environment& environment )
@@ -274,6 +286,114 @@ const Value* process_if( Evaluator* ev, const CombinationValue* combo,
     return *it;
 }
 
+
+
+const Value* get_test_from_testvalue_pair( const Value* pair )
+{
+    const CombinationValue* paircombo = dynamic_cast<const CombinationValue*>(
+        pair );
+
+    if( !paircombo )
+    {
+        throw EvaluationError( "The operands to 'cond' must be pairs.  '"
+            + PrettyPrinter::Print( pair )
+            + "' is not a combination." );
+    }
+
+    if( paircombo->size() != 2 )
+    {
+        ostringstream ss;
+        ss  << "The operands to 'cond' must be pairs.  '"
+            << PrettyPrinter::Print( pair )
+            << "' has " << paircombo->size()
+            << " elements, where it should have 2.";
+
+        throw EvaluationError( ss.str() );
+    }
+
+    return *paircombo->begin();
+}
+
+const Value* get_value_from_testvalue_pair( const Value* pair )
+{
+    // TODO: avoid doing the same cast here and in get_test_from_testvalue_pair
+    const CombinationValue* paircombo = dynamic_cast<const CombinationValue*>(
+        pair );
+
+    assert( paircombo ); // We shouldn't get here without checking this in
+                         // get_test_from_testvalue_pair
+    assert( paircombo->size() == 2 ); // We shouldn't get here without
+                                      // checking this in
+                                      // get_test_from_testvalue_pair
+
+    CombinationValue::const_iterator it = paircombo->begin();
+    ++it;
+
+    return *it;
+}
+
+bool is_else( const Value* value )
+{
+    // TODO: break this file into several (and test these functions?)
+
+    const SymbolValue* sym = dynamic_cast<const SymbolValue*>( value );
+
+    // TODO: case insensitive?
+    return ( sym && sym->GetStringValue() == "else" );
+}
+
+const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment )
+{
+    // Look for pairs of predicate and value
+    // or "else" and value, which must be last.
+
+    if( combo->size() < 2 )
+    {
+        throw EvaluationError(
+            "Not enough operands to cond: there should be at least 1 "
+            "test-value pair." );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // "cond" - there are at least 2 items
+
+    ++it;
+    assert( it != combo->end() ); // test-value pair - there must be at least 1
+
+    for( ; it != combo->end(); ++it )
+    {
+        const Value* test_value_pair = *it;
+
+        const Value* test = get_test_from_testvalue_pair( test_value_pair );
+
+        if( is_else( test ) )
+        {
+            ++it;
+            if( it != combo->end() )
+            {
+                throw EvaluationError( "The else pair must be the last pair "
+                    "in a 'cond' expression.  This value was found after the "
+                    "else: '" + PrettyPrinter::Print( *it ) + "'." );
+            }
+
+            return get_value_from_testvalue_pair( test_value_pair );
+        }
+        else
+        {
+            std::auto_ptr<Value> evald_test = eval_in_context( ev, test,
+                environment );
+
+            if( is_true( evald_test.get() ) )
+            {
+                return get_value_from_testvalue_pair( test_value_pair );
+            }
+        }
+    }
+
+    // None of the conditions were true and there was no else - return NULL.
+    return NULL;
+}
 
 
 class EvalDepthMarker
@@ -375,6 +495,23 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
             // (tail-call optimisation)
             value = process_if( ev, combo, *env_ptr );
             continue;
+        }
+
+        if( is_cond_symbol( sym ) )
+        {
+            // If it's a cond, we set value and go around the loop again
+            // (tail-call optimisation)
+            value = process_cond( ev, combo, *env_ptr );
+            if( value )
+            {
+                continue;
+            }
+            else
+            {
+                // If none of the cond tests were true, we got a NULL
+                // back, so we jump straight out here with a NULL too.
+                return auto_ptr<Value>( NULL );
+            }
         }
 
         // Otherwise we evaluate the operator

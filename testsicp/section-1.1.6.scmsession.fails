@@ -3,22 +3,49 @@
 .               ((= x 0) 0)
 .               ((< x 0) (- x))))
 abs
-
-
 > (abs 3)
 3
-
 > (abs -4)
 4
+
+> (define (abs x)
+.         (cond ((< x 0) (- x))
+.               (else x)))
+abs
+> (abs 3)
+3
+> (abs -4)
+4
+
 
 > (define (abs x)
 .         (if (< x 0)
 .             (- x)
 .             x))
 abs
-
 > (abs 3)
 3
-
 > (abs -4)
 4
+
+> (define (>= x y)
+.         (or (> x y) (= x y)))
+>=
+> (>= 3 3)
+#t
+> (>= 4 3)
+#t
+> (>= 3 4)
+#f
+
+> (define (>= x y)
+.         (not (< x y)))
+>=
+> (>= 3 3)
+#t
+> (>= 4 3)
+#t
+> (>= 3 4)
+#f
+
+

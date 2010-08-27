@@ -43,30 +43,30 @@ namespace
 std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
     Environment& environment );
     
-bool is_define_symbol( const SymbolValue* sym )
+bool is_define_symbol( const SymbolValue& sym )
 {
     // TODO: case insensitive?
-    return ( sym && sym->GetStringValue() == "define" );
+    return ( sym.GetStringValue() == "define" );
 }
 
 
-bool is_if_symbol( const SymbolValue* sym )
+bool is_if_symbol( const SymbolValue& sym )
 {
     // TODO: case insensitive?
-    return ( sym && sym->GetStringValue() == "if" );
+    return ( sym.GetStringValue() == "if" );
 }
 
-bool is_cond_symbol( const SymbolValue* sym )
+bool is_cond_symbol( const SymbolValue& sym )
 {
     // TODO: case insensitive?
-    return ( sym && sym->GetStringValue() == "cond" );
+    return ( sym.GetStringValue() == "cond" );
 }
 
 
-bool is_lambda_symbol( const SymbolValue* sym )
+bool is_lambda_symbol( const SymbolValue& sym )
 {
     // TODO: case insensitive?
-    return ( sym && sym->GetStringValue() == "lambda" );
+    return ( sym.GetStringValue() == "lambda" );
 }
 
 
@@ -476,41 +476,43 @@ std::auto_ptr<Value> eval_in_context( Evaluator* ev, const Value* value,
         const Value* optr = *cmbit;
 
         // Check to see whether it's a special symbol
-
         const SymbolValue* sym = dynamic_cast<const SymbolValue*>( optr );
-
-        if( is_define_symbol( sym ) )
+        if( sym )
         {
-            return eval_define( ev, combo, *env_ptr );
-        }
-
-        if( is_lambda_symbol( sym ) )
-        {
-            return eval_lambda( combo );
-        }
-
-        if( is_if_symbol( sym ) )
-        {
-            // If it's an if, we set value and go around the loop again
-            // (tail-call optimisation)
-            value = process_if( ev, combo, *env_ptr );
-            continue;
-        }
-
-        if( is_cond_symbol( sym ) )
-        {
-            // If it's a cond, we set value and go around the loop again
-            // (tail-call optimisation)
-            value = process_cond( ev, combo, *env_ptr );
-            if( value )
+            const SymbolValue& symref = *sym;
+            if( is_define_symbol( symref ) )
             {
+                return eval_define( ev, combo, *env_ptr );
+            }
+
+            if( is_lambda_symbol( symref ) )
+            {
+                return eval_lambda( combo );
+            }
+
+            if( is_if_symbol( symref ) )
+            {
+                // If it's an if, we set value and go around the loop again
+                // (tail-call optimisation)
+                value = process_if( ev, combo, *env_ptr );
                 continue;
             }
-            else
+
+            if( is_cond_symbol( symref ) )
             {
-                // If none of the cond tests were true, we got a NULL
-                // back, so we jump straight out here with a NULL too.
-                return auto_ptr<Value>( NULL );
+                // If it's a cond, we set value and go around the loop again
+                // (tail-call optimisation)
+                value = process_cond( ev, combo, *env_ptr );
+                if( value )
+                {
+                    continue;
+                }
+                else
+                {
+                    // If none of the cond tests were true, we got a NULL
+                    // back, so we jump straight out here with a NULL too.
+                    return auto_ptr<Value>( NULL );
+                }
             }
         }
 

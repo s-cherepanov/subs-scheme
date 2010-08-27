@@ -18,6 +18,7 @@
 **/
 
 #include "assertmacros.h"
+#include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
 
 #include "testcomparators.h"
@@ -39,11 +40,28 @@ void equals_works_for_integers()
 }
 
 
+void too_few_operands_to_equals_is_an_error()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "(= 1)" );
+    }
+    catch( EvaluationError& )
+    {
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+
+
 }
 
 void TestComparators::Run() const
 {
     equals_works_for_integers();
-    //TODO too_few_operands_to_equals_is_an_error();
+    too_few_operands_to_equals_is_an_error();
 }
 

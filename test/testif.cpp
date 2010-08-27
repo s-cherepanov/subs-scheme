@@ -81,8 +81,20 @@ void everything_is_true_except_hash_f()
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(if 1 6 7)" ), "6" );
     //FAILS TEST_ASSERT_EQUAL( interpreter.Interpret( "(if \"#t\" 6 7)" ),
     //    "6" );
-    //FAILS TEST_ASSERT_EQUAL( interpreter.Interpret( "(if -1 6 7)" ), "6" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(if -1 6 7)" ), "6" );
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(if #f 6 7)" ), "7" );
+}
+
+
+void comparator_works_in_if()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret(
+        "(if (= 3 4) 6 7)" ),
+        "7" );
+
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret(
+        "(if (= 4 4) 6 7)" ),
+        "6" );
 }
 
 
@@ -95,6 +107,6 @@ void TestIf::Run() const
     too_few_args_to_if_is_an_error();
     too_many_args_to_if_is_an_error();
     everything_is_true_except_hash_f();
-    //NOTDONE comparator_works_in_if();
+    comparator_works_in_if();
 }
 

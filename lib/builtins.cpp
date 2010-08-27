@@ -21,6 +21,7 @@
 #include "dividenativefunctionvalue.h"
 #include "equalsnativefunctionvalue.h"
 #include "falsevalue.h"
+#include "lessthannativefunctionvalue.h"
 #include "minusnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
 #include "timesnativefunctionvalue.h"
@@ -61,6 +62,7 @@ void Init( Environment& environment )
 
     // Comparators
     InsertProcedure<EqualsNativeFunctionValue>( environment );
+    InsertProcedure<LessThanNativeFunctionValue>( environment );
 }
 
 }

@@ -17,39 +17,23 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef INTEGERVALUE_H
-#define INTEGERVALUE_H
+#ifndef LESSTHANNATIVEFUNCTIONVALUE_H
+#define LESSTHANNATIVEFUNCTIONVALUE_H
 
-#include <memory>
+#include "nativefunctionvalue.h"
 
-#include "value.h"
+class Environment;
 
-class IntegerValue : public Value
+class LessThanNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    explicit IntegerValue( int value );
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
 
-    IntegerValue& operator+=( const IntegerValue& other );
-    IntegerValue& operator-=( const IntegerValue& other );
-    IntegerValue& operator*=( const IntegerValue& other );
+    virtual LessThanNativeFunctionValue* Clone() const;
 
-    int GetIntValue() const;
+    virtual std::string GetName() const;
 
-    virtual IntegerValue* Clone() const;
-
-    friend bool operator==( const IntegerValue& left,
-        const IntegerValue& right );
-
-    friend bool operator!=( const IntegerValue& left,
-        const IntegerValue& right );
-
-    friend bool operator>=( const IntegerValue& left,
-        const IntegerValue& right );
-
-    friend std::auto_ptr<Value> operator/( const IntegerValue& left,
-        const IntegerValue& right );
-private:
-    int value_;
+    static const std::string& StaticName();
 };
 
 #endif

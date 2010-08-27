@@ -67,8 +67,6 @@ void lessthan_works_for_integers()
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(< 6 2 4)" ), "#f" );
 }
 
-
-
 void too_few_operands_to_lessthan_is_an_error()
 {
     bool exception_caught = false;
@@ -85,6 +83,32 @@ void too_few_operands_to_lessthan_is_an_error()
 }
 
 
+void greaterthan_works_for_integers()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(> 1 1)" ), "#f" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(> 2 1)" ), "#t" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(> 1 2)" ), "#f" );
+
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(> 6 4 2)" ), "#t" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(> 4 6 2)" ), "#f" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(> 4 2 6)" ), "#f" );
+}
+
+void too_few_operands_to_greaterthan_is_an_error()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "(> 1)" );
+    }
+    catch( EvaluationError& )
+    {
+        exception_caught = true;
+    }
+
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
 }
 
 void TestComparators::Run() const
@@ -93,5 +117,7 @@ void TestComparators::Run() const
     too_few_operands_to_equals_is_an_error();
     lessthan_works_for_integers();
     too_few_operands_to_lessthan_is_an_error();
+    greaterthan_works_for_integers();
+    too_few_operands_to_greaterthan_is_an_error();
 }
 

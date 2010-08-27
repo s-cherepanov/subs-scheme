@@ -77,6 +77,11 @@ bool operator>=( const IntegerValue& left, const IntegerValue& right )
     return ( left.value_ >= right.value_ );
 }
 
+bool operator<=( const IntegerValue& left, const IntegerValue& right )
+{
+    return ( left.value_ <= right.value_ );
+}
+
 std::auto_ptr<Value> operator/( const IntegerValue& left,
     const IntegerValue& right )
 {

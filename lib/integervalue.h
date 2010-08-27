@@ -46,6 +46,9 @@ public:
     friend bool operator>=( const IntegerValue& left,
         const IntegerValue& right );
 
+    friend bool operator<=( const IntegerValue& left,
+        const IntegerValue& right );
+
     friend std::auto_ptr<Value> operator/( const IntegerValue& left,
         const IntegerValue& right );
 private:

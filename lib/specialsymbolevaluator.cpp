@@ -180,6 +180,7 @@ std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
     return define_procedure( args->begin(), args->end(), it, combo->end() );
 }
 
+
 bool is_define_symbol( const SymbolValue& sym )
 {
     // TODO: case insensitive?
@@ -207,6 +208,13 @@ bool is_lambda_symbol( const SymbolValue& sym )
 }
 
 
+bool is_or_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "or" );
+}
+
+
 bool is_false( const Value* value )
 {
     return dynamic_cast<const FalseValue*>( value );
@@ -215,6 +223,26 @@ bool is_false( const Value* value )
 bool is_true( const Value* value )
 {
     return !is_false( value );
+}
+
+
+std::auto_ptr<Value> eval_or( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment )
+{
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() );
+    ++it;
+
+    for( ; it != combo->end(); ++it )
+    {
+        std::auto_ptr<Value> value = ev->EvalInContext( *it, environment );
+        if( is_true( value.get() ) )
+        {
+            return value;
+        }
+    }
+
+    return std::auto_ptr<Value>( new FalseValue );
 }
 
 
@@ -419,6 +447,13 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
         existing_value_ = process_cond( evaluator_, combo, environment );
 
         return eEvaluateExistingSymbol;
+    }
+
+    if( is_or_symbol( symref ) )
+    {
+        new_value_ = eval_or( evaluator_, combo, environment );
+
+        return eReturnNewValue;
     }
 
     return eNoSpecialSymbol;

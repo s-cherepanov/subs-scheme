@@ -35,6 +35,7 @@
 #include "test/testmemory.h"
 #include "test/testnewlineprocessor.h"
 #include "test/testparseconstants.h"
+#include "test/testpredicates.h"
 #include "test/testprettyprintconstants.h"
 #include "test/testrepl.h"
 #include "test/testtailcalloptimisation.h"
@@ -64,6 +65,7 @@ int main()
         TestComparators(          ).Run();
         TestTailCallOptimisation( ).Run();
         TestCond(                 ).Run();
+        TestPredicates(           ).Run();
     }
     catch( AssertionFailed& e )
     {

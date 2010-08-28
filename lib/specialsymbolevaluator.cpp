@@ -215,6 +215,13 @@ bool is_or_symbol( const SymbolValue& sym )
 }
 
 
+bool is_and_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "and" );
+}
+
+
 bool is_false( const Value* value )
 {
     return dynamic_cast<const FalseValue*>( value );
@@ -243,6 +250,47 @@ std::auto_ptr<Value> eval_or( Evaluator* ev, const CombinationValue* combo,
     }
 
     return std::auto_ptr<Value>( new FalseValue );
+}
+
+
+/**
+ * Evaluate 'and'.  If all elements before the last one are true, returns
+ * the last one.  Otherwise, return NULL, and set bool_ret to true if there
+ * were no arguments, and false if one of the arguments was false.
+ *
+ */
+const Value* eval_and( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment, bool& bool_ret )
+{
+    CombinationValue::const_iterator itlast = combo->end();
+    assert( itlast != combo->begin() );
+    --itlast;
+
+    if( itlast == combo->begin() )
+    {
+        // There were no arguments - we must return true
+        bool_ret = true;
+        return NULL;
+    }
+    
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() );
+    ++it;
+
+    for( ; it != itlast; ++it )
+    {
+        std::auto_ptr<Value> value = ev->EvalInContext( *it, environment );
+        if( is_false( value.get() ) )
+        {
+            // One of the arguments was false - we must return false
+            bool_ret = false;
+            return NULL;
+        }
+    }
+
+    // All arguments except the last were true - return the last (it may
+    // be either true or false).
+    return *itlast;
 }
 
 
@@ -454,6 +502,29 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
         new_value_ = eval_or( evaluator_, combo, environment );
 
         return eReturnNewValue;
+    }
+
+    if( is_and_symbol( symref ) )
+    {
+        bool bool_ret = false;
+        existing_value_ = eval_and( evaluator_, combo, environment, bool_ret );
+
+        if( existing_value_ )
+        {
+            return eEvaluateExistingSymbol;
+        }
+        else
+        {
+            if( bool_ret )
+            {
+                new_value_.reset( new TrueValue );
+            }
+            else
+            {
+                new_value_.reset( new FalseValue );
+            }
+            return eReturnNewValue;
+        }
     }
 
     return eNoSpecialSymbol;

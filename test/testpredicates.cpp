@@ -51,6 +51,33 @@ void or_multiple_things()
 }
 
 
+
+void and_nothing_is_true()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and)" ), "#t" );
+}
+
+
+void and_one_thing()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and #t)" ), "#t" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and #f)" ), "#f" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and 1)" ), "1" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and (= 1 1))" ), "#t" );
+}
+
+
+void and_multiple_things()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and #t #t #f)" ), "#f" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and #f #f #t)" ), "#f" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and #t #t #t)" ), "#t" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and #t 1 3)" ), "3" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(and (= 1 1) (= 2 1))" ),
+        "#f" );
+}
+
+
 }
 
 void TestPredicates::Run() const
@@ -58,5 +85,8 @@ void TestPredicates::Run() const
     or_nothing_is_false();
     or_one_thing();
     or_multiple_things();
+    and_nothing_is_true();
+    and_one_thing();
+    and_multiple_things();
 }
 

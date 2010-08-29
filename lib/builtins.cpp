@@ -24,6 +24,7 @@
 #include "greaterthannativefunctionvalue.h"
 #include "lessthannativefunctionvalue.h"
 #include "minusnativefunctionvalue.h"
+#include "notnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
 #include "timesnativefunctionvalue.h"
 #include "truevalue.h"
@@ -60,11 +61,15 @@ void Init( Environment& environment )
     InsertProcedure<TimesNativeFunctionValue>( environment );
     InsertProcedure<DivideNativeFunctionValue>( environment );
 
-
     // Comparators
     InsertProcedure<EqualsNativeFunctionValue>( environment );
     InsertProcedure<GreaterThanNativeFunctionValue>( environment );
     InsertProcedure<LessThanNativeFunctionValue>( environment );
+
+    // Boolean logic
+    InsertProcedure<NotNativeFunctionValue>( environment );
+    // and and or are not procedures, so are dealt with
+    // in SpecialSymbolEvaluator.
 }
 
 }

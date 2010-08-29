@@ -18,6 +18,7 @@
 **/
 
 #include "assertmacros.h"
+#include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
 
 #include "testpredicates.h"
@@ -78,6 +79,46 @@ void and_multiple_things()
 }
 
 
+void not_nothing_is_an_error()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "(not)" );
+    }
+    catch( EvaluationError& )
+    {
+        exception_caught = true;
+    }
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+
+
+void not_two_things_is_an_error()
+{
+    bool exception_caught = false;
+    try
+    {
+        SubsInterpreter().Interpret( "(not 5 6)" );
+    }
+    catch( EvaluationError& )
+    {
+        exception_caught = true;
+    }
+    TEST_ASSERT_TRUE( exception_caught );
+}
+
+
+void not_reverses_truthvalue()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(not #t)" ), "#f" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(not #f)" ), "#t" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(not (= 3 2))" ), "#t" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(not (= 1 1))" ), "#f" );
+}
+
+
 }
 
 void TestPredicates::Run() const
@@ -88,5 +129,8 @@ void TestPredicates::Run() const
     and_nothing_is_true();
     and_one_thing();
     and_multiple_things();
+    not_nothing_is_an_error();
+    not_two_things_is_an_error();
+    not_reverses_truthvalue();
 }
 

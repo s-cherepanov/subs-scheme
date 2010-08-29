@@ -80,6 +80,55 @@ void bad_count_cant_be_optimised()
 }
 
 
+void and_count_optimised()
+{
+    SubsInterpreter interpreter;
+
+    EvalDepthTracer tracer;
+    interpreter.SetTracer( &tracer );
+
+    interpreter.Interpret(
+        "(define (andcount n)"
+        "        (if (= n 1)"
+        "            1"
+        "            (and (> n 1)" // Unnecessary check that n > 1
+        "                 (andcount (- n 1)))))"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(andcount 1)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(andcount 2)" ), "1" );
+
+    interpreter.Interpret( "(andcount 10)" );
+
+    // Even though Lisp recursed to 10 levels, the C++ stack never got beyond 3
+    TEST_ASSERT_EQUAL( tracer.GetMaxEvalDepth(), 3 );
+}
+
+
+void bad_and_count_cant_be_optimised()
+{
+    SubsInterpreter interpreter;
+
+    EvalDepthTracer tracer;
+    interpreter.SetTracer( &tracer );
+
+    interpreter.Interpret(
+        "(define (badandcount n)"
+        "        (if (= n 1)"
+        "            1"
+        "            (and (badandcount (- n 1))" // order of 'and' args reversed
+        "                 (> n 1))))"
+        );
+
+    interpreter.Interpret( "(badandcount 10)" );
+
+    // Because the tail-call optimisation is not available, the C++ stack
+    // had to go to as many levels as the Lisp stack
+    TEST_ASSERT_EQUAL( tracer.GetMaxEvalDepth(), 12 );
+}
+
+
+
 
 
 }
@@ -88,6 +137,8 @@ void TestTailCallOptimisation::Run() const
 {
     count_optimised();
     bad_count_cant_be_optimised();
+    and_count_optimised();
+    bad_and_count_cant_be_optimised();
 }
 
 

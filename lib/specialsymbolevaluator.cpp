@@ -223,34 +223,44 @@ bool is_and_symbol( const SymbolValue& sym )
 }
 
 
-std::auto_ptr<Value> eval_or( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
+class AndProperties
 {
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() );
-    ++it;
-
-    for( ; it != combo->end(); ++it )
+public:
+    static bool EarlyExit( const Value* value )
     {
-        std::auto_ptr<Value> value = ev->EvalInContext( *it, environment );
-        if( ValueUtilities::IsTrue( value.get() ) )
-        {
-            return value;
-        }
+        return ValueUtilities::IsFalse( value );
     }
 
-    return std::auto_ptr<Value>( new FalseValue );
-}
+    static std::auto_ptr<Value> NoArgumentsReturnValue()
+    {
+        return std::auto_ptr<Value>( new TrueValue );
+    }
+};
+
+
+class OrProperties
+{
+public:
+    static bool EarlyExit( const Value* value )
+    {
+        return ValueUtilities::IsTrue( value );
+    }
+
+    static std::auto_ptr<Value> NoArgumentsReturnValue()
+    {
+        return std::auto_ptr<Value>( new FalseValue );
+    }
+};
 
 
 /**
- * Evaluate 'and'.  If all elements before the last one are true, returns
- * the last one.  Otherwise, return NULL, and set bool_ret to true if there
- * were no arguments, and false if one of the arguments was false.
- *
+ * Evaluate 'and' or 'or'.  If we can tail-call optimise, we return a
+ * pointer to the existing value that can be evaluated.  Otherwise,
+ * set new_value_ to the newly-allocated value to return.
  */
-const Value* eval_and( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, bool& bool_ret )
+template<class PredicateProperties>
+const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment, std::auto_ptr<Value>& new_value_ )
 {
     CombinationValue::const_iterator itlast = combo->end();
     assert( itlast != combo->begin() );
@@ -258,8 +268,8 @@ const Value* eval_and( Evaluator* ev, const CombinationValue* combo,
 
     if( itlast == combo->begin() )
     {
-        // There were no arguments - we must return true
-        bool_ret = true;
+        // There were no arguments - we must return the correct answer
+        new_value_ = PredicateProperties::NoArgumentsReturnValue();
         return NULL;
     }
     
@@ -270,15 +280,15 @@ const Value* eval_and( Evaluator* ev, const CombinationValue* combo,
     for( ; it != itlast; ++it )
     {
         std::auto_ptr<Value> value = ev->EvalInContext( *it, environment );
-        if( ValueUtilities::IsFalse( value.get() ) )
+        if( PredicateProperties::EarlyExit( value.get() ) )
         {
-            // One of the arguments was false - we must return false
-            bool_ret = false;
+            // One of the arguments allow us to exit early - set the answer
+            new_value_ = value;
             return NULL;
         }
     }
 
-    // All arguments except the last were true - return the last (it may
+    // None of the early arguments caused us to exit - return the last (it may
     // be either true or false).
     return *itlast;
 }
@@ -489,30 +499,34 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     if( is_or_symbol( symref ) )
     {
-        new_value_ = eval_or( evaluator_, combo, environment );
-
-        return eReturnNewValue;
-    }
-
-    if( is_and_symbol( symref ) )
-    {
-        bool bool_ret = false;
-        existing_value_ = eval_and( evaluator_, combo, environment, bool_ret );
+        existing_value_ = eval_predicate<OrProperties>( evaluator_, combo,
+            environment, new_value_ );
 
         if( existing_value_ )
         {
+            assert( !new_value_.get() );
             return eEvaluateExistingSymbol;
         }
         else
         {
-            if( bool_ret )
-            {
-                new_value_.reset( new TrueValue );
-            }
-            else
-            {
-                new_value_.reset( new FalseValue );
-            }
+            assert( new_value_.get() );
+            return eReturnNewValue;
+        }
+    }
+
+    if( is_and_symbol( symref ) )
+    {
+        existing_value_ = eval_predicate<AndProperties>( evaluator_, combo,
+            environment, new_value_ );
+
+        if( existing_value_ )
+        {
+            assert( !new_value_.get() );
+            return eEvaluateExistingSymbol;
+        }
+        else
+        {
+            assert( new_value_.get() );
             return eReturnNewValue;
         }
     }

@@ -30,6 +30,7 @@
 #include "symbolvalue.h"
 #include "specialsymbolevaluator.h"
 #include "truevalue.h"
+#include "valueutilities.h"
 
 using namespace std;
 
@@ -222,17 +223,6 @@ bool is_and_symbol( const SymbolValue& sym )
 }
 
 
-bool is_false( const Value* value )
-{
-    return dynamic_cast<const FalseValue*>( value );
-}
-
-bool is_true( const Value* value )
-{
-    return !is_false( value );
-}
-
-
 std::auto_ptr<Value> eval_or( Evaluator* ev, const CombinationValue* combo,
     Environment& environment )
 {
@@ -243,7 +233,7 @@ std::auto_ptr<Value> eval_or( Evaluator* ev, const CombinationValue* combo,
     for( ; it != combo->end(); ++it )
     {
         std::auto_ptr<Value> value = ev->EvalInContext( *it, environment );
-        if( is_true( value.get() ) )
+        if( ValueUtilities::IsTrue( value.get() ) )
         {
             return value;
         }
@@ -280,7 +270,7 @@ const Value* eval_and( Evaluator* ev, const CombinationValue* combo,
     for( ; it != itlast; ++it )
     {
         std::auto_ptr<Value> value = ev->EvalInContext( *it, environment );
-        if( is_false( value.get() ) )
+        if( ValueUtilities::IsFalse( value.get() ) )
         {
             // One of the arguments was false - we must return false
             bool_ret = false;
@@ -326,7 +316,7 @@ const Value* process_if( Evaluator* ev, const CombinationValue* combo,
     std::auto_ptr<Value> evald_pred = ev->EvalInContext( predicate,
         environment );
 
-    if( is_false( evald_pred.get() ) )
+    if( ValueUtilities::IsFalse( evald_pred.get() ) )
     {
         ++it; // Move to "false" value
         assert( it != combo->end() );
@@ -433,7 +423,7 @@ const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
             std::auto_ptr<Value> evald_test = ev->EvalInContext( test,
                 environment );
 
-            if( is_true( evald_test.get() ) )
+            if( ValueUtilities::IsTrue( evald_test.get() ) )
             {
                 return get_value_from_testvalue_pair( test_value_pair );
             }

@@ -17,6 +17,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
+NAME="subs-scheme"
+VERSION="1.1.6"
+
+NAMVER="%s-%s" % ( NAME, VERSION )
+
 env = Environment(
 	CCFLAGS = '-Wall -Werror -g',
 	CPPPATH = '.',
@@ -52,6 +57,14 @@ testvalgrind_cmd = env.Command( ".testvalgrind.passed", ["subs","test_subs"],
 	"valgrind --quiet --leak-check=full ./test_subs && echo 'Passed' > .testvalgrind.passed" )
 env.Alias( "testvalgrind", testvalgrind_cmd )
 
+Default( test_cmd, testslow_cmd, testsicp_cmd, testvalgrind_cmd )
 
-env.Alias( "testall", ["testvalgrind", "testslow", "testsicp" ] )
+pkg_src_cmd = env.Command( "pkg/%s.tar.gz" % ( NAMVER ),
+	[".test.passed"],
+	( "mkdir -p pkg; git archive --prefix=%s/ --format=tar %s | "
+		+ "gzip - > pkg/%s.tar.gz" ) % (
+		NAMVER, NAMVER, NAMVER ) )
+pkg_src_alias = env.Alias( "pkg-src", pkg_src_cmd )
+
+env.Alias( "pkg", [pkg_src_alias] )
 

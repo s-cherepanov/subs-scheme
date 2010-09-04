@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "combinationvalue.h"
+#include "decimalvalue.h"
 #include "evaluationerror.h"
 #include "falsevalue.h"
 #include "integervalue.h"
@@ -36,8 +37,6 @@ using namespace std;
 std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    // TODO: values other than integers
-
     CombinationValue::const_iterator it = argvalues->begin();
 
     if( it == argvalues->end() )
@@ -46,13 +45,18 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
             "be at least 2." );
     }
 
-    const IntegerValue* previous = dynamic_cast<const IntegerValue*>( *it );
+    const IntegerValue* previous_int = dynamic_cast<const IntegerValue*>( *it );
+    const DecimalValue* previous_dec = NULL;
 
-    if( !previous )
+    if( !previous_int )
     {
-        throw EvaluationError( "Wrong operand type for >: an integer was "
-            "expected, but '" + PrettyPrinter::Print( *it )
-            + "' is not an integer." );
+        previous_dec = dynamic_cast<const DecimalValue*>( *it );
+        if( !previous_dec )
+        {
+            throw EvaluationError( "Wrong operand type for >: a number was "
+                "expected, but '" + PrettyPrinter::Print( *it )
+                + "' is not a number." );
+        }
     }
 
     ++it;
@@ -65,20 +69,65 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
 
     for( ; it != argvalues->end(); ++it )
     {
-        const IntegerValue* operand = dynamic_cast<IntegerValue*>( *it );
-        if( !operand )
+        const IntegerValue* operand_int = dynamic_cast<const IntegerValue*>(
+            *it );
+        const DecimalValue* operand_dec = NULL;
+        if( !operand_int )
         {
-            // TODO: consistent error messages for all builtins
-            throw EvaluationError( "Wrong operand type for >: an integer was "
-                " expected, but '" + PrettyPrinter::Print( *it )
-                + "' is not an integer." );
+            operand_dec = dynamic_cast<const DecimalValue*>( *it );
+            if( !operand_dec )
+            {
+                // TODO: consistent error messages for all builtins
+                throw EvaluationError( "Wrong operand type for >: a number "
+                    "was expected, but '" + PrettyPrinter::Print( *it )
+                    + "' is not a number." );
+            }
         }
 
-        if( *previous <= *operand )
+        // TODO: better implementation?
+        // TODO: combine implementation with <
+        if( previous_int )
         {
-            return auto_ptr<Value>( new FalseValue );
+            if( operand_int )
+            {
+                if( *previous_int <= *operand_int )
+                {
+                    return auto_ptr<Value>( new FalseValue );
+                }
+                previous_int = operand_int;
+                previous_dec = NULL;
+            }
+            else
+            {
+                if( *previous_int <= *operand_dec )
+                {
+                    return auto_ptr<Value>( new FalseValue );
+                }
+                previous_int = NULL;
+                previous_dec = operand_dec;
+            }
         }
-        previous = operand;
+        else
+        {
+            if( operand_int )
+            {
+                if( *previous_dec <= *operand_int )
+                {
+                    return auto_ptr<Value>( new FalseValue );
+                }
+                previous_int = operand_int;
+                previous_dec = NULL;
+            }
+            else
+            {
+                if( *previous_dec <= *operand_dec )
+                {
+                    return auto_ptr<Value>( new FalseValue );
+                }
+                previous_int = NULL;
+                previous_dec = operand_dec;
+            }
+        }
     }
 
     return auto_ptr<Value>( new TrueValue );

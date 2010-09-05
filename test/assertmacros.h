@@ -44,6 +44,14 @@
 #define TEST_ASSERT_CAN_FIND(LOOKIN,LOOKFOR) \
     assertfns::can_find(__FILE__, __LINE__, #LOOKIN, #LOOKFOR, LOOKIN, LOOKFOR);
 
+#define TEST_ASSERT_THROWS_BEGIN try
+
+#define TEST_ASSERT_THROWS_END(EXPECTED) \
+    catch( EvaluationError& e ) \
+    { \
+        TEST_ASSERT_CAN_FIND(e.ToString(),EXPECTED); \
+    }
+
 namespace assertfns
 {
 

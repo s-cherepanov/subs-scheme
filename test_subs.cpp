@@ -32,6 +32,7 @@
 #include "test/testif.h"
 #include "test/testlambda.h"
 #include "test/testlexer.h"
+#include "test/testmaths.h"
 #include "test/testmemory.h"
 #include "test/testnewlineprocessor.h"
 #include "test/testparseconstants.h"
@@ -66,6 +67,7 @@ int main()
         TestTailCallOptimisation( ).Run();
         TestCond(                 ).Run();
         TestPredicates(           ).Run();
+        TestMaths(                ).Run();
     }
     catch( AssertionFailed& e )
     {

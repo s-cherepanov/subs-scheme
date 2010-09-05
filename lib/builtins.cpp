@@ -23,6 +23,7 @@
 #include "falsevalue.h"
 #include "greaterthannativefunctionvalue.h"
 #include "lessthannativefunctionvalue.h"
+#include "lognativefunctionvalue.h"
 #include "minusnativefunctionvalue.h"
 #include "notnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
@@ -70,6 +71,9 @@ void Init( Environment& environment )
     InsertProcedure<NotNativeFunctionValue>( environment );
     // and and or are not procedures, so are dealt with
     // in SpecialSymbolEvaluator.
+
+    // Mathematical functions
+    InsertProcedure<LogNativeFunctionValue>( environment );
 }
 
 }

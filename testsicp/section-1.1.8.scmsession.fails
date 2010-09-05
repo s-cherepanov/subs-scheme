@@ -9,7 +9,7 @@ double
 square
 
 > (square 4)
-16
+16.0
 
 > (define (square x) (* x x))
 square
@@ -31,7 +31,7 @@ improve
 good-enough?
 > (define (sqrt-iter guess x)
 .         (if (good-enough? guess x)
-.             guess
+.             guess 
 .             (sqrt-iter (improve guess x) x)))
 sqrt-iter
 > (define (sqrt x)
@@ -39,7 +39,7 @@ sqrt-iter
 sqrt
 
 > (sqrt 16)
-4
+4.0
 
 > (define (sqrt x)
 .         (define (good-enough? guess x)
@@ -48,13 +48,13 @@ sqrt
 .                 (average guess (/ x guess)))
 .         (define (sqrt-iter guess x)
 .                 (if (good-enough? guess x)
-.                     guess
+.                     guess 
 .                     (sqrt-iter (improve guess x) x)))
 .         (sqrt-iter 1.0 x))
 sqrt
 
 > (sqrt 16)
-4
+4.0
 
 
 > (define (sqrt x)
@@ -64,12 +64,12 @@ sqrt
 .                 (average guess (/ x guess)))
 .         (define (sqrt-iter guess)
 .                 (if (good-enough? guess)
-.                     guess
+.                     guess 
 .                     (sqrt-iter (improve guess))))
 .         (sqrt-iter 1.0))
 sqrt
 
 > (sqrt 16)
-4
+4.0
 
 

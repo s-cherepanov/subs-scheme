@@ -65,6 +65,33 @@ void log_calculates_ln_base_e()
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(log 10)" ), "2.30259" );
 }
 
+void exp_wrong_number_of_args_is_an_error()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(exp)" );
+    }
+    TEST_ASSERT_THROWS_END("Not enough")
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(exp 1 2)" );
+    }
+    TEST_ASSERT_THROWS_END("Too many")
+}
+
+
+void exp_returns_e_to_the_x()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(exp 1)" ), "2.71828" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(exp 2)" ), "7.38906" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(exp 10)" ), "22026.5" );
+}
+
+
 }
 
 void TestMaths::Run() const
@@ -72,5 +99,7 @@ void TestMaths::Run() const
     log_no_args_is_an_error();
     log_two_args_is_an_error();
     log_calculates_ln_base_e();
+    exp_wrong_number_of_args_is_an_error();
+    exp_returns_e_to_the_x();
 }
 

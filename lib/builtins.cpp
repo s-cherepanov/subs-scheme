@@ -20,6 +20,7 @@
 #include "environment.h"
 #include "dividenativefunctionvalue.h"
 #include "equalsnativefunctionvalue.h"
+#include "expnativefunctionvalue.h"
 #include "falsevalue.h"
 #include "greaterthannativefunctionvalue.h"
 #include "lessthannativefunctionvalue.h"
@@ -73,6 +74,7 @@ void Init( Environment& environment )
     // in SpecialSymbolEvaluator.
 
     // Mathematical functions
+    InsertProcedure<ExpNativeFunctionValue>( environment );
     InsertProcedure<LogNativeFunctionValue>( environment );
 }
 

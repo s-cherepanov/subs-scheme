@@ -30,7 +30,7 @@ class Lexer;
 class BracketMatcher
 {
 public:
-    BracketMatcher( Lexer& lexer, std::ostream& out, bool print_prompt );
+    BracketMatcher( Lexer& lexer, std::ostream& out, bool print_continuation );
 
     ~BracketMatcher();
 
@@ -45,6 +45,7 @@ public:
 private:
     Lexer& lexer_;
     NewLineProcessor newline_processor_;
+    bool print_continuation_;
 };
 
 #endif

@@ -50,10 +50,11 @@ void write_welcome( ostream& out )
 
 }
 
-SubsRepl::SubsRepl( bool print_prompt /*= true */,
-    bool print_welcome /*= true*/ )
-: print_prompt_( print_prompt )
-, print_welcome_( print_welcome )
+SubsRepl::SubsRepl( int responses
+    /*= ePrintPrompt | ePrintContinuation | ePrintWelcome*/ )
+: print_prompt_(       responses & ePrintPrompt )
+, print_continuation_( responses & ePrintContinuation )
+, print_welcome_(      responses & ePrintWelcome )
 {
 }
 
@@ -65,7 +66,7 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
     }
 
     Lexer lexer( in );
-    BracketMatcher matcher( lexer, out, print_prompt_ );
+    BracketMatcher matcher( lexer, out, print_continuation_ );
 
     try
     {

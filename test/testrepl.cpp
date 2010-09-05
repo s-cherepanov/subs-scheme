@@ -36,7 +36,7 @@ namespace
     ostringstream out; \
     ostringstream err; \
 \
-    int retval = SubsRepl( false, false ).Run( in, out, err ); \
+    int retval = SubsRepl( SubsRepl::ePrintContinuation ).Run( in, out, err ); \
 \
     TEST_ASSERT_EQUAL( retval, 0 ); \
     TEST_ASSERT_EQUAL( err.str(), "" ); \
@@ -50,7 +50,7 @@ void prompt_gets_written()
     ostringstream out;
     ostringstream err;
 
-    int retval = SubsRepl( true, false ).Run( in, out, err );
+    int retval = SubsRepl( SubsRepl::ePrintPrompt ).Run( in, out, err );
 
     TEST_ASSERT_EQUAL( retval, 0 );
     TEST_ASSERT_EQUAL( err.str(), "" );
@@ -75,7 +75,7 @@ void bare_undefined_symbol_reports_error()
     ostringstream out;
     ostringstream err;
 
-    int retval = SubsRepl( false, false ).Run( in, out, err );
+    int retval = SubsRepl( SubsRepl::eNoResponse ).Run( in, out, err );
 
     TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
@@ -88,7 +88,7 @@ void undefined_symbol_operator_reports_error()
     ostringstream out;
     ostringstream err;
 
-    int retval = SubsRepl( false, false ).Run( in, out, err );
+    int retval = SubsRepl( SubsRepl::eNoResponse ).Run( in, out, err );
 
     TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
@@ -101,7 +101,7 @@ void undefined_symbol_operand_reports_error()
     ostringstream out;
     ostringstream err;
 
-    int retval = SubsRepl( false, false ).Run( in, out, err );
+    int retval = SubsRepl( SubsRepl::eNoResponse ).Run( in, out, err );
 
     TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
@@ -146,7 +146,9 @@ void pressing_return_emits_dot()
     ostringstream out;
     ostringstream err;
 
-    int retval = SubsRepl( true, false ).Run( in, out, err );
+    int retval = SubsRepl(
+        SubsRepl::ePrintPrompt | SubsRepl::ePrintContinuation ).Run(
+            in, out, err );
 
     TEST_ASSERT_EQUAL( retval, 0 );
     TEST_ASSERT_EQUAL( err.str(), "" );

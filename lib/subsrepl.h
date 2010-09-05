@@ -29,7 +29,16 @@
 class SubsRepl
 {
 public:
-    SubsRepl( bool print_prompt = true, bool print_welcome = true );
+    enum EResponses
+    {
+          eNoResponse        = 0
+        , ePrintPrompt       = 1
+        , ePrintContinuation = 2
+        , ePrintWelcome      = 4
+    };
+
+    SubsRepl( int responses =
+        ePrintPrompt | ePrintContinuation | ePrintWelcome );
 
     int Run( std::istream& in, std::ostream& out, std::ostream& err );
 
@@ -37,6 +46,7 @@ private:
     SubsInterpreter interpreter_;
 
     bool print_prompt_;
+    bool print_continuation_;
     bool print_welcome_;
 };
 

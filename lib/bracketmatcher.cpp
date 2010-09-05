@@ -24,11 +24,12 @@
 #include "tokenlist.h"
 
 BracketMatcher::BracketMatcher( Lexer& lexer, std::ostream& out,
-    bool print_prompt )
+    bool print_continuation )
 : lexer_( lexer )
 , newline_processor_( out )
+, print_continuation_( print_continuation )
 {
-    if( print_prompt )
+    if( print_continuation )
     {
         lexer_.SetNewLineProcessor( &newline_processor_ );
     }
@@ -119,7 +120,7 @@ TokenList BracketMatcher::ReadCombination()
         // If the lexer's token ended with newline, it couldn't call
         // newline (because we hadn't processed the token yet).  We
         // have now processed it, so we can call NewLine now.
-        if( lexer_.EndedWithNewLine() )
+        if( print_continuation_ && lexer_.EndedWithNewLine() )
         {
             newline_processor_.NewLine();
         }

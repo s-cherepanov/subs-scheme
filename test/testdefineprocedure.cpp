@@ -244,6 +244,22 @@ void double_recursive_procedure()
 }
 
 
+void define_proc_inside_proc()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (add-two-three n)"
+        "        (define (add-two n)"
+        "                (+ n 2))"
+        "        (+ (add-two n) 3 ))"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(add-two-three 2)" ), "7" );
+}
+
+
+
 
 }
 
@@ -261,6 +277,8 @@ void TestDefineProcedure::Run() const
     define_doesnt_leak_out();
     recursive_procedure();
     double_recursive_procedure();
+    define_proc_inside_proc();
+    //define_proc_inside_proc_overrides_previous();
 }
 
 

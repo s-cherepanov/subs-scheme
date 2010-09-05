@@ -67,7 +67,7 @@ b
 > (= a b)
 #f
 > (if (and (> b a) (< b (* a b)))
-.     b 
+.     b
 .     a)
 4
 > (cond ((= a 4) 6)

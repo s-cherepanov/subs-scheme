@@ -260,6 +260,56 @@ void define_proc_inside_proc()
 
 
 
+void define_proc_inside_proc_overrides_previous()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (add-two x y)"
+        "        1)" );
+    interpreter.Interpret(
+        "(define (add-two-three n)"
+        "        (define (add-two n)"
+        "                (+ n 2))"
+        "        (+ (add-two n) 3 ))"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(add-two-three 2)" ), "7" );
+}
+
+
+void good_enough_bug()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (square x)"
+        "        (* x x))" );
+
+    interpreter.Interpret(
+        "(define (average x y)"
+        "        (/ (+ x y) 2))" );
+
+    interpreter.Interpret(
+        "(define (abs x)"
+        "        (cond ((< x 0) (- x))"
+        "              (else x)))" );
+
+    interpreter.Interpret(
+        "(define (sqrt x)"
+        "        (define (good-enough? guess)"
+        "                (< (abs (- (square guess) x)) 0.001))"
+        "        (define (improve guess)"
+        "                (average guess (/ x guess)))"
+        "        (define (sqrt-iter guess)"
+        "                (if (good-enough? guess)"
+        "                    guess"
+        "                    (sqrt-iter (improve guess))))"
+        "        (sqrt-iter 1.0))" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(sqrt 16)" ), "4.0" );
+}
+
 
 }
 
@@ -278,7 +328,8 @@ void TestDefineProcedure::Run() const
     recursive_procedure();
     double_recursive_procedure();
     define_proc_inside_proc();
-    //define_proc_inside_proc_overrides_previous();
+    define_proc_inside_proc_overrides_previous();
+    good_enough_bug();
 }
 
 

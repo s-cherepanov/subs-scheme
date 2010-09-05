@@ -23,6 +23,8 @@
 
 #include "builtins.h"
 #include "combinationvalue.h"
+#include "environment.h"
+#include "environmentholder.h"
 #include "evaluationerror.h"
 #include "equalsnativefunctionvalue.h"
 #include "nativefunctionvalue.h"
@@ -107,7 +109,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
     // TODO: replace switch-style dispatch with a virtual method on Value
 
     auto_ptr<Value> new_value;
-    auto_ptr<Environment> new_env;
+    EnvironmentHolder env_holder;
     Environment* env_ptr = &environment;
 
     // This loop continues every time we can do a tail-call optimisation.
@@ -218,9 +220,9 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         // Replace the current environment with one containing the
         // original environment and the argument values of the new
         // procedure.
-        new_env = proc->ExtendEnvironmentWithArgs( argvalues.get(),
-            environment );
-        env_ptr = new_env.get();
+        env_holder.push_back( proc->ExtendEnvironmentWithArgs( argvalues.get(),
+            *env_ptr ).release() );
+        env_ptr = env_holder.back();
 
         CombinationValue::const_iterator itbody = proc->GetBody()->begin();
         CombinationValue::const_iterator itbodyend = proc->GetBody()->end();

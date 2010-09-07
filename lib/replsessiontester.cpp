@@ -51,7 +51,7 @@ int check_sessions_identical( const string& input, const string& actual_output,
 }
 
 int process_file_loop( const string& firstline, istream& instream,
-    SubsRepl& repl )
+    SubsRepl& repl, ostringstream& output_stream )
 {
     int ret = 0;
 
@@ -82,13 +82,14 @@ int process_file_loop( const string& firstline, istream& instream,
         if( run_now )
         {
             stringstream input_stream;
-            ostringstream output_stream;
             input_stream << inputline;
 
-            repl.Run( input_stream, output_stream, output_stream );
+            repl.Run( input_stream, output_stream );
 
             ret = check_sessions_identical( inputline,
                 output_stream.str(), expected );
+
+            output_stream.str( "" );
 
             if( line.size() > 1 )
             {
@@ -140,14 +141,15 @@ int get_first_input_line( istream& instream, const string& filename,
     return 0;
 }
 
-int process_file( istream& instream, SubsRepl& repl, const string& filename )
+int process_file( istream& instream, SubsRepl& repl,
+    ostringstream& output_stream, const string& filename )
 {
     string inputline;
     int ret = get_first_input_line( instream, filename, inputline );
 
     if( ret == 0 )
     {
-        return process_file_loop( inputline, instream, repl );
+        return process_file_loop( inputline, instream, repl, output_stream );
     }
     else
     {
@@ -159,7 +161,8 @@ int process_file( istream& instream, SubsRepl& repl, const string& filename )
 
 int ReplSessionTester::Run( const std::vector<std::string>& filenames )
 {
-    SubsRepl repl( SubsRepl::eNoResponse );
+    ostringstream output_stream;
+    SubsRepl repl( output_stream, SubsRepl::eNoResponse );
 
     int ret = 0;
     for( vector<string>::const_iterator it = filenames.begin();
@@ -175,7 +178,7 @@ int ReplSessionTester::Run( const std::vector<std::string>& filenames )
             break;
         }
 
-        ret = process_file( instream, repl, *it );
+        ret = process_file( instream, repl, output_stream, *it );
 
         if( ret != 0 )
         {

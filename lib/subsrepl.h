@@ -37,12 +37,13 @@ public:
         , ePrintWelcome      = 4
     };
 
-    SubsRepl( int responses =
-        ePrintPrompt | ePrintContinuation | ePrintWelcome );
+    SubsRepl( std::ostream& outstream,
+        int responses = ePrintPrompt | ePrintContinuation | ePrintWelcome );
 
-    int Run( std::istream& in, std::ostream& out, std::ostream& err );
+    int Run( std::istream& in, std::ostream& err );
 
 private:
+    std::ostream& outstream_;
     SubsInterpreter interpreter_;
 
     bool print_prompt_;

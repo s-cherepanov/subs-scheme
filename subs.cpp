@@ -43,25 +43,25 @@ int main( int argc, char * const argv[] )
     }
     else if( nonoptions.empty() )
     {
-        return SubsRepl().Run( cin, cout, cerr );
+        return SubsRepl( cout ).Run( cin, cerr );
     }
     else
     {
-        SubsInterpreter interpreter;
+        SubsInterpreter interpreter( cout );
         int ret = 0;
         for( vector<string>::const_iterator it = nonoptions.begin();
             it != nonoptions.end(); ++it )
         {
             if( *it == "-" )
             {
-                ret = interpreter.InterpretStream( cin, cout );
+                interpreter.InterpretStream( cin );
             }
             else
             {
                 ifstream instream( it->c_str() );
                 if( instream.good() )
                 {
-                    ret = interpreter.InterpretStream( instream, cout );
+                    interpreter.InterpretStream( instream );
                 }
                 else
                 {

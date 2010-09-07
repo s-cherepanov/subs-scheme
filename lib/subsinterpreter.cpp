@@ -31,47 +31,68 @@
 
 using namespace std;
 
-std::string SubsInterpreter::Interpret( const std::string& codestring )
+
+namespace
 {
-    istringstream ss( codestring );
-    Lexer lexer( ss );
-    Parser parser( lexer );
 
-    return PrettyPrinter::Print( evaluator_.Eval( parser.NextValue().get()
-        ).get() );
-}
-
-std::string SubsInterpreter::InterpretTokens( TokenList& tokens )
+void interpret_values( Parser& parser, Evaluator& evaluator,
+    ostream& outstream, bool print_newline )
 {
-    Parser parser( tokens );
-
-    return PrettyPrinter::Print( evaluator_.Eval( parser.NextValue().get()
-        ).get() );
-}
-
-int SubsInterpreter::InterpretStream( std::istream& instream,
-    std::ostream& outstream )
-{
-    Lexer lexer( instream );
-    Parser parser( lexer );
-
     auto_ptr<Value> value = parser.NextValue();
     while( value.get() )
     {
-        string output = PrettyPrinter::Print( evaluator_.Eval( value.get()
+        string output = PrettyPrinter::Print( evaluator.Eval( value.get()
             ).get() );
 
         if( !output.empty() )
         {
-            outstream << output << endl;
+            outstream << output;
+            if( print_newline )
+            {
+                outstream << endl;
+            }
         }
 
         value = parser.NextValue();
     }
+}
 
-    // TODO: handle parse errors
+}
 
-    return 0;
+
+SubsInterpreter::SubsInterpreter( std::ostream& outstream /*= std::cout*/ )
+: outstream_( outstream )
+{
+}
+
+std::string SubsInterpreter::Interpret( const std::string& codestring )
+{
+    istringstream in( codestring );
+    ostringstream out;
+
+    Lexer lexer( in );
+    Parser parser( lexer );
+
+    interpret_values( parser, evaluator_, out, false );
+
+    return out.str();
+}
+
+void SubsInterpreter::InterpretTokens( TokenList& tokens )
+{
+    Parser parser( tokens );
+
+    interpret_values( parser, evaluator_, outstream_, true );
+}
+
+void SubsInterpreter::InterpretStream( std::istream& instream )
+{
+    Lexer lexer( instream );
+    Parser parser( lexer );
+
+    interpret_values( parser, evaluator_, outstream_, true );
+
+    // Any errors result in exceptions being thrown inside interpret_values
 }
 
 void SubsInterpreter::SetTracer( Tracer* tracer )

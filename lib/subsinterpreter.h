@@ -32,16 +32,19 @@ class Tracer;
 class SubsInterpreter
 {
 public:
+    SubsInterpreter( std::ostream& outstream = std::cout );
+
     std::string Interpret( const std::string& codestring );
 
-    std::string InterpretTokens( TokenList& tokens );
+    void InterpretTokens( TokenList& tokens );
 
-    int InterpretStream( std::istream& instream, std::ostream& outstream );
+    void InterpretStream( std::istream& instream );
 
     void SetTracer( Tracer* tracer );
 
 private:
     Evaluator evaluator_;
+    std::ostream& outstream_;
 };
 
 #endif

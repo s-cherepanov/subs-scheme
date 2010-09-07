@@ -50,23 +50,25 @@ void write_welcome( ostream& out )
 
 }
 
-SubsRepl::SubsRepl( int responses
-    /*= ePrintPrompt | ePrintContinuation | ePrintWelcome*/ )
-: print_prompt_(       responses & ePrintPrompt )
+SubsRepl::SubsRepl( std::ostream& outstream,
+    int responses /*= ePrintPrompt | ePrintContinuation | ePrintWelcome*/ )
+: outstream_( outstream )
+, interpreter_( outstream )
+, print_prompt_(       responses & ePrintPrompt )
 , print_continuation_( responses & ePrintContinuation )
 , print_welcome_(      responses & ePrintWelcome )
 {
 }
 
-int SubsRepl::Run( istream& in, ostream& out, ostream& err )
+int SubsRepl::Run( std::istream& instream, std::ostream& errstream )
 {
     if( print_welcome_ )
     {
-        write_welcome( out );
+        write_welcome( outstream_ );
     }
 
-    Lexer lexer( in );
-    BracketMatcher matcher( lexer, out, print_continuation_ );
+    Lexer lexer( instream );
+    BracketMatcher matcher( lexer, outstream_, print_continuation_ );
 
     try
     {
@@ -74,23 +76,19 @@ int SubsRepl::Run( istream& in, ostream& out, ostream& err )
         {
             if( print_prompt_ )
             {
-                out << "> ";
+                outstream_ << "> ";
             }
 
             TokenList tokens = matcher.ReadCombination();
 
-            string output = interpreter_.InterpretTokens( tokens );
+            interpreter_.InterpretTokens( tokens );
 
-            if( !output.empty() )
-            {
-                out << output << endl;
-            }
             lexer.SkipWhitespaceToNewline();
         }
     }
     catch( EvaluationError& e )
     {
-        err << "Error: " << e.ToString() << endl;
+        errstream << "Error: " << e.ToString() << endl;
         return 1;
     }
     // TODO: catch parse errors too - all under one base class?

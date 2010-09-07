@@ -1,0 +1,12 @@
+> (define (gcd a b)
+.         (if (= b 0)
+.             a
+.             (gcd b (remainder a b))))
+gcd
+
+> (gcd 3 5)
+1
+
+> (gcd 6 10)
+2
+

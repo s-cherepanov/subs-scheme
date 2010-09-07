@@ -1,0 +1,92 @@
+> (define (expt b n)
+.         (if (= n 0)
+.             1
+.             (* b (expt b (- n 1)))))
+expt
+
+> (expt 2 0)
+1
+
+> (expt 2 1)
+2
+
+> (expt 2 2)
+4
+
+> (define (expt-iter b counter product)
+.         (if (= counter 0)
+.             product
+.             (expt-iter b
+.                       (- counter 1)
+.                       (* b product))))
+expt-iter
+
+> (define (expt b n)
+.         (expt-iter b n 1))
+expt
+
+> (expt 2 0)
+1
+
+> (expt 2 1)
+2
+
+> (expt 2 2)
+4
+
+
+> (define (even? n)
+.         (= (remainder n 2) 0))
+even?
+
+> (define (fast-expt b n)
+.         (cond ((= n 0) 1)
+.               ((even? n) (square (fast-expt b (/ n 2))))
+.               (else (* b (fast-expt b (- n 1))))))
+fast-expt
+
+> (fast-expt 2 0)
+1
+
+> (fast-expt 2 1)
+2
+
+> (fast-expt 2 2)
+4
+
+
+
+> (define (my* a b)
+.         (if (= b 0)
+.             0
+.             (+ a (my* a (- b 1)))))
+my*
+
+> (my* 6 7)
+42
+
+
+
+> (define (fib-iter a b p q count)
+.         (cond ((= count 0) b)
+.               ((even? count)
+.                (fib-iter a
+.                          b
+.                          0
+.                          0
+.                          (/ count 2)))
+.               (else (fib-iter (+ (* b q) (* a q) (* a p))
+.                               (+ (* b p) (* a q))
+.                               p
+.                               q
+.                               (- count 1)))))
+fib-iter
+
+> (define (fib n)
+.         (fib-iter 1 0 0 1 n))
+fib
+
+
+> ; Exercise 1.19 uses a comment
+
+

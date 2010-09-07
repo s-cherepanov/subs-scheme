@@ -198,6 +198,51 @@ void division_of_three_numbers_yields_correct_answer()
 }
 
 
+void remainder_with_wrong_num_arguments_is_an_error()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(remainder)" );
+    }
+    TEST_ASSERT_THROWS_END("Not enough")
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(remainder 1)" );
+    }
+    TEST_ASSERT_THROWS_END("Not enough")
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(remainder 5 2 1)" );
+    }
+    TEST_ASSERT_THROWS_END("Too many")
+}
+
+
+void remainder_with_nonint_arguments_is_an_error()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(remainder 5.1 2.1)" );
+    }
+    TEST_ASSERT_THROWS_END("Invalid argument")
+}
+
+void remainder_produces_modulus()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(remainder 6 2)" ), "0" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(remainder 5 2)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(remainder 8 3)" ), "2" );
+}
+
+
 }
 
 void TestArithmetic::Run() const
@@ -224,5 +269,9 @@ void TestArithmetic::Run() const
     single_number_division_yields_reciprocal();
     division_involving_decimal_yields_decimal_answer();
     division_of_three_numbers_yields_correct_answer();
+
+    remainder_with_wrong_num_arguments_is_an_error();
+    remainder_with_nonint_arguments_is_an_error();
+    remainder_produces_modulus();
 }
 

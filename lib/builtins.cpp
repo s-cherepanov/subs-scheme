@@ -28,6 +28,7 @@
 #include "minusnativefunctionvalue.h"
 #include "notnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
+#include "remaindernativefunctionvalue.h"
 #include "timesnativefunctionvalue.h"
 #include "truevalue.h"
 
@@ -76,6 +77,7 @@ void Init( Environment& environment )
     // Mathematical functions
     InsertProcedure<ExpNativeFunctionValue>( environment );
     InsertProcedure<LogNativeFunctionValue>( environment );
+    InsertProcedure<RemainderNativeFunctionValue>( environment );
 }
 
 }

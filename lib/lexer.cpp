@@ -35,18 +35,32 @@ Lexer::Lexer( std::istream& instream )
 //virtual
 Token Lexer::NextToken()
 {
+    enum EMode
+    {
+          eNormal
+        , eComment
+    };
+
     Token ret;
+    unsigned int mode = eNormal;
 
     ended_with_newline_ = false;
 
-    // If the last lex found a character we need to return this time,
-    // return it straight away.
+    // If the last lex found a special character to end the previous token,
+    // deal with it immediately.
     if( spill_char_ )
     {
-        ret.name += spill_char_;
-        ret.column = column_ - 1;
-        spill_char_ = 0;
-        return ret;
+        if( spill_char_ == ';' )
+        {
+            mode = eComment;
+        }
+        else
+        {
+            ret.name += spill_char_;
+            ret.column = column_ - 1;
+            spill_char_ = 0;
+            return ret;
+        }
     }
 
     // Otherwise, read from the stream in the normal way
@@ -55,6 +69,21 @@ Token Lexer::NextToken()
     {
         char c = static_cast<char>( i );
         ++column_;
+
+        // If we're in comment mode, skip this char unless it's newline
+        if( mode == eComment )
+        {
+            if( c == '\n' )
+            {
+                mode = eNormal;
+            }
+            else
+            {
+                i = instream_.get();
+                continue;
+            }
+        }
+
         switch( c )
         {
             case '(':
@@ -106,6 +135,11 @@ Token Lexer::NextToken()
                         newline_processor_->NewLine();
                     }
                 }
+                break;
+            }
+            case ';':
+            {
+                mode = eComment;
                 break;
             }
             default:

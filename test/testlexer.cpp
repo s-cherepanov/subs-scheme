@@ -222,6 +222,50 @@ void brackets_on_their_own()
 
 
 
+void commented_line_is_ignored()
+{
+    istringstream ss( ";ignore all this" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
+
+void commented_after_line_with_space_is_ignored()
+{
+    istringstream ss( "(+ 1\n   2) ;ignore all this" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "(" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "+" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "1" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "2" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
+void commented_after_line_no_space_is_ignored()
+{
+    istringstream ss( "(+ 1; ignore all this\n 2)" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "(" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "+" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "1" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "2" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, ")" );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().name, "" );
+}
+
+
+
+
+
+
 }
 
 void TestLexer::Run() const
@@ -235,5 +279,8 @@ void TestLexer::Run() const
     close_bracket_next_to_token();
     brackets_within_words();
     brackets_on_their_own();
+    commented_line_is_ignored();
+    commented_after_line_with_space_is_ignored();
+    commented_after_line_no_space_is_ignored();
 }
 

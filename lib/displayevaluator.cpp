@@ -17,44 +17,44 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef EVALUATOR_H
-#define EVALUATOR_H
+#include <iostream>
 
-#include <iosfwd>
-#include <memory>
-
+#include "combinationvalue.h"
+#include "displayevaluator.h"
 #include "environment.h"
-#include "nulltracer.h"
+#include "evaluator.h"
+#include "symbolvalue.h"
 
-class CombinationValue;
-class Tracer;
-class Value;
-
-class Evaluator
+namespace
 {
-public:
-    Evaluator();
 
-    /**
-     * Evaluate the expression supplied, and return the value of its result.
-     * For constant expressions, we return the value with which we were
-     * supplied.
-     */
-    std::auto_ptr<Value> Eval( const Value* value, std::ostream& outstream );
 
-    std::auto_ptr<Value> EvalInContext( const Value* value,
-        Environment& environment, std::ostream& outstream );
+bool is_newline_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "newline" );
+}
 
-    void SetTracer( Tracer* tracer );
-    Tracer* GetTracer();
 
-private:
+}
 
-    Environment global_environment_;
+namespace DisplayEvaluator
+{
 
-    Tracer* tracer_;
-    NullTracer null_tracer_;
-};
+/**
+ * Check whether the supplied symbol is a display symbol, and if so
+ * display as appropriate.
+ */
+bool ProcessDisplaySymbol( Evaluator* evaluator, const CombinationValue* combo,
+    Environment& environment, const SymbolValue& sym, std::ostream& outstream )
+{
+    if( is_newline_symbol( sym ) )
+    {
+        outstream << std::endl;
+        return true;
+    }
 
-#endif
+    return false;
+}
 
+}

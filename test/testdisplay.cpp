@@ -17,44 +17,32 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef EVALUATOR_H
-#define EVALUATOR_H
+#include <string>
 
-#include <iosfwd>
-#include <memory>
+#include "assertmacros.h"
+#include "lib/evaluationerror.h"
+#include "lib/subsinterpreter.h"
 
-#include "environment.h"
-#include "nulltracer.h"
+#include "testdisplay.h"
 
-class CombinationValue;
-class Tracer;
-class Value;
+using namespace std;
 
-class Evaluator
+namespace
 {
-public:
-    Evaluator();
 
-    /**
-     * Evaluate the expression supplied, and return the value of its result.
-     * For constant expressions, we return the value with which we were
-     * supplied.
-     */
-    std::auto_ptr<Value> Eval( const Value* value, std::ostream& outstream );
+void newline_writes_a_newline()
+{
+    SubsInterpreter interpreter;
 
-    std::auto_ptr<Value> EvalInContext( const Value* value,
-        Environment& environment, std::ostream& outstream );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(newline)" ), "\n" );
+}
 
-    void SetTracer( Tracer* tracer );
-    Tracer* GetTracer();
 
-private:
 
-    Environment global_environment_;
+}
 
-    Tracer* tracer_;
-    NullTracer null_tracer_;
-};
-
-#endif
+void TestDisplay::Run() const
+{
+    newline_writes_a_newline();
+}
 

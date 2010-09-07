@@ -20,6 +20,7 @@
 #ifndef SPECIALSYMBOLEVALUATOR_H
 #define SPECIALSYMBOLEVALUATOR_H
 
+#include <iosfwd>
 #include <memory>
 
 class CombinationValue;
@@ -38,7 +39,7 @@ public:
         , eEvaluateExistingSymbol
     };
 
-    SpecialSymbolEvaluator( Evaluator* evaluator );
+    SpecialSymbolEvaluator( Evaluator* evaluator, std::ostream& outstream );
 
     ESymbolType ProcessSpecialSymbol( const CombinationValue* combo,
         Environment& environment );
@@ -48,6 +49,7 @@ public:
 
 private:
     Evaluator* evaluator_;
+    std::ostream& outstream_;
     std::auto_ptr<Value> new_value_;
     const Value* existing_value_;
 };

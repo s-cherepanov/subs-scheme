@@ -17,43 +17,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef EVALUATOR_H
-#define EVALUATOR_H
+#ifndef TESTDISPLAY_H
+#define TESTDISPLAY_H
 
-#include <iosfwd>
-#include <memory>
-
-#include "environment.h"
-#include "nulltracer.h"
-
-class CombinationValue;
-class Tracer;
-class Value;
-
-class Evaluator
+class TestDisplay
 {
 public:
-    Evaluator();
-
-    /**
-     * Evaluate the expression supplied, and return the value of its result.
-     * For constant expressions, we return the value with which we were
-     * supplied.
-     */
-    std::auto_ptr<Value> Eval( const Value* value, std::ostream& outstream );
-
-    std::auto_ptr<Value> EvalInContext( const Value* value,
-        Environment& environment, std::ostream& outstream );
-
-    void SetTracer( Tracer* tracer );
-    Tracer* GetTracer();
-
-private:
-
-    Environment global_environment_;
-
-    Tracer* tracer_;
-    NullTracer null_tracer_;
+    void Run() const;
 };
 
 #endif

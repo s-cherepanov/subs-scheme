@@ -41,8 +41,8 @@ void interpret_values( Parser& parser, Evaluator& evaluator,
     auto_ptr<Value> value = parser.NextValue();
     while( value.get() )
     {
-        string output = PrettyPrinter::Print( evaluator.Eval( value.get()
-            ).get() );
+        string output = PrettyPrinter::Print( evaluator.Eval( value.get(),
+            outstream ).get() );
 
         if( !output.empty() )
         {

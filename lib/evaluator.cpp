@@ -86,13 +86,14 @@ Evaluator::Evaluator()
     BuiltIns::Init( global_environment_ );
 }
 
-std::auto_ptr<Value> Evaluator::Eval( const Value* value )
+std::auto_ptr<Value> Evaluator::Eval( const Value* value,
+    std::ostream& outstream )
 {
     // When the user entered the empty string, we have a NULL value.
     // In this case, we simply return NULL here.
     if( value )
     {
-        return EvalInContext( value, global_environment_ );
+        return EvalInContext( value, global_environment_, outstream );
     }
     else
     {
@@ -102,7 +103,7 @@ std::auto_ptr<Value> Evaluator::Eval( const Value* value )
 
 
 std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
-    Environment& environment )
+    Environment& environment, std::ostream& outstream )
 {
     EvalDepthMarker dm( GetTracer() );
 
@@ -145,7 +146,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
                 "Attepted to evaluate an empty combination" );
         }
 
-        SpecialSymbolEvaluator special_symbol_evaluator( this );
+        SpecialSymbolEvaluator special_symbol_evaluator( this, outstream );
 
         switch( special_symbol_evaluator.ProcessSpecialSymbol( combo,
             *env_ptr ) )
@@ -185,7 +186,8 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         CombinationValue::const_iterator cmbit = combo->begin();
 
         // Otherwise we evaluate the operator
-        auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, *env_ptr );
+        auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, *env_ptr,
+            outstream );
 
         ++cmbit; // Skip past the procedure to the arguments
 
@@ -193,7 +195,8 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         auto_ptr<CombinationValue> argvalues( new CombinationValue );
         for( ; cmbit != combo->end(); ++cmbit )
         {
-            argvalues->push_back( EvalInContext( *cmbit, *env_ptr ).release() );
+            argvalues->push_back( EvalInContext( *cmbit, *env_ptr, outstream
+                ).release() );
         }
 
         // If it's a built-in procedure, simply run it
@@ -236,7 +239,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         {
             // eval_in_context returns an auto_ptr, so
             // each returned value will be deleted.
-            EvalInContext( *itbody, *env_ptr );
+            EvalInContext( *itbody, *env_ptr, outstream );
         }
 
         // Now we have the last bit of the body, which is the bit

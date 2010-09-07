@@ -28,6 +28,7 @@
 #include "test/testconstants.h"
 #include "test/testdefineprocedure.h"
 #include "test/testdefinesymbol.h"
+#include "test/testdisplay.h"
 #include "test/testenvironment.h"
 #include "test/testif.h"
 #include "test/testlambda.h"
@@ -68,6 +69,7 @@ int main()
         TestCond(                 ).Run();
         TestPredicates(           ).Run();
         TestMaths(                ).Run();
+        TestDisplay(              ).Run();
     }
     catch( AssertionFailed& e )
     {

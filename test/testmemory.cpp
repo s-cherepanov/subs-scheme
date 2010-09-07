@@ -70,9 +70,11 @@ void parse_emptystring()
 
 void evaluate_null_value()
 {
-    std::auto_ptr<Value> evald = Evaluator().Eval( NULL );
+    ostringstream ss;
+    std::auto_ptr<Value> evald = Evaluator().Eval( NULL, ss );
 
     TEST_ASSERT_NULL( evald.get() );
+    TEST_ASSERT_EQUAL( ss.str(), "" );
 }
 
 

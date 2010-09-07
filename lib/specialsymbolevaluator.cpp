@@ -22,6 +22,7 @@
 
 #include "combinationvalue.h"
 #include "compoundprocedurevalue.h"
+#include "displayevaluator.h"
 #include "environment.h"
 #include "evaluationerror.h"
 #include "evaluator.h"
@@ -40,10 +41,10 @@ namespace
 
 std::auto_ptr<Value> eval_define_symbol( Evaluator* ev,
     Environment& environment, const SymbolValue* to_define,
-    const Value* definition )
+    const Value* definition, std::ostream& outstream )
 {
     environment.InsertSymbol( to_define->GetStringValue(),
-        ev->EvalInContext( definition, environment ).release() );
+        ev->EvalInContext( definition, environment, outstream ).release() );
 
     return auto_ptr<Value>( to_define->Clone() );
 }
@@ -82,7 +83,7 @@ std::auto_ptr<Value> define_procedure(
 
 
 std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
+    Environment& environment, std::ostream& outstream )
 {
     if( combo->size() < 3 )
     {
@@ -126,7 +127,7 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
 
         return eval_define_symbol( ev, environment, sym,
             define_procedure( itarg, comb_to_define->end(), it,
-                combo->end(), sym->GetStringValue() ).get() );
+                combo->end(), sym->GetStringValue() ).get(), outstream );
     }
     else
     {
@@ -145,7 +146,7 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
                     to_define ) + "' is neither." );
         }
 
-        return eval_define_symbol( ev, environment, sym, *it );
+        return eval_define_symbol( ev, environment, sym, *it, outstream );
     }
 }
 
@@ -260,7 +261,8 @@ public:
  */
 template<class PredicateProperties>
 const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, std::auto_ptr<Value>& new_value_ )
+    Environment& environment, std::auto_ptr<Value>& new_value_,
+    std::ostream& outstream )
 {
     CombinationValue::const_iterator itlast = combo->end();
     assert( itlast != combo->begin() );
@@ -279,7 +281,8 @@ const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
 
     for( ; it != itlast; ++it )
     {
-        std::auto_ptr<Value> value = ev->EvalInContext( *it, environment );
+        std::auto_ptr<Value> value = ev->EvalInContext( *it, environment,
+            outstream );
         if( PredicateProperties::EarlyExit( value.get() ) )
         {
             // One of the arguments allow us to exit early - set the answer
@@ -295,7 +298,7 @@ const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
 
 
 const Value* process_if( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
+    Environment& environment, std::ostream& outstream )
 {
     // TODO: only one if needed here (in the normal case)
 
@@ -324,7 +327,7 @@ const Value* process_if( Evaluator* ev, const CombinationValue* combo,
     assert( it != combo->end() );
 
     std::auto_ptr<Value> evald_pred = ev->EvalInContext( predicate,
-        environment );
+        environment, outstream );
 
     if( ValueUtilities::IsFalse( evald_pred.get() ) )
     {
@@ -392,7 +395,7 @@ bool is_else( const Value* value )
 }
 
 const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment )
+    Environment& environment, std::ostream& outstream )
 {
     // Look for pairs of predicate and value
     // or "else" and value, which must be last.
@@ -431,7 +434,7 @@ const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
         else
         {
             std::auto_ptr<Value> evald_test = ev->EvalInContext( test,
-                environment );
+                environment, outstream );
 
             if( ValueUtilities::IsTrue( evald_test.get() ) )
             {
@@ -447,8 +450,10 @@ const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
 
 }
 
-SpecialSymbolEvaluator::SpecialSymbolEvaluator( Evaluator* evaluator )
+SpecialSymbolEvaluator::SpecialSymbolEvaluator( Evaluator* evaluator,
+    std::ostream& outstream )
 : evaluator_( evaluator )
+, outstream_( outstream )
 //new_value_
 , existing_value_( NULL )
 {
@@ -471,7 +476,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     if( is_define_symbol( symref ) )
     {
-        new_value_ = eval_define( evaluator_, combo, environment );
+        new_value_ = eval_define( evaluator_, combo, environment, outstream_ );
 
         return eReturnNewValue;
     }
@@ -485,14 +490,16 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     if( is_if_symbol( symref ) )
     {
-        existing_value_ = process_if( evaluator_, combo, environment );
+        existing_value_ = process_if( evaluator_, combo, environment,
+            outstream_ );
 
         return eEvaluateExistingSymbol;
     }
 
     if( is_cond_symbol( symref ) )
     {
-        existing_value_ = process_cond( evaluator_, combo, environment );
+        existing_value_ = process_cond( evaluator_, combo, environment,
+            outstream_ );
 
         return eEvaluateExistingSymbol;
     }
@@ -500,7 +507,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_or_symbol( symref ) )
     {
         existing_value_ = eval_predicate<OrProperties>( evaluator_, combo,
-            environment, new_value_ );
+            environment, new_value_, outstream_ );
 
         if( existing_value_ )
         {
@@ -517,7 +524,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_and_symbol( symref ) )
     {
         existing_value_ = eval_predicate<AndProperties>( evaluator_, combo,
-            environment, new_value_ );
+            environment, new_value_, outstream_ );
 
         if( existing_value_ )
         {
@@ -529,6 +536,13 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
             assert( new_value_.get() );
             return eReturnNewValue;
         }
+    }
+
+    if( DisplayEvaluator::ProcessDisplaySymbol( evaluator_, combo,
+            environment, symref, outstream_ ) )
+    {
+        existing_value_ = NULL;
+        return eEvaluateExistingSymbol;
     }
 
     return eNoSpecialSymbol;

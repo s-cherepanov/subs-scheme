@@ -35,6 +35,12 @@ Token handle_spill_char( unsigned int column, char& ret_spill_char )
     return ret;
 }
 
+Token handle_string( const string& collected_string, unsigned int column )
+{
+    return Token( collected_string, Token::eTypeString,
+        column - ( collected_string.size() + 2 ) );
+}
+
 Token handle_bracket( const string& collected_string, const char bracket,
     unsigned int column, char& ret_spill_char )
 {
@@ -70,7 +76,7 @@ Token handle_newline( const string& collected_string, unsigned int& ret_column,
     return ret;
 }
 
-Token handle_space( const string& collected_string, unsigned int column )
+Token handle_end_of_token( const string& collected_string, unsigned int column )
 {
     return Token( collected_string, Token::eTypeNormal,
         column - ( collected_string.size() + 1 ) );
@@ -93,6 +99,7 @@ Token Lexer::NextToken()
     {
           eNormal
         , eComment
+        , eString
     };
 
     string collected_string;
@@ -108,11 +115,16 @@ Token Lexer::NextToken()
         {
             mode = eComment;
         }
+        else if( spill_char_ == '"' )
+        {
+            mode = eString;
+        }
         else
         {
             // Reset spill char to zero and return its value
             return handle_spill_char( column_, spill_char_ );
         }
+        spill_char_ = 0;
     }
 
     // Otherwise, read from the stream in the normal way
@@ -131,6 +143,18 @@ Token Lexer::NextToken()
             }
             else
             {
+                continue;
+            }
+        }
+        else if( mode == eString )
+        {
+            if( c == '"' )
+            {
+                return handle_string( collected_string, column_ );
+            }
+            else
+            {
+                collected_string += c;
                 continue;
             }
         }
@@ -170,8 +194,20 @@ Token Lexer::NextToken()
                 {
                     // If we've already got some characters, we
                     // have finished our token.
-                    return handle_space( collected_string, column_ );
+                    return handle_end_of_token( collected_string, column_ );
                 }
+                break;
+            }
+            case '"':
+            {
+                if( !collected_string.empty() )
+                {
+                    spill_char_ = '"';
+                    // If we've already got some characters, we
+                    // have finished our token.
+                    return handle_end_of_token( collected_string, column_ );
+                }
+                mode = eString;
                 break;
             }
             case ';':
@@ -185,6 +221,8 @@ Token Lexer::NextToken()
             }
         }
     }
+
+    // TODO: throw if we are in string mode - the string was never closed
 
     // We have reached the end of the stream - return the collected chars.
     // (Note this may be the empty string - this is fine if so - that

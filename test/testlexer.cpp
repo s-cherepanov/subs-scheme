@@ -265,6 +265,159 @@ void commented_after_line_no_space_is_ignored()
 }
 
 
+void simple_string_token()
+{
+    istringstream ss( "\"foo\"" );
+    Lexer lexer( ss );
+
+    Token token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "foo" );
+    TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    // TODO: assert IsEndOfStream instead of name == "" everywhere
+}
+
+
+void string_amidst_other_tokens()
+{
+    istringstream ss( "(\"foo\" bar \"baz\" bish \"bosh\")" );
+    Lexer lexer( ss );
+
+    Token token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "(" );
+    TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "foo" );
+    TEST_ASSERT_EQUAL( token.Column(), 1 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "bar" );
+    TEST_ASSERT_EQUAL( token.Column(), 7 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "baz" );
+    TEST_ASSERT_EQUAL( token.Column(), 11 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "bish" );
+    TEST_ASSERT_EQUAL( token.Column(), 17 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "bosh" );
+    TEST_ASSERT_EQUAL( token.Column(), 22 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), ")" );
+    TEST_ASSERT_EQUAL( token.Column(), 28 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+}
+
+
+
+void empty_string_token()
+{
+    istringstream ss( "\"\"" );
+    Lexer lexer( ss );
+
+    Token token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "" );
+    TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+    TEST_ASSERT_FALSE( token.IsEndOfStream() );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_TRUE( token.IsEndOfStream() );
+}
+
+
+
+void string_adjacent_to_other_token()
+{
+    istringstream ss( "\"\"a \"boo\"\"goose\"daz x\"q\"" );
+    Lexer lexer( ss );
+
+    Token token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "" );
+    TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+    TEST_ASSERT_FALSE( token.IsEndOfStream() );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "a" );
+    TEST_ASSERT_EQUAL( token.Column(), 2 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "boo" );
+    TEST_ASSERT_EQUAL( token.Column(), 4 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "goose" );
+    TEST_ASSERT_EQUAL( token.Column(), 9 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "daz" );
+    TEST_ASSERT_EQUAL( token.Column(), 16 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "x" );
+    TEST_ASSERT_EQUAL( token.Column(), 20 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "q" );
+    TEST_ASSERT_EQUAL( token.Column(), 21 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    token = lexer.NextToken();
+    TEST_ASSERT_TRUE( token.IsEndOfStream() );
+}
+
+
+void string_containing_space()
+{
+    istringstream ss( "\"foo bar\"" );
+    Lexer lexer( ss );
+
+    Token token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "foo bar" );
+    TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    // TODO: assert IsEndOfStream instead of name == "" everywhere
+}
+
+
+
+void string_containing_bracket()
+{
+    istringstream ss( "\"(foo (bar) baz)\"" );
+    Lexer lexer( ss );
+
+    Token token = lexer.NextToken();
+    TEST_ASSERT_EQUAL( token.Name(), "(foo (bar) baz)" );
+    TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    // TODO: assert IsEndOfStream instead of name == "" everywhere
+}
+
 
 
 
@@ -285,5 +438,12 @@ void TestLexer::Run() const
     commented_line_is_ignored();
     commented_after_line_with_space_is_ignored();
     commented_after_line_no_space_is_ignored();
+    simple_string_token();
+    string_amidst_other_tokens();
+    empty_string_token();
+    string_adjacent_to_other_token();
+    string_containing_space();
+    string_containing_bracket();
+    // NOTDONE: string_with_escaped_quote();
 }
 

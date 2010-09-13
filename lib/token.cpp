@@ -56,7 +56,7 @@ unsigned int Token::Column() const
 
 bool Token::IsEndOfStream() const
 {
-    return name_.empty();
+    return ( type_ == Token::eTypeNormal ) && name_.empty();
 }
 
 void Token::AddToColumn( unsigned int adjustment )

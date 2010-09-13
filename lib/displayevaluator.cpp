@@ -18,12 +18,18 @@
 **/
 
 #include <iostream>
+#include <sstream>
 
 #include "combinationvalue.h"
 #include "displayevaluator.h"
 #include "environment.h"
+#include "evaluationerror.h"
 #include "evaluator.h"
+#include "prettyprinter.h"
+#include "stringvalue.h"
 #include "symbolvalue.h"
+
+using namespace std;
 
 namespace
 {
@@ -35,6 +41,61 @@ bool is_newline_symbol( const SymbolValue& sym )
     return ( sym.GetStringValue() == "newline" );
 }
 
+
+bool is_display_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "display" );
+}
+
+void write_newline( const CombinationValue* combo, std::ostream& outstream )
+{
+    if( combo->size() > 1 )
+    {
+        ostringstream ss;
+        ss  << "Too many arguments to 'newline'.  There should be none"
+            << ", but there were "
+            << combo->size() - 1
+            << ".";
+        throw EvaluationError( ss.str() );
+    }
+
+    outstream << std::endl;
+}
+
+void write_display( const CombinationValue* combo, std::ostream& outstream )
+{
+    if( combo->size() != 2 )
+    {
+        if( combo->size() == 1 )
+        {
+            throw EvaluationError( "Not enough arguments to 'display'."
+                "  There should be 1, but there were none." );
+        }
+        else
+        {
+            ostringstream ss;
+            ss  << "Too many arguments to 'display'.  There should be 1"
+                << ", but there were "
+                << combo->size() - 1
+                << ".";
+            throw EvaluationError( ss.str() );
+        }
+    }
+
+    const Value* value = (*combo)[1];
+
+    const StringValue* stringvalue = dynamic_cast< const StringValue* >(
+        value );
+    if( stringvalue )
+    {
+        outstream << stringvalue->GetStringValue();
+    }
+    else
+    {
+        outstream << PrettyPrinter::Print( value );
+    }
+}
 
 }
 
@@ -50,7 +111,12 @@ bool ProcessDisplaySymbol( Evaluator* evaluator, const CombinationValue* combo,
 {
     if( is_newline_symbol( sym ) )
     {
-        outstream << std::endl;
+        write_newline( combo, outstream );
+        return true;
+    }
+    else if( is_display_symbol( sym ) )
+    {
+        write_display( combo, outstream );
         return true;
     }
 

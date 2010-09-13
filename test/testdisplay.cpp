@@ -38,11 +38,58 @@ void newline_writes_a_newline()
 }
 
 
+void newline_with_any_args_is_an_error()
+{
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        SubsInterpreter().Interpret( "(newline 4)" );
+    }
+    TEST_ASSERT_THROWS_END( "Too many arguments to 'newline'" );
+}
+
+
+
+void display_int_writes_an_int()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(display 5)" ), "5" );
+}
+
+
+void display_with_wrong_number_of_args_is_an_error()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(display)" );
+    }
+    TEST_ASSERT_THROWS_END( "Not enough arguments to 'display'" );
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(display 4 5)" );
+    }
+    TEST_ASSERT_THROWS_END( "Too many arguments to 'display'" );
+}
+
+void display_string_writes_with_no_quotes()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(display \"foo\")" ), "foo" );
+}
+
 
 }
 
 void TestDisplay::Run() const
 {
     newline_writes_a_newline();
+    newline_with_any_args_is_an_error();
+    display_int_writes_an_int();
+    display_with_wrong_number_of_args_is_an_error();
+    display_string_writes_with_no_quotes();
 }
 

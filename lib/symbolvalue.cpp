@@ -22,7 +22,7 @@
 #include "symbolvalue.h"
 
 SymbolValue::SymbolValue( const std::string& symbol )
-:symbol_( symbol )
+: symbol_( symbol )
 {
 }
 

@@ -23,6 +23,70 @@
 #include "newlineprocessor.h"
 #include "token.h"
 
+using namespace std;
+
+namespace
+{
+
+Token handle_spill_char( unsigned int column, char& ret_spill_char )
+{
+    Token ret;
+    ret.name = ret_spill_char;
+    ret.column = column - 1;
+    ret_spill_char = 0;
+    return ret;
+}
+
+Token handle_bracket( const string& collected_string, const char bracket,
+    unsigned int column, char& ret_spill_char )
+{
+    Token ret;
+
+    // If bracket is the first thing we find, just return it
+    if( collected_string.empty() )
+    {
+        ret.name = bracket;
+        ret.column = column - 1;
+        return ret;
+    }
+    else
+    {
+        // Otherwise return what we have, and remember
+        // the bracket
+        ret_spill_char = bracket;
+        ret.name = collected_string;
+        ret.column = column - ( collected_string.size() + 1 );
+        return ret;
+    }
+}
+
+Token handle_newline( const string& collected_string, unsigned int& ret_column,
+    bool& ret_ended_with_newline )
+{
+    Token ret;
+    ret.name = collected_string;
+    ret.column = ret_column - ( collected_string.size() + 1 );
+
+    // We set the ended_with_newline_ flag,
+    // and our caller will call NewLine()
+    // on the newline_processor (we can't
+    // call it now, because the preceding
+    // token hasn't been processed yet.
+    ret_ended_with_newline = true;
+    ret_column = 0;
+
+    return ret;
+}
+
+Token handle_space( const string& collected_string, unsigned int column )
+{
+    Token ret;
+    ret.name = collected_string;
+    ret.column = column - ( collected_string.size() + 1 );
+    return ret;
+}
+
+}
 
 Lexer::Lexer( std::istream& instream )
 : instream_( instream )
@@ -41,7 +105,7 @@ Token Lexer::NextToken()
         , eComment
     };
 
-    Token ret;
+    string collected_string;
     unsigned int mode = eNormal;
 
     ended_with_newline_ = false;
@@ -56,16 +120,13 @@ Token Lexer::NextToken()
         }
         else
         {
-            ret.name += spill_char_;
-            ret.column = column_ - 1;
-            spill_char_ = 0;
-            return ret;
+            // Reset spill char to zero and return its value
+            return handle_spill_char( column_, spill_char_ );
         }
     }
 
     // Otherwise, read from the stream in the normal way
-    int i = instream_.get();
-    while( i != -1 )
+    for( int i = instream_.get(); i != -1; i = instream_.get() )
     {
         char c = static_cast<char>( i );
         ++column_;
@@ -75,11 +136,11 @@ Token Lexer::NextToken()
         {
             if( c == '\n' )
             {
+                // Reset the mode, and handle the newline below
                 mode = eNormal;
             }
             else
             {
-                i = instream_.get();
                 continue;
             }
         }
@@ -89,51 +150,37 @@ Token Lexer::NextToken()
             case '(':
             case ')':
             {
-                // If bracket is the first thing we find, just return it
-                if( ret.name.empty() )
+                return handle_bracket( collected_string, c, column_,
+                    spill_char_ );
+            }
+            case '\n':
+            {
+                if( !collected_string.empty() )
                 {
-                    ret.name += c;
-                    ret.column = column_ - 1;
-                    return ret;
+                    // If we've already got some characters, we
+                    // have finished our token.
+                    return handle_newline( collected_string, column_,
+                        ended_with_newline_ );
                 }
                 else
                 {
-                    // Otherwise return what we have, and remember
-                    // the bracket
-                    spill_char_ = c;
-                    ret.column = column_ - ( ret.name.size() + 1 );
-                    return ret;
-                }
-                break;
-            }
-            case '\n':
-            case ' ':
-            {
-                // Skip spaces at beginning
-                if( !ret.name.empty() )
-                {
-                    // But if we're not at the beginning, we
-                    // have finished our token.
-                    ret.column = column_ - ( ret.name.size() + 1 );
-                    if( c == '\n' )
-                    {
-                        // We set the ended_with_newline_ flag,
-                        // and our caller will call NewLine()
-                        // on the newline_processor (we can't
-                        // call it now, because the preceding
-                        // token hasn't been processed yet.
-                        ended_with_newline_ = true;
-                        column_ = 0;
-                    }
-                    return ret;
-                }
-                else if( c == '\n' )
-                {
+                    // Otherwise, register the newline and continue
                     column_ = 0;
                     if( newline_processor_ )
                     {
                         newline_processor_->NewLine();
                     }
+                }
+                break;
+            }
+            case ' ':
+            {
+                // Skip spaces at beginning
+                if( !collected_string.empty() )
+                {
+                    // If we've already got some characters, we
+                    // have finished our token.
+                    return handle_space( collected_string, column_ );
                 }
                 break;
             }
@@ -144,12 +191,16 @@ Token Lexer::NextToken()
             }
             default:
             {
-                ret.name += c;
+                collected_string += c;
             }
         }
-        i = instream_.get();
     }
 
+    // We have reached the end of the stream - return the collected chars.
+    // (Note this may be the empty string - this is fine if so - that
+    // indicates to our caller that the stream has finished.)
+    Token ret;
+    ret.name = collected_string;
     ret.column = column_ - ret.name.size();
     return ret;
 }

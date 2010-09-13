@@ -23,7 +23,9 @@
 
 #include "decimalvalue.h"
 #include "integervalue.h"
+#include "stringvalue.h"
 #include "symbolvalue.h"
+#include "token.h"
 #include "value.h"
 
 #include "valuefactory.h"
@@ -98,8 +100,15 @@ ENumericType get_numeric_type( const string& str )
 namespace ValueFactory
 {
 
-std::auto_ptr<Value> CreateValue( const std::string& token_name )
+std::auto_ptr<Value> CreateValue( const Token& token )
 {
+    const string& token_name = token.Name();
+
+    if( token.Type() == Token::eTypeString )
+    {
+        return auto_ptr<Value>( new StringValue( token_name ) );
+    }
+
     switch( get_numeric_type( token_name ) )
     {
         case integer:

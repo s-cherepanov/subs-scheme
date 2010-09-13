@@ -68,7 +68,7 @@ std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
     }
     else
     {
-        return ValueFactory::CreateValue( token.Name() );
+        return ValueFactory::CreateValue( token );
     }
 }
 

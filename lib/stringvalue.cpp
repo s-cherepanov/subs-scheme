@@ -17,21 +17,24 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef VALUEFACTORY_H
-#define VALUEFACTORY_H
-
-#include <memory>
 #include <string>
 
-class Token;
-class Value;
+#include "stringvalue.h"
 
-namespace ValueFactory
+StringValue::StringValue( const std::string& string )
+: value_( string )
 {
+}
 
-std::auto_ptr<Value> CreateValue( const Token& token_name );
+const std::string& StringValue::GetStringValue() const
+{
+    return value_;
+}
 
-};
+//virtual
+StringValue* StringValue::Clone() const
+{
+    return new StringValue( *this );
+}
 
-#endif
 

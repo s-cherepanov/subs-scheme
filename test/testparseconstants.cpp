@@ -26,6 +26,7 @@
 #include "lib/lexer.h"
 #include "lib/parser.h"
 #include "lib/parsingerror.h"
+#include "lib/stringvalue.h"
 #include "lib/symbolvalue.h"
 #include "lib/unfinishedcombinationexception.h"
 #include "lib/value.h"
@@ -164,6 +165,23 @@ void too_many_close_brackets_throws()
 }
 
 
+void string_becomes_string_value()
+{
+    istringstream ss( "\"foo\"" );
+    Lexer lexer( ss );
+    Parser parser( lexer );
+
+    auto_ptr<Value> v = parser.NextValue();
+
+    StringValue* parsed_foo = dynamic_cast<StringValue*>( v.get() );
+
+    TEST_ASSERT_NOT_NULL( parsed_foo );
+
+    TEST_ASSERT_EQUAL( parsed_foo->GetStringValue(), "foo" );
+
+    TEST_ASSERT_NULL( parser.NextValue().get() );
+}
+
 
 }
 
@@ -175,5 +193,6 @@ void TestParseConstants::Run() const
     plus_becomes_symbol_value();
     unclosed_bracket_throws();
     too_many_close_brackets_throws();
+    string_becomes_string_value();
 }
 

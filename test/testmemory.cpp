@@ -53,7 +53,8 @@ void create_symbolvalue()
 
 void valuefactory_create_plus()
 {
-    ValueFactory::CreateValue( "+" );
+    Token token( "+", Token::eTypeNormal, 0 );
+    ValueFactory::CreateValue( token );
 }
 
 void parse_emptystring()

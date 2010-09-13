@@ -21,6 +21,7 @@
 #include "lib/combinationvalue.h"
 #include "lib/integervalue.h"
 #include "lib/prettyprinter.h"
+#include "lib/stringvalue.h"
 
 #include "testprettyprintconstants.h"
 
@@ -63,6 +64,12 @@ void combination_within_combination()
     TEST_ASSERT_EQUAL( PrettyPrinter::Print( &combo ), "((3 2 1) 6 7)" );
 }
 
+void string_written_in_quotes()
+{
+    StringValue value_foo_bar ( "foo bar" );
+
+    TEST_ASSERT_EQUAL( PrettyPrinter::Print( &value_foo_bar ), "\"foo bar\"" );
+}
 
 }
 
@@ -71,5 +78,7 @@ void TestPrettyPrintConstants::Run() const
     int_value_simply_converted_to_string();
     combination_written_as_bracketted_list();
     combination_within_combination();
+    string_written_in_quotes();
+    //NOTDONE: string_escapes_internal_quotes();
 }
 

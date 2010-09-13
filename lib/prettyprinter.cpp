@@ -26,6 +26,7 @@
 #include "falsevalue.h"
 #include "integervalue.h"
 #include "nativefunctionvalue.h"
+#include "stringvalue.h"
 #include "symbolvalue.h"
 #include "truevalue.h"
 #include "compoundprocedurevalue.h"
@@ -60,6 +61,11 @@ void print_decimal( const DecimalValue* value, ostream& result )
     }
 }
 
+
+void print_string( const StringValue* value, ostream& result )
+{
+    result << "\"" << value->GetStringValue() << "\"";
+}
 
 
 void print_true( const TrueValue*, ostream& result )
@@ -150,6 +156,14 @@ void Print( const Value* value, std::ostream& result )
     if( decimalvalue )
     {
         print_decimal( decimalvalue, result );
+        return;
+    }
+
+    const StringValue* stringvalue = dynamic_cast<const StringValue*>(
+        value );
+    if( stringvalue )
+    {
+        print_string( stringvalue, result );
         return;
     }
 

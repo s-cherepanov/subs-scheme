@@ -35,7 +35,7 @@ void empty_string_returns_empty_token()
 {
     istringstream ss( "" );
     Lexer lexer( ss );
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -75,7 +75,7 @@ void tokens_separated_by_space()
     TEST_ASSERT_EQUAL( token.Name(), "bar" );
     TEST_ASSERT_EQUAL( token.Column(), 7 );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 
     istringstream ss2( "foo  3 bar a ");
     Lexer lexer2( ss2 );
@@ -96,7 +96,7 @@ void tokens_separated_by_space()
     TEST_ASSERT_EQUAL( token.Name(), "a" );
     TEST_ASSERT_EQUAL( token.Column(), 11 );
 
-    TEST_ASSERT_EQUAL( lexer2.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer2.NextToken().IsEndOfStream() );
 }
 
 
@@ -122,7 +122,7 @@ void tokens_separated_by_newline()
     TEST_ASSERT_EQUAL( token.Name(), "baz" );
     TEST_ASSERT_EQUAL( token.Column(), 4 );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -139,7 +139,7 @@ void open_bracket_next_to_token()
     TEST_ASSERT_EQUAL( token.Name(), "if" );
     TEST_ASSERT_EQUAL( token.Column(), 1 );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -156,7 +156,7 @@ void close_bracket_next_to_token()
     TEST_ASSERT_EQUAL( token.Name(), ")" );
     TEST_ASSERT_EQUAL( token.Column(), 3 );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -190,7 +190,7 @@ void brackets_within_words()
     TEST_ASSERT_EQUAL( token.Column(), 8 );
     TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -220,7 +220,7 @@ void brackets_on_their_own()
     TEST_ASSERT_EQUAL( token.Column(), 1 );
     TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -230,7 +230,7 @@ void commented_line_is_ignored()
     istringstream ss( ";ignore all this" );
     Lexer lexer( ss );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -246,7 +246,7 @@ void commented_after_line_with_space_is_ignored()
     TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "2" );
     TEST_ASSERT_EQUAL( lexer.NextToken().Name(), ")" );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -261,7 +261,7 @@ void commented_after_line_no_space_is_ignored()
     TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "2" );
     TEST_ASSERT_EQUAL( lexer.NextToken().Name(), ")" );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -275,7 +275,7 @@ void simple_string_token()
     TEST_ASSERT_EQUAL( token.Column(), 0 );
     TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
     // TODO: assert IsEndOfStream instead of name == "" everywhere
 }
 
@@ -320,7 +320,7 @@ void string_amidst_other_tokens()
     TEST_ASSERT_EQUAL( token.Column(), 28 );
     TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 
@@ -398,7 +398,7 @@ void string_containing_space()
     TEST_ASSERT_EQUAL( token.Column(), 0 );
     TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
     // TODO: assert IsEndOfStream instead of name == "" everywhere
 }
 
@@ -414,7 +414,7 @@ void string_containing_bracket()
     TEST_ASSERT_EQUAL( token.Column(), 0 );
     TEST_ASSERT_EQUAL( token.Type(), Token::eTypeString );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
     // TODO: assert IsEndOfStream instead of name == "" everywhere
 }
 

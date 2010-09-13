@@ -32,8 +32,8 @@ void empty_list_returns_empty_token()
 {
     TokenList list;
 
-    TEST_ASSERT_EQUAL( list.NextToken().Name(), "" );
-    TEST_ASSERT_EQUAL( list.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( list.NextToken().IsEndOfStream() );
+    TEST_ASSERT_TRUE( list.NextToken().IsEndOfStream() );
 }
 
 
@@ -50,7 +50,7 @@ void can_add_and_pop()
 
     TEST_ASSERT_EQUAL( list.NextToken().Name(), "foo" );
     TEST_ASSERT_EQUAL( list.NextToken().Name(), "bar" );
-    TEST_ASSERT_EQUAL( list.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( list.NextToken().IsEndOfStream() );
 }
 
 

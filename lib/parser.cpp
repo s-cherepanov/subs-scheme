@@ -52,13 +52,14 @@ std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
         while( true )
         {
             token = lexer.NextToken();
-            if( token.Name() == ")" )
-            {
-                break;
-            }
-            else if( token.IsEndOfStream() )
+
+            if( token.IsEndOfStream() )
             {
                 throw UnfinishedCombinationException();
+            }
+            else if( token.Name() == ")" )
+            {
+                break;
             }
 
             ret->push_back( next_value_from_token( lexer, token ).release() );

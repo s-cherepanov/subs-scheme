@@ -41,7 +41,7 @@ void lex_empty_string()
     istringstream ss( "" );
     Lexer lexer( ss );
 
-    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
 }
 
 

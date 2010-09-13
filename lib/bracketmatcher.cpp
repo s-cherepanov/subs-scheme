@@ -59,6 +59,13 @@ TokenList BracketMatcher::ReadCombination()
     {
         Token token = lexer_.NextToken();
 
+        // If the stream ended before a combo was closed, return an empty
+        // list - the user pressed Ctrl-D and doesn't want any output.
+        if( token.IsEndOfStream() )
+        {
+            return TokenList();
+        }
+
         token.AddToColumn( newline_processor_.GetIndent() );
 
         // If we have got to the first operand of a combination
@@ -81,13 +88,6 @@ TokenList BracketMatcher::ReadCombination()
             {
                 break;
             }
-        }
-
-        // If the stream ended before a combo was closed, return an empty
-        // list - the user pressed Ctrl-D and doesn't want any output.
-        if( token.IsEndOfStream() )
-        {
-            return TokenList();
         }
 
         ret.AddToken( token );

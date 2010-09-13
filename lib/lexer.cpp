@@ -30,7 +30,7 @@ namespace
 
 Token handle_spill_char( unsigned int column, char& ret_spill_char )
 {
-    Token ret( ret_spill_char, column - 1 );
+    Token ret( ret_spill_char, Token::eTypeNormal, column - 1 );
     ret_spill_char = 0;
     return ret;
 }
@@ -41,14 +41,14 @@ Token handle_bracket( const string& collected_string, const char bracket,
     // If bracket is the first thing we find, just return it
     if( collected_string.empty() )
     {
-        return Token( bracket, column - 1 );
+        return Token( bracket, Token::eTypeNormal, column - 1 );
     }
     else
     {
         // Otherwise return what we have, and remember
         // the bracket
         ret_spill_char = bracket;
-        return Token( collected_string,
+        return Token( collected_string, Token::eTypeNormal,
             column - ( collected_string.size() + 1 ) );
     }
 }
@@ -56,7 +56,8 @@ Token handle_bracket( const string& collected_string, const char bracket,
 Token handle_newline( const string& collected_string, unsigned int& ret_column,
     bool& ret_ended_with_newline )
 {
-    Token ret( collected_string, ret_column - ( collected_string.size() + 1 ) );
+    Token ret( collected_string, Token::eTypeNormal,
+        ret_column - ( collected_string.size() + 1 ) );
 
     // We set the ended_with_newline_ flag,
     // and our caller will call NewLine()
@@ -71,7 +72,8 @@ Token handle_newline( const string& collected_string, unsigned int& ret_column,
 
 Token handle_space( const string& collected_string, unsigned int column )
 {
-    return Token( collected_string, column - ( collected_string.size() + 1 ) );
+    return Token( collected_string, Token::eTypeNormal,
+        column - ( collected_string.size() + 1 ) );
 }
 
 }
@@ -187,7 +189,8 @@ Token Lexer::NextToken()
     // We have reached the end of the stream - return the collected chars.
     // (Note this may be the empty string - this is fine if so - that
     // indicates to our caller that the stream has finished.)
-    return Token( collected_string, column_ - collected_string.size() );
+    return Token( collected_string, Token::eTypeNormal,
+        column_ - collected_string.size() );
 }
 
 void Lexer::SkipWhitespaceToNewline()

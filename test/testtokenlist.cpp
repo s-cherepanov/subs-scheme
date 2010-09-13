@@ -42,10 +42,10 @@ void can_add_and_pop()
 {
     TokenList list;
 
-    Token token1( "foo", 0 );
+    Token token1( "foo", Token::eTypeNormal, 0 );
     list.AddToken( token1 );
 
-    Token token2( "bar", 0 );
+    Token token2( "bar", Token::eTypeNormal, 0 );
     list.AddToken( token2 );
 
     TEST_ASSERT_EQUAL( list.NextToken().Name(), "foo" );

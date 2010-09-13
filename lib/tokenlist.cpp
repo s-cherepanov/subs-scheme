@@ -33,7 +33,7 @@ Token TokenList::NextToken()
     if( list_.empty() )
     {
         // Return a token indicating end of stream
-        return Token( "", 0 );
+        return Token( "", Token::eTypeNormal, 0 );
     }
 
     Token ret = list_.front();

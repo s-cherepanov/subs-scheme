@@ -168,22 +168,27 @@ void brackets_within_words()
     Token token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), "foo" );
     TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), "(" );
     TEST_ASSERT_EQUAL( token.Column(), 3 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), "bar" );
     TEST_ASSERT_EQUAL( token.Column(), 4 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), ")" );
     TEST_ASSERT_EQUAL( token.Column(), 7 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), "baz" );
     TEST_ASSERT_EQUAL( token.Column(), 8 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
 }
@@ -198,18 +203,22 @@ void brackets_on_their_own()
     Token token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), ")" );
     TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), ")" );
     TEST_ASSERT_EQUAL( token.Column(), 1 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), "(" );
     TEST_ASSERT_EQUAL( token.Column(), 0 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     token = lexer.NextToken();
     TEST_ASSERT_EQUAL( token.Name(), ")" );
     TEST_ASSERT_EQUAL( token.Column(), 1 );
+    TEST_ASSERT_EQUAL( token.Type(), Token::eTypeNormal );
 
     TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "" );
 }

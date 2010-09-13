@@ -21,8 +21,9 @@
 
 #include "token.h"
 
-Token::Token( char name, unsigned int column )
+Token::Token( char name, Token::EType type, unsigned int column )
 : name_( 1, name )
+, type_( type )
 , column_( column )
 {
 }
@@ -31,8 +32,9 @@ Token::Token( char name, unsigned int column )
  * Create a token.  If name is the empty string, this token is the
  * end of the stream.
  */
-Token::Token( const std::string& name, unsigned int column )
+Token::Token( const std::string& name, Token::EType type, unsigned int column )
 : name_( name )
+, type_( type )
 , column_( column )
 {
 }
@@ -40,6 +42,11 @@ Token::Token( const std::string& name, unsigned int column )
 const std::string& Token::Name() const
 {
     return name_;
+}
+
+Token::EType Token::Type() const
+{
+    return type_;
 }
 
 unsigned int Token::Column() const

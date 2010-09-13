@@ -25,10 +25,17 @@
 class Token
 {
 public:
-    Token( char name, unsigned int column );
-    Token( const std::string& name, unsigned int column );
+    enum EType
+    {
+          eTypeNormal
+        , eTypeString
+    };
+
+    Token( char name, Token::EType type, unsigned int column );
+    Token( const std::string& name, Token::EType type, unsigned int column );
 
     const std::string& Name() const;
+    Token::EType Type() const;
     unsigned int Column() const;
 
     bool IsEndOfStream() const;
@@ -37,6 +44,7 @@ public:
 
 private:
     std::string name_;
+    Token::EType type_;
 
     //TODO: std::string filename;
     //TODO: unsigned int line_number;

@@ -59,7 +59,7 @@ TokenList BracketMatcher::ReadCombination()
     {
         Token token = lexer_.NextToken();
 
-        token.column += newline_processor_.GetIndent();
+        token.AddToColumn( newline_processor_.GetIndent() );
 
         // If we have got to the first operand of a combination
         // store the indent level so that we can indent correctly
@@ -73,7 +73,7 @@ TokenList BracketMatcher::ReadCombination()
             }
             case eFirstOperand:
             {
-                newline_processor_.PushIndent( bracket_level, token.column );
+                newline_processor_.PushIndent( bracket_level, token.Column() );
                 mode = eOther;
                 break;
             }
@@ -85,7 +85,7 @@ TokenList BracketMatcher::ReadCombination()
 
         // If the stream ended before a combo was closed, return an empty
         // list - the user pressed Ctrl-D and doesn't want any output.
-        if( token.name.empty() )
+        if( token.IsEndOfStream() )
         {
             return TokenList();
         }
@@ -93,18 +93,18 @@ TokenList BracketMatcher::ReadCombination()
         ret.AddToken( token );
 
         // If we've finished this combination, return now
-        if( token.name == ")" && bracket_level == 1 )
+        if( token.Name() == ")" && bracket_level == 1 )
         {
             break;
         }
 
         // Otherwise, adjust our bracket level if there is a ( or )
-        if( token.name == "(" )
+        if( token.Name() == "(" )
         {
             ++bracket_level;
             mode = eOperator; // The next token will be the operator
         }
-        else if( token.name == ")" )
+        else if( token.Name() == ")" )
         {
             newline_processor_.PopIndent( bracket_level );
             --bracket_level;

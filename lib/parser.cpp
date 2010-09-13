@@ -35,28 +35,28 @@ namespace
 std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
     Token token )
 {
-    if( token.name.empty() )
+    if( token.IsEndOfStream() )
     {
         return std::auto_ptr<Value>( NULL );
     }
 
-    if( token.name == ")" )
+    if( token.Name() == ")" )
     {
         throw ParsingError(); // TODO: line number etc.
     }
 
-    if( token.name == "(" )
+    if( token.Name() == "(" )
     {
         auto_ptr<CombinationValue> ret( new CombinationValue );
 
         while( true )
         {
             token = lexer.NextToken();
-            if( token.name == ")" )
+            if( token.Name() == ")" )
             {
                 break;
             }
-            else if( token.name.empty() )
+            else if( token.IsEndOfStream() )
             {
                 throw UnfinishedCombinationException();
             }
@@ -67,7 +67,7 @@ std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
     }
     else
     {
-        return ValueFactory::CreateValue( token.name );
+        return ValueFactory::CreateValue( token.Name() );
     }
 }
 

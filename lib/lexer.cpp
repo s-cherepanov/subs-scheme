@@ -30,9 +30,7 @@ namespace
 
 Token handle_spill_char( unsigned int column, char& ret_spill_char )
 {
-    Token ret;
-    ret.name = ret_spill_char;
-    ret.column = column - 1;
+    Token ret( ret_spill_char, column - 1 );
     ret_spill_char = 0;
     return ret;
 }
@@ -40,32 +38,25 @@ Token handle_spill_char( unsigned int column, char& ret_spill_char )
 Token handle_bracket( const string& collected_string, const char bracket,
     unsigned int column, char& ret_spill_char )
 {
-    Token ret;
-
     // If bracket is the first thing we find, just return it
     if( collected_string.empty() )
     {
-        ret.name = bracket;
-        ret.column = column - 1;
-        return ret;
+        return Token( bracket, column - 1 );
     }
     else
     {
         // Otherwise return what we have, and remember
         // the bracket
         ret_spill_char = bracket;
-        ret.name = collected_string;
-        ret.column = column - ( collected_string.size() + 1 );
-        return ret;
+        return Token( collected_string,
+            column - ( collected_string.size() + 1 ) );
     }
 }
 
 Token handle_newline( const string& collected_string, unsigned int& ret_column,
     bool& ret_ended_with_newline )
 {
-    Token ret;
-    ret.name = collected_string;
-    ret.column = ret_column - ( collected_string.size() + 1 );
+    Token ret( collected_string, ret_column - ( collected_string.size() + 1 ) );
 
     // We set the ended_with_newline_ flag,
     // and our caller will call NewLine()
@@ -80,10 +71,7 @@ Token handle_newline( const string& collected_string, unsigned int& ret_column,
 
 Token handle_space( const string& collected_string, unsigned int column )
 {
-    Token ret;
-    ret.name = collected_string;
-    ret.column = column - ( collected_string.size() + 1 );
-    return ret;
+    return Token( collected_string, column - ( collected_string.size() + 1 ) );
 }
 
 }
@@ -199,10 +187,7 @@ Token Lexer::NextToken()
     // We have reached the end of the stream - return the collected chars.
     // (Note this may be the empty string - this is fine if so - that
     // indicates to our caller that the stream has finished.)
-    Token ret;
-    ret.name = collected_string;
-    ret.column = column_ - ret.name.size();
-    return ret;
+    return Token( collected_string, column_ - collected_string.size() );
 }
 
 void Lexer::SkipWhitespaceToNewline()

@@ -17,31 +17,43 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef TOKEN_H
-#define TOKEN_H
-
 #include <string>
 
-class Token
+#include "token.h"
+
+Token::Token( char name, unsigned int column )
+: name_( 1, name )
+, column_( column )
 {
-public:
-    Token( char name, unsigned int column );
-    Token( const std::string& name, unsigned int column );
+}
 
-    const std::string& Name() const;
-    unsigned int Column() const;
+/**
+ * Create a token.  If name is the empty string, this token is the
+ * end of the stream.
+ */
+Token::Token( const std::string& name, unsigned int column )
+: name_( name )
+, column_( column )
+{
+}
 
-    bool IsEndOfStream() const;
+const std::string& Token::Name() const
+{
+    return name_;
+}
 
-    void AddToColumn( unsigned int adjustment );
+unsigned int Token::Column() const
+{
+    return column_;
+}
 
-private:
-    std::string name_;
+bool Token::IsEndOfStream() const
+{
+    return name_.empty();
+}
 
-    //TODO: std::string filename;
-    //TODO: unsigned int line_number;
-    unsigned int column_;
-};
-
-#endif
+void Token::AddToColumn( unsigned int adjustment )
+{
+    column_ += adjustment;
+}
 

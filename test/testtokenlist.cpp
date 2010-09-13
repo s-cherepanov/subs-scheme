@@ -32,8 +32,8 @@ void empty_list_returns_empty_token()
 {
     TokenList list;
 
-    TEST_ASSERT_EQUAL( list.NextToken().name, "" );
-    TEST_ASSERT_EQUAL( list.NextToken().name, "" );
+    TEST_ASSERT_EQUAL( list.NextToken().Name(), "" );
+    TEST_ASSERT_EQUAL( list.NextToken().Name(), "" );
 }
 
 
@@ -42,16 +42,15 @@ void can_add_and_pop()
 {
     TokenList list;
 
-    Token token;
-    token.name = "foo";
-    list.AddToken( token );
+    Token token1( "foo", 0 );
+    list.AddToken( token1 );
 
-    token.name = "bar";
-    list.AddToken( token );
+    Token token2( "bar", 0 );
+    list.AddToken( token2 );
 
-    TEST_ASSERT_EQUAL( list.NextToken().name, "foo" );
-    TEST_ASSERT_EQUAL( list.NextToken().name, "bar" );
-    TEST_ASSERT_EQUAL( list.NextToken().name, "" );
+    TEST_ASSERT_EQUAL( list.NextToken().Name(), "foo" );
+    TEST_ASSERT_EQUAL( list.NextToken().Name(), "bar" );
+    TEST_ASSERT_EQUAL( list.NextToken().Name(), "" );
 }
 
 

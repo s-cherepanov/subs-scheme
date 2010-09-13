@@ -54,7 +54,7 @@ void single_token_yields_one_item_list()
 
     TokenList tokens = matcher.ReadCombination();
 
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "foo" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "foo" );
     TEST_ASSERT_EQUAL( outss.str(), "" );
 
     TEST_ASSERT_TRUE( tokens.empty() );
@@ -69,13 +69,13 @@ void multiple_tokens_yield_multiple_one_item_lists()
 
     TokenList tokens = matcher.ReadCombination();
 
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "foo" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "foo" );
     TEST_ASSERT_EQUAL( outss.str(), "" );
     TEST_ASSERT_TRUE( tokens.empty() );
 
     tokens = matcher.ReadCombination();
 
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "bar" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "bar" );
     TEST_ASSERT_EQUAL( outss.str(), "" );
     TEST_ASSERT_TRUE( tokens.empty() );
 }
@@ -91,10 +91,10 @@ void combination_yields_all_tokens()
     TokenList tokens = matcher.ReadCombination();
     TEST_ASSERT_EQUAL( outss.str(), "" );
 
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "(" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "foo" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "bar" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, ")" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "(" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "foo" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "bar" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), ")" );
     TEST_ASSERT_TRUE( tokens.empty() );
 }
 
@@ -109,13 +109,13 @@ void nested_combination_yields_all_tokens()
     TokenList tokens = matcher.ReadCombination();
     TEST_ASSERT_EQUAL( outss.str(), "" );
 
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "(" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "foo" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "(" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "bar" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, ")" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "baz" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, ")" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "(" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "foo" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "(" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "bar" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), ")" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "baz" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), ")" );
     TEST_ASSERT_TRUE( tokens.empty() );
 }
 
@@ -145,11 +145,11 @@ void multiline_combo_yields_all_tokens_and_indents()
     TokenList tokens = matcher.ReadCombination();
     TEST_ASSERT_EQUAL( outss.str(), ".      " );
 
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "(" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "foo" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "bar" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, "baz" );
-    TEST_ASSERT_EQUAL( tokens.NextToken().name, ")" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "(" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "foo" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "bar" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), "baz" );
+    TEST_ASSERT_EQUAL( tokens.NextToken().Name(), ")" );
     TEST_ASSERT_TRUE( tokens.empty() );
 }
 

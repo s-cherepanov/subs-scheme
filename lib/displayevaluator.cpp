@@ -64,7 +64,7 @@ void write_newline( const CombinationValue* combo, std::ostream& outstream )
 }
 
 void write_display( Evaluator* evaluator, const CombinationValue* combo,
-    std::ostream& outstream )
+    Environment& environment, std::ostream& outstream )
 {
     if( combo->size() != 2 )
     {
@@ -84,7 +84,8 @@ void write_display( Evaluator* evaluator, const CombinationValue* combo,
         }
     }
 
-    std::auto_ptr<Value> value = evaluator->Eval( (*combo)[1], outstream );
+    std::auto_ptr<Value> value = evaluator->EvalInContext(
+        (*combo)[1], environment, outstream );
 
     const StringValue* stringvalue = dynamic_cast< const StringValue* >(
         value.get() );
@@ -117,7 +118,7 @@ bool ProcessDisplaySymbol( Evaluator* evaluator, const CombinationValue* combo,
     }
     else if( is_display_symbol( sym ) )
     {
-        write_display( evaluator, combo, outstream );
+        write_display( evaluator, combo, environment, outstream );
         return true;
     }
 

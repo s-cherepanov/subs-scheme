@@ -40,6 +40,8 @@ prime?
 .                           m))))
 expmod
 
+> (define (runtime) 1)  ; fake runtime procedure
+runtime
 
 > (define (fermat-test n)
 .         (define (try-it a)
@@ -55,21 +57,48 @@ fast-prime?
 
 > (define (report-prime elapsed-time)
 .         (display " *** ")
-.         (display elapsed-time))
+.         (display elapsed-time)) ; Exercise 1.22
 report-prime
 
 > (define (start-prime-test n start-time)
 .         (if (prime? n)
-.             (report-prime (- (runtime) start-time))))
+.             (report-prime (- (runtime) start-time))
+.             0)) ; Had to add the 0 - missing in SICP
 start-prime-test
 
 > (define (timed-prime-test n)
-.         (newline)
 .         (display n)
-.         (start-prime-test n (runtime)))
+.         (start-prime-test n (runtime))
+.         (newline))
 timed-prime-test
 
 > (timed-prime-test 16)
+16
+> (timed-prime-test 13)
+13 *** 0
+> (timed-prime-test 12)
+12
+> (timed-prime-test 7)
+7 *** 0
+
+
+
+> (define (expmod base exp m)
+.         (remainder (fast-expt base exp) m))
+expmod
+
+
+> (define (expmod base exp m)
+.         (cond ((= exp 0) 1)
+.               ((even? exp)
+.                (remainder (* (expmod base (/ exp 2) m)
+.                              (expmod base (/ exp 2) m))
+.                           m))
+.               (else
+.                (remainder (* base (expmod base (- exp 1) m))
+.                           m))))
+expmod
+
 
 
 

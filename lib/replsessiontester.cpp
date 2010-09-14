@@ -34,7 +34,22 @@ namespace
 int check_sessions_identical( const string& input, const string& actual_output,
     const string& expected_output )
 {
-    if( actual_output == expected_output )
+    string act;
+
+    // Strip newlines off the front of the actual output
+    size_t first_non_newline = actual_output.find_first_not_of(
+        '\n' );
+    if( first_non_newline == string::npos )
+    {
+        act = actual_output;
+    }
+    else
+    {
+        act = actual_output.substr( first_non_newline );
+    }
+    // TODO: allow testing newlines at the beginning of output
+
+    if( act == expected_output )
     {
         return 0;
     }
@@ -43,7 +58,7 @@ int check_sessions_identical( const string& input, const string& actual_output,
     cerr << "subs: Error: session-test failed since:"
         << endl << "> " << input << endl
         << "produced this output:"
-        << endl << actual_output
+        << endl << act
         << "but this was expected:"
         << endl << expected_output;
 

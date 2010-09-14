@@ -82,6 +82,17 @@ void display_string_writes_with_no_quotes()
 }
 
 
+void display_symbol_evaluates_it_first()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define x 0.5)" );
+    interpreter.Interpret( "(define y \"bar\")" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(display x)" ), "0.5" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(display y)" ), "bar" );
+}
+
+
 }
 
 void TestDisplay::Run() const
@@ -91,5 +102,6 @@ void TestDisplay::Run() const
     display_int_writes_an_int();
     display_with_wrong_number_of_args_is_an_error();
     display_string_writes_with_no_quotes();
+    display_symbol_evaluates_it_first();
 }
 

@@ -63,7 +63,8 @@ void write_newline( const CombinationValue* combo, std::ostream& outstream )
     outstream << std::endl;
 }
 
-void write_display( const CombinationValue* combo, std::ostream& outstream )
+void write_display( Evaluator* evaluator, const CombinationValue* combo,
+    std::ostream& outstream )
 {
     if( combo->size() != 2 )
     {
@@ -83,17 +84,17 @@ void write_display( const CombinationValue* combo, std::ostream& outstream )
         }
     }
 
-    const Value* value = (*combo)[1];
+    std::auto_ptr<Value> value = evaluator->Eval( (*combo)[1], outstream );
 
     const StringValue* stringvalue = dynamic_cast< const StringValue* >(
-        value );
+        value.get() );
     if( stringvalue )
     {
         outstream << stringvalue->GetStringValue();
     }
     else
     {
-        outstream << PrettyPrinter::Print( value );
+        outstream << PrettyPrinter::Print( value.get() );
     }
 }
 
@@ -116,7 +117,7 @@ bool ProcessDisplaySymbol( Evaluator* evaluator, const CombinationValue* combo,
     }
     else if( is_display_symbol( sym ) )
     {
-        write_display( combo, outstream );
+        write_display( evaluator, combo, outstream );
         return true;
     }
 

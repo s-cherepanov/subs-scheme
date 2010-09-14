@@ -88,8 +88,10 @@ void display_symbol_evaluates_it_first()
 
     interpreter.Interpret( "(define x 0.5)" );
     interpreter.Interpret( "(define y \"bar\")" );
+    interpreter.Interpret( "(define (foo z) (display z))" );
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(display x)" ), "0.5" );
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(display y)" ), "bar" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(foo 3)" ), "3" );
 }
 
 

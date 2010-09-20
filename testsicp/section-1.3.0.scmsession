@@ -1,0 +1,6 @@
+> (define (cube x) (* x x x))
+cube
+
+> (cube 3)
+27
+

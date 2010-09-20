@@ -58,8 +58,8 @@ cc
 .         (cc amount 5))
 count-change
 
-> (count-change 100)
-292
+> ;(count-change 100)
+> ;292 - skipped because too slow!
 
 
 

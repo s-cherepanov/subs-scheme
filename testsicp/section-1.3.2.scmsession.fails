@@ -1,0 +1,102 @@
+> (lambda (x) (+ x 4))
+<<COMPOUND-PROCEDURE>>
+
+> (lambda (x) (/ 1.0 (* x (+ x 2))))
+<<COMPOUND-PROCEDURE>>
+
+> (define (pi-sum a b)
+.         (sum (lambda (x) (/ 1.0 (* x (+ x 2))))
+.              a
+.              (lambda (x) (+ x 4))
+.              b))
+pi-sum
+
+> (* 8 (pi-sum 1 1000))
+3.13959
+
+> (define (integral f a b dx)
+.         (* (sum f
+.                 (+ a (/ dx 2.0))
+.                 (lambda (x) (+ x dx))
+.                 b)
+.            dx))
+integral
+
+> (integral cube 0 1 0.01)
+0.249988
+
+> (define (plus4 x) (+ x 4))
+plus4
+
+> (plus4 5)
+9
+
+> (define plus4 (lambda (x) (+ x 4)))
+plus4
+
+> (plus4 5)
+9
+
+> ((lambda (x y z) (+ x y (square z))) 1 2 3)
+12
+
+> (define (f x y)
+.         (define (f-helper a b)
+.                 (+ (* x (square a))
+.                    (* y b)
+.                    (* a b)))
+.         (f-helper (+ 1 (* x y)) 
+.                   (- 1 y)))
+f
+
+> (define (f x y)
+.         ((lambda (a b)
+.            (+ (* x (square a))
+.               (* y b)
+.               (* a b)))
+.          (+ 1 (* x y))
+.          (- 1 y)))
+f
+
+> (define (f x y)
+.         (let ((a (+ 1 (* x y)))
+.               (b (- 1 y)))
+.           (+ (* x (square a))
+.              (* y b)
+.              (* a b))))
+f
+
+> (define x 5)
+x
+
+> (+ (let ((x 3))
+.         (+ x (* x 10)))
+.    x)
+38
+
+> (define x 2)
+x
+
+> (let ((x 3)
+        (y (+ x 2)))
+       (* x y))
+12
+
+> (define (f x y)
+.         (define a (+ 1 (* x y)))
+.         (define b (- 1 y))
+.         (+ (* x (square a))
+.            (* y b)
+.            (* a b)))
+f
+
+> (define (f g)
+.         (g 2))
+f
+
+> (f square)
+4
+
+> (f (lambda (z) (* z (+ z 1))))
+6
+

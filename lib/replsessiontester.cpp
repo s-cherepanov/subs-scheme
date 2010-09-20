@@ -159,6 +159,8 @@ int get_first_input_line( istream& instream, const string& filename,
 int process_file( istream& instream, SubsRepl& repl,
     ostringstream& output_stream, const string& filename )
 {
+    // cout << filename << endl;
+
     string inputline;
     int ret = get_first_input_line( instream, filename, inputline );
 

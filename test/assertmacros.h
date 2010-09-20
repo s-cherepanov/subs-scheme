@@ -20,8 +20,22 @@
 #ifndef ASSERTMACROS_H
 #define ASSERTMACROS_H
 
+#include <iostream>
 #include <string>
 #include <typeinfo>
+
+#define RUN_TEST(TESTNAME) \
+    { \
+        try \
+        { \
+            TESTNAME(); \
+        } \
+        catch( EvaluationError& e ) \
+        { \
+            std::cerr << "Error running test '" #TESTNAME "' in suite '" SUITENAME "':" << std::endl; \
+            throw; \
+        } \
+    }
 
 #define TEST_ASSERT_EQUAL(ARG1,ARG2) \
     assertfns::equal(__FILE__, __LINE__, #ARG1, #ARG2, ARG1, ARG2)

@@ -183,12 +183,106 @@ std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
 }
 
 
+
+std::auto_ptr<Value> eval_let( Evaluator* ev, const CombinationValue* combo,
+    Environment& environment, std::ostream& outstream )
+{
+    if( combo->size() < 3 )
+    {
+        throw EvaluationError(
+            "Too few operands to the let operator: there should "
+            "be at least 2: a list of symbol-value pairs, and at least one "
+            "value to evaluate." );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // First of at least 3 - "let" (ignore)
+    ++it;
+    assert( it != combo->end() ); // Second of at least 3 - list of
+                                  // symbol-values to define
+
+    const CombinationValue* pairs = dynamic_cast<const CombinationValue*>(
+        *it );
+    if( !pairs )
+    {
+        throw EvaluationError( "The first operand to the let operator "
+            "must be a combination containing symbol-value pairs.  '"
+            + PrettyPrinter::Print( *it )
+            + "' is not a combination." );
+    }
+
+    // Construct a new lambda function and the args to pass to it
+    std::auto_ptr<CombinationValue> lambdacall =
+        std::auto_ptr<CombinationValue>( new CombinationValue );
+
+    lambdacall->push_back( NULL ); // Create a slot where the (lambda ...)
+                                   // will go.
+
+    std::auto_ptr<CombinationValue> argnames = std::auto_ptr<CombinationValue>(
+        new CombinationValue );
+
+    for( CombinationValue::const_iterator itp = pairs->begin();
+        itp != pairs->end(); ++itp )
+    {
+        const CombinationValue* pair = dynamic_cast<const CombinationValue*>(
+            *itp );
+        if( !pair )
+        {
+            throw EvaluationError( "Each item in the first argument to "
+                "the let operator must be a combination containing a "
+                "symbol and a value.  '"
+                + PrettyPrinter::Print( *itp )
+                + "' is not a combination." );
+        }
+
+        if( pair->size() != 2 )
+        {
+            throw EvaluationError( "Each item in the first argument to "
+                "the let operator must be a combination containing a "
+                "symbol and a value.  '"
+                + PrettyPrinter::Print( *itp )
+                + "' does not consist of 2 parts." );
+        }
+
+        CombinationValue::const_iterator itinpair = pair->begin();
+        assert( itinpair != pair->end() ); // First of 2
+        argnames->push_back( (*itinpair)->Clone() );
+        ++itinpair;
+        assert( itinpair != pair->end() ); // Second of 2
+        lambdacall->push_back( (*itinpair)->Clone() );
+    }
+
+    std::auto_ptr<CombinationValue> lambdadefn =
+        std::auto_ptr<CombinationValue>( new CombinationValue );
+
+    lambdadefn->push_back( new SymbolValue( "lambda" ) );
+    lambdadefn->push_back( argnames.release() );
+
+    ++it;
+    for( ; it != combo->end(); ++it )
+    {
+        lambdadefn->push_back( (*it)->Clone() );
+    }
+
+    std::auto_ptr<Value> lambda = eval_lambda( lambdadefn.get() );
+
+    *(lambdacall->begin()) = lambda.release();
+
+    return ev->EvalInContext( lambdacall.get(), environment, outstream );
+}
+
+
 bool is_define_symbol( const SymbolValue& sym )
 {
     // TODO: case insensitive?
     return ( sym.GetStringValue() == "define" );
 }
 
+bool is_let_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "let" );
+}
 
 bool is_if_symbol( const SymbolValue& sym )
 {
@@ -484,6 +578,13 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_lambda_symbol( symref ) )
     {
         new_value_ = eval_lambda( combo );
+
+        return eReturnNewValue;
+    }
+
+    if( is_let_symbol( symref ) )
+    {
+        new_value_ = eval_let( evaluator_, combo, environment, outstream_ );
 
         return eReturnNewValue;
     }

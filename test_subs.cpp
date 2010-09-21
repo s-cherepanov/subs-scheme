@@ -32,6 +32,7 @@
 #include "test/testenvironment.h"
 #include "test/testif.h"
 #include "test/testlambda.h"
+#include "test/testlet.h"
 #include "test/testlexer.h"
 #include "test/testmaths.h"
 #include "test/testmemory.h"
@@ -70,6 +71,7 @@ int main()
         TestPredicates(           ).Run();
         TestMaths(                ).Run();
         TestDisplay(              ).Run();
+        TestLet(                  ).Run();
     }
     catch( AssertionFailed& e )
     {

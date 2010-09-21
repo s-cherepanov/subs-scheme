@@ -93,7 +93,7 @@ std::auto_ptr<Value> Evaluator::Eval( const Value* value,
     // In this case, we simply return NULL here.
     if( value )
     {
-        return EvalInContext( value, global_environment_, outstream );
+        return EvalInContext( value, global_environment_, outstream, true );
     }
     else
     {
@@ -103,7 +103,7 @@ std::auto_ptr<Value> Evaluator::Eval( const Value* value,
 
 
 std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
-    Environment& environment, std::ostream& outstream )
+    Environment& environment, std::ostream& outstream, bool is_tail_call )
 {
     EvalDepthMarker dm( GetTracer() );
 
@@ -149,7 +149,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         SpecialSymbolEvaluator special_symbol_evaluator( this, outstream );
 
         switch( special_symbol_evaluator.ProcessSpecialSymbol( combo,
-            *env_ptr ) )
+            *env_ptr, is_tail_call ) )
         {
             case SpecialSymbolEvaluator::eReturnNewValue:
             {
@@ -187,7 +187,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
 
         // Otherwise we evaluate the operator
         auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, *env_ptr,
-            outstream );
+            outstream, false );
 
         ++cmbit; // Skip past the procedure to the arguments
 
@@ -195,8 +195,8 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         auto_ptr<CombinationValue> argvalues( new CombinationValue );
         for( ; cmbit != combo->end(); ++cmbit )
         {
-            argvalues->push_back( EvalInContext( *cmbit, *env_ptr, outstream
-                ).release() );
+            argvalues->push_back( EvalInContext( *cmbit, *env_ptr, outstream,
+                false ).release() );
         }
 
         // If it's a built-in procedure, simply run it
@@ -239,7 +239,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         {
             // eval_in_context returns an auto_ptr, so
             // each returned value will be deleted.
-            EvalInContext( *itbody, *env_ptr, outstream );
+            EvalInContext( *itbody, *env_ptr, outstream, false );
         }
 
         // Now we have the last bit of the body, which is the bit

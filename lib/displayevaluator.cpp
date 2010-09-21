@@ -85,7 +85,7 @@ void write_display( Evaluator* evaluator, const CombinationValue* combo,
     }
 
     std::auto_ptr<Value> value = evaluator->EvalInContext(
-        (*combo)[1], environment, outstream );
+        (*combo)[1], environment, outstream, true );
 
     const StringValue* stringvalue = dynamic_cast< const StringValue* >(
         value.get() );

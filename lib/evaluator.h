@@ -43,7 +43,7 @@ public:
     std::auto_ptr<Value> Eval( const Value* value, std::ostream& outstream );
 
     std::auto_ptr<Value> EvalInContext( const Value* value,
-        Environment& environment, std::ostream& outstream );
+        Environment& environment, std::ostream& outstream, bool is_tail_call );
 
     void SetTracer( Tracer* tracer );
     Tracer* GetTracer();

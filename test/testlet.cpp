@@ -92,6 +92,20 @@ void can_recurse()
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(fact 4)" ), "24" );
 }
 
+void values_computed_outside_let()
+{
+    SubsInterpreter interpreter;
+
+        // This value of x is what is used to define y later:
+    interpreter.Interpret( "(define x 2)" );
+
+    TEST_ASSERT_EQUAL(
+        interpreter.Interpret(
+            "(let ((x 3)"
+            "      (y (+ x 2)))"
+            "     (* x y))" ),
+        "12" );
+}
 
 
 }
@@ -105,5 +119,6 @@ void TestLet::Run() const
     RUN_TEST(let_sets_multiple_values);
     RUN_TEST(can_calculate_values);
     RUN_TEST(can_recurse);
+    RUN_TEST(values_computed_outside_let);
 }
 

@@ -176,29 +176,29 @@ void bad_or_count_cant_be_optimised()
 }
 
 
-//void count_with_let_optimised()
-//{
-//    SubsInterpreter interpreter;
-//
-//    EvalDepthTracer tracer;
-//    interpreter.SetTracer( &tracer );
-//
-//    interpreter.Interpret(
-//        "(define (count n)"
-//        "        (let ((x 0))"
-//        "             (if (= n 1)"
-//        "                 1"
-//        "                 (count (- n 1)))))"
-//        );
-//
-//    TEST_ASSERT_EQUAL( interpreter.Interpret( "(count 1)" ), "1" );
-//    TEST_ASSERT_EQUAL( interpreter.Interpret( "(count 2)" ), "1" );
-//
-//    interpreter.Interpret( "(count 10)" );
-//
-//    // Even though Lisp recursed to 10 levels, the C++ stack never got beyond 3
-//    TEST_ASSERT_EQUAL( tracer.GetMaxEvalDepth(), 3 );
-//}
+void count_with_let_optimised()
+{
+    SubsInterpreter interpreter;
+
+    EvalDepthTracer tracer;
+    interpreter.SetTracer( &tracer );
+
+    interpreter.Interpret(
+        "(define (count n)"
+        "        (let ((x 0))"
+        "             (if (= n 1)"
+        "                 1"
+        "                 (count (- n 1)))))"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(count 1)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(count 2)" ), "1" );
+
+    interpreter.Interpret( "(count 10)" );
+
+    // Even though Lisp recursed to 10 levels, the C++ stack never got beyond 3
+    TEST_ASSERT_EQUAL( tracer.GetMaxEvalDepth(), 3 );
+}
 
 
 }
@@ -211,7 +211,7 @@ void TestTailCallOptimisation::Run() const
     bad_and_count_cant_be_optimised();
     or_count_optimised();
     bad_or_count_cant_be_optimised();
-    // FAILS count_with_let_optimised();
+    count_with_let_optimised();
 }
 
 

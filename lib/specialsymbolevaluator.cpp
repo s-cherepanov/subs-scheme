@@ -18,6 +18,7 @@
 **/
 
 #include <cassert>
+#include <memory>
 #include <sstream>
 
 #include "combinationvalue.h"
@@ -44,7 +45,8 @@ std::auto_ptr<Value> eval_define_symbol( Evaluator* ev,
     const Value* definition, std::ostream& outstream )
 {
     environment.InsertSymbol( to_define->GetStringValue(),
-        ev->EvalInContext( definition, environment, outstream ).release() );
+        ev->EvalInContext( definition, environment, outstream, false
+            ).release() );
 
     return auto_ptr<Value>( to_define->Clone() );
 }
@@ -183,9 +185,179 @@ std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
 }
 
 
+/**
+ * We have encountered a let whose return value is the return value of
+ * the function we are in.  We can optimise by modelling this as defines
+ * of the let variables, since this environment is disposable anyway,
+ * so the leaking out of the defined values has no effect.
+ */
+const Value* process_let_tail_call( Evaluator* ev,
+    const CombinationValue* combo, Environment& environment,
+    std::ostream& outstream )
+{
+    if( combo->size() < 3 )
+    {
+        throw EvaluationError(
+            "Too few operands to the let operator: there should "
+            "be at least 2: a list of symbol-value pairs, and at least one "
+            "value to evaluate." );
+    }
 
-std::auto_ptr<Value> eval_let( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, std::ostream& outstream )
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // First of at least 3 - "let" (ignore)
+    ++it;
+    assert( it != combo->end() ); // Second of at least 3 - list of
+                                  // symbol-values to define
+
+    const CombinationValue* pairs = dynamic_cast<const CombinationValue*>(
+        *it );
+    if( !pairs )
+    {
+        throw EvaluationError( "The first operand to the let operator "
+            "must be a combination containing symbol-value pairs.  '"
+            + PrettyPrinter::Print( *it )
+            + "' is not a combination." );
+    }
+
+    class SymbolValuePairArray
+    {
+    public:
+        SymbolValuePairArray( size_t size )
+        : size_( size )
+        , symbols_array_( new string[size] )
+        , values_array_( new auto_ptr<Value>[size] )
+        {
+        }
+
+        ~SymbolValuePairArray()
+        {
+            delete[] symbols_array_;
+            delete[] values_array_;
+        }
+
+        void Insert( size_t index, const string& symbol,
+            auto_ptr<Value> value )
+        {
+            assert( index < size_ );
+            symbols_array_[index] = symbol;
+            values_array_[index] = value;
+        }
+
+        const string& GetSymbol( size_t index )
+        {
+            assert( index < size_ );
+            return symbols_array_[index];
+        }
+
+        auto_ptr<Value> GetValue( size_t index )
+        {
+            assert( index < size_ );
+            return values_array_[index];
+        }
+
+        size_t size()
+        {
+            return size_;
+        }
+
+    private:
+        size_t size_;
+        string* symbols_array_;
+        auto_ptr<Value>* values_array_;
+    };
+
+    SymbolValuePairArray symvalpairs( pairs->size() );
+
+    // Go through all the symbol-value pairs, evaluating the
+    // values remembering them along with the symbol names.
+    // Don't insert them into the environment yet since we
+    // don't want the definitions to interfere with each other.
+    size_t count = 0;
+    for( CombinationValue::const_iterator itp = pairs->begin();
+         itp != pairs->end();
+         ++count,
+         ++itp )
+    {
+        const CombinationValue* pair = dynamic_cast<const CombinationValue*>(
+            *itp );
+        if( !pair )
+        {
+            throw EvaluationError( "Each item in the first argument to "
+                "the let operator must be a combination containing a "
+                "symbol and a value.  '"
+                + PrettyPrinter::Print( *itp )
+                + "' is not a combination." );
+        }
+
+        if( pair->size() != 2 )
+        {
+            throw EvaluationError( "Each item in the first argument to "
+                "the let operator must be a combination containing a "
+                "symbol and a value.  '"
+                + PrettyPrinter::Print( *itp )
+                + "' does not consist of 2 parts." );
+        }
+
+        CombinationValue::const_iterator itinpair = pair->begin();
+        assert( itinpair != pair->end() ); // First of 2
+        const Value* namev = *itinpair;
+        ++itinpair;
+        assert( itinpair != pair->end() ); // Second of 2
+        const Value* value = *itinpair;
+
+        const SymbolValue* name = dynamic_cast<const SymbolValue*>( namev );
+        if( !name )
+        {
+            throw EvaluationError( "Each item in the first argument to "
+                "the let operator must be a combination containing a "
+                "symbol and a value.  '"
+                + PrettyPrinter::Print( namev )
+                + "' is not a symbol." );
+        }
+
+        symvalpairs.Insert( count, name->GetStringValue(),
+            ev->EvalInContext( value, environment, outstream, false ) );
+    }
+
+    // Now that we have evaluated all the values we can insert them
+    // into the environment.
+    for( size_t idx = 0; idx != symvalpairs.size(); ++idx )
+    {
+        environment.InsertSymbol( symvalpairs.GetSymbol( idx ),
+            symvalpairs.GetValue( idx ).release() );
+    }
+
+    // Evaluate the body if the let except the last item (similar to
+    // the end of Evaluation::EvalInContext).
+
+    CombinationValue::const_iterator itletend = combo->end();
+    assert( it != itletend ); // Since this let must have a body
+
+    // Step back one - the last section of the body is handled differently
+    --itletend;
+    assert( it != itletend ); // Since this let must have a body
+
+    ++it; // Skip past the symbol-value pairs to the body of the let
+
+    // Evaluate all elements except the last one
+    for( ; it != itletend; ++it )
+    {
+        // eval_in_context returns an auto_ptr, so
+        // each returned value will be deleted.
+        ev->EvalInContext( *it, environment, outstream, false );
+    }
+
+    return *it;
+}
+
+/**
+ * We have encountered a let that is not the end of the procedure -
+ * we must wrap it in a lambda so the values are not remembered when
+ * we exit the let.
+ */
+std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
+    const CombinationValue* combo, Environment& environment,
+    std::ostream& outstream )
 {
     if( combo->size() < 3 )
     {
@@ -268,7 +440,7 @@ std::auto_ptr<Value> eval_let( Evaluator* ev, const CombinationValue* combo,
 
     *(lambdacall->begin()) = lambda.release();
 
-    return ev->EvalInContext( lambdacall.get(), environment, outstream );
+    return ev->EvalInContext( lambdacall.get(), environment, outstream, false );
 }
 
 
@@ -356,7 +528,7 @@ public:
 template<class PredicateProperties>
 const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
     Environment& environment, std::auto_ptr<Value>& new_value_,
-    std::ostream& outstream )
+    std::ostream& outstream, bool is_tail_call )
 {
     CombinationValue::const_iterator itlast = combo->end();
     assert( itlast != combo->begin() );
@@ -376,7 +548,7 @@ const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
     for( ; it != itlast; ++it )
     {
         std::auto_ptr<Value> value = ev->EvalInContext( *it, environment,
-            outstream );
+            outstream, is_tail_call );
         if( PredicateProperties::EarlyExit( value.get() ) )
         {
             // One of the arguments allow us to exit early - set the answer
@@ -392,7 +564,7 @@ const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
 
 
 const Value* process_if( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, std::ostream& outstream )
+    Environment& environment, std::ostream& outstream, bool is_tail_call )
 {
     // TODO: only one if needed here (in the normal case)
 
@@ -421,7 +593,7 @@ const Value* process_if( Evaluator* ev, const CombinationValue* combo,
     assert( it != combo->end() );
 
     std::auto_ptr<Value> evald_pred = ev->EvalInContext( predicate,
-        environment, outstream );
+        environment, outstream, is_tail_call );
 
     if( ValueUtilities::IsFalse( evald_pred.get() ) )
     {
@@ -489,7 +661,7 @@ bool is_else( const Value* value )
 }
 
 const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, std::ostream& outstream )
+    Environment& environment, std::ostream& outstream, bool is_tail_call )
 {
     // Look for pairs of predicate and value
     // or "else" and value, which must be last.
@@ -528,7 +700,7 @@ const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
         else
         {
             std::auto_ptr<Value> evald_test = ev->EvalInContext( test,
-                environment, outstream );
+                environment, outstream, is_tail_call );
 
             if( ValueUtilities::IsTrue( evald_test.get() ) )
             {
@@ -555,7 +727,7 @@ SpecialSymbolEvaluator::SpecialSymbolEvaluator( Evaluator* evaluator,
 
 SpecialSymbolEvaluator::ESymbolType
 SpecialSymbolEvaluator::ProcessSpecialSymbol(
-    const CombinationValue* combo, Environment& environment )
+    const CombinationValue* combo, Environment& environment, bool is_tail_call )
 {
     // Check to see whether it's a special symbol
     const SymbolValue* sym = dynamic_cast<const SymbolValue*>(
@@ -584,15 +756,24 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     if( is_let_symbol( symref ) )
     {
-        new_value_ = eval_let( evaluator_, combo, environment, outstream_ );
-
-        return eReturnNewValue;
+        if( is_tail_call )
+        {
+            existing_value_ = process_let_tail_call( evaluator_, combo,
+                environment, outstream_ );
+            return eEvaluateExistingSymbol;
+        }
+        else
+        {
+            new_value_ = eval_let_not_tail_call( evaluator_, combo,
+                environment, outstream_ );
+            return eReturnNewValue;
+        }
     }
 
     if( is_if_symbol( symref ) )
     {
         existing_value_ = process_if( evaluator_, combo, environment,
-            outstream_ );
+            outstream_, is_tail_call );
 
         return eEvaluateExistingSymbol;
     }
@@ -600,7 +781,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_cond_symbol( symref ) )
     {
         existing_value_ = process_cond( evaluator_, combo, environment,
-            outstream_ );
+            outstream_, is_tail_call );
 
         return eEvaluateExistingSymbol;
     }
@@ -608,7 +789,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_or_symbol( symref ) )
     {
         existing_value_ = eval_predicate<OrProperties>( evaluator_, combo,
-            environment, new_value_, outstream_ );
+            environment, new_value_, outstream_, is_tail_call );
 
         if( existing_value_ )
         {
@@ -625,7 +806,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_and_symbol( symref ) )
     {
         existing_value_ = eval_predicate<AndProperties>( evaluator_, combo,
-            environment, new_value_, outstream_ );
+            environment, new_value_, outstream_, is_tail_call );
 
         if( existing_value_ )
         {

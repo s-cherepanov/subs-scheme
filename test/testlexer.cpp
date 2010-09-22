@@ -424,26 +424,28 @@ void string_containing_bracket()
 
 }
 
+#define SUITENAME "TestLexer"
+
 void TestLexer::Run() const
 {
-    empty_string_returns_empty_token();
-    single_char();
-    single_token();
-    tokens_separated_by_space();
-    tokens_separated_by_newline();
-    open_bracket_next_to_token();
-    close_bracket_next_to_token();
-    brackets_within_words();
-    brackets_on_their_own();
-    commented_line_is_ignored();
-    commented_after_line_with_space_is_ignored();
-    commented_after_line_no_space_is_ignored();
-    simple_string_token();
-    string_amidst_other_tokens();
-    empty_string_token();
-    string_adjacent_to_other_token();
-    string_containing_space();
-    string_containing_bracket();
+    RUN_TEST(empty_string_returns_empty_token);
+    RUN_TEST(single_char);
+    RUN_TEST(single_token);
+    RUN_TEST(tokens_separated_by_space);
+    RUN_TEST(tokens_separated_by_newline);
+    RUN_TEST(open_bracket_next_to_token);
+    RUN_TEST(close_bracket_next_to_token);
+    RUN_TEST(brackets_within_words);
+    RUN_TEST(brackets_on_their_own);
+    RUN_TEST(commented_line_is_ignored);
+    RUN_TEST(commented_after_line_with_space_is_ignored);
+    RUN_TEST(commented_after_line_no_space_is_ignored);
+    RUN_TEST(simple_string_token);
+    RUN_TEST(string_amidst_other_tokens);
+    RUN_TEST(empty_string_token);
+    RUN_TEST(string_adjacent_to_other_token);
+    RUN_TEST(string_containing_space);
+    RUN_TEST(string_containing_bracket);
     // NOTDONE: string_with_escaped_quote();
 }
 

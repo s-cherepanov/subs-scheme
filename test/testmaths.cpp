@@ -94,12 +94,14 @@ void exp_returns_e_to_the_x()
 
 }
 
+#define SUITENAME "TestMaths"
+
 void TestMaths::Run() const
 {
-    log_no_args_is_an_error();
-    log_two_args_is_an_error();
-    log_calculates_ln_base_e();
-    exp_wrong_number_of_args_is_an_error();
-    exp_returns_e_to_the_x();
+    RUN_TEST(log_no_args_is_an_error);
+    RUN_TEST(log_two_args_is_an_error);
+    RUN_TEST(log_calculates_ln_base_e);
+    RUN_TEST(exp_wrong_number_of_args_is_an_error);
+    RUN_TEST(exp_returns_e_to_the_x);
 }
 

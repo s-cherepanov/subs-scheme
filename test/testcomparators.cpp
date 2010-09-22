@@ -137,15 +137,17 @@ void too_few_operands_to_greaterthan_is_an_error()
 
 }
 
+#define SUITENAME "TestComparators"
+
 void TestComparators::Run() const
 {
-    equals_works_for_integers();
-    too_few_operands_to_equals_is_an_error();
-    lessthan_works_for_integers();
-    lessthan_works_for_decimals();
-    too_few_operands_to_lessthan_is_an_error();
-    greaterthan_works_for_integers();
-    greaterthan_works_for_decimals();
-    too_few_operands_to_greaterthan_is_an_error();
+    RUN_TEST(equals_works_for_integers);
+    RUN_TEST(too_few_operands_to_equals_is_an_error);
+    RUN_TEST(lessthan_works_for_integers);
+    RUN_TEST(lessthan_works_for_decimals);
+    RUN_TEST(too_few_operands_to_lessthan_is_an_error);
+    RUN_TEST(greaterthan_works_for_integers);
+    RUN_TEST(greaterthan_works_for_decimals);
+    RUN_TEST(too_few_operands_to_greaterthan_is_an_error);
 }
 

@@ -138,16 +138,18 @@ void define_symbol_to_be_procedure_allows_evaluating_procedure()
 
 }
 
+#define SUITENAME "TestDefineSymbol"
+
 void TestDefineSymbol::Run() const
 {
-    define_echoes_symbol_name();
-    defined_symbol_yields_correct_value();
-    defined_symbol_works_in_further_expression();
-    too_many_arguments_to_define_is_an_error();
-    too_few_arguments_to_define_is_an_error();
-    define_in_terms_of_other_defined_symbol_succeds();
-    define_in_terms_of_other_does_not_follow_other_when_changed();
-    define_symbol_to_be_procedure_allows_evaluating_procedure();
+    RUN_TEST(define_echoes_symbol_name);
+    RUN_TEST(defined_symbol_yields_correct_value);
+    RUN_TEST(defined_symbol_works_in_further_expression);
+    RUN_TEST(too_many_arguments_to_define_is_an_error);
+    RUN_TEST(too_few_arguments_to_define_is_an_error);
+    RUN_TEST(define_in_terms_of_other_defined_symbol_succeds);
+    RUN_TEST(define_in_terms_of_other_does_not_follow_other_when_changed);
+    RUN_TEST(define_symbol_to_be_procedure_allows_evaluating_procedure);
 
     //NOTDONE define_is_scoped_within_its_parent_combination()
 }

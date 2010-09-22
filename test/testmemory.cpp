@@ -83,12 +83,14 @@ void evaluate_null_value()
 
 }
 
+#define SUITENAME "TestMemory"
+
 void TestMemory::Run() const
 {
-    lex_empty_string();
-    create_symbolvalue();
-    valuefactory_create_plus();
-    parse_emptystring();
-    evaluate_null_value();
+    RUN_TEST(lex_empty_string);
+    RUN_TEST(create_symbolvalue);
+    RUN_TEST(valuefactory_create_plus);
+    RUN_TEST(parse_emptystring);
+    RUN_TEST(evaluate_null_value);
 }
 

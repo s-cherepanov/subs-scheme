@@ -100,13 +100,15 @@ void comparator_works_in_if()
 
 }
 
+#define SUITENAME "TestIf"
+
 void TestIf::Run() const
 {
-    true_and_false();
-    basic_if();
-    too_few_args_to_if_is_an_error();
-    too_many_args_to_if_is_an_error();
-    everything_is_true_except_hash_f();
-    comparator_works_in_if();
+    RUN_TEST(true_and_false);
+    RUN_TEST(basic_if);
+    RUN_TEST(too_few_args_to_if_is_an_error);
+    RUN_TEST(too_many_args_to_if_is_an_error);
+    RUN_TEST(everything_is_true_except_hash_f);
+    RUN_TEST(comparator_works_in_if);
 }
 

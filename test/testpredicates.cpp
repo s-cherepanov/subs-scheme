@@ -121,16 +121,18 @@ void not_reverses_truthvalue()
 
 }
 
+#define SUITENAME "TestPredicates"
+
 void TestPredicates::Run() const
 {
-    or_nothing_is_false();
-    or_one_thing();
-    or_multiple_things();
-    and_nothing_is_true();
-    and_one_thing();
-    and_multiple_things();
-    not_nothing_is_an_error();
-    not_two_things_is_an_error();
-    not_reverses_truthvalue();
+    RUN_TEST(or_nothing_is_false);
+    RUN_TEST(or_one_thing);
+    RUN_TEST(or_multiple_things);
+    RUN_TEST(and_nothing_is_true);
+    RUN_TEST(and_one_thing);
+    RUN_TEST(and_multiple_things);
+    RUN_TEST(not_nothing_is_an_error);
+    RUN_TEST(not_two_things_is_an_error);
+    RUN_TEST(not_reverses_truthvalue);
 }
 

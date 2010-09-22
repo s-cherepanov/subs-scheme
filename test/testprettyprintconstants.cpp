@@ -73,12 +73,14 @@ void string_written_in_quotes()
 
 }
 
+#define SUITENAME "TestPrettyPrintConstants"
+
 void TestPrettyPrintConstants::Run() const
 {
-    int_value_simply_converted_to_string();
-    combination_written_as_bracketted_list();
-    combination_within_combination();
-    string_written_in_quotes();
+    RUN_TEST(int_value_simply_converted_to_string);
+    RUN_TEST(combination_written_as_bracketted_list);
+    RUN_TEST(combination_within_combination);
+    RUN_TEST(string_written_in_quotes);
     //NOTDONE: string_escapes_internal_quotes();
 }
 

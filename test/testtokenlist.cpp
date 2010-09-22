@@ -57,9 +57,11 @@ void can_add_and_pop()
 
 }
 
+#define SUITENAME "TestTokenList"
+
 void TestTokenList::Run() const
 {
-    empty_list_returns_empty_token();
-    can_add_and_pop();
+    RUN_TEST(empty_list_returns_empty_token);
+    RUN_TEST(can_add_and_pop);
 }
 

@@ -177,16 +177,18 @@ void arguments_dont_leak_out()
 
 }
 
+#define SUITENAME "TestLambda"
+
 void TestLambda::Run() const
 {
-    define_lambda_noargs();
-    define_lambda_args();
-    noargs_function_works();
-    noargs_function_works_list_body();
-    onearg_function_works();
-    threearg_function_works();
-    error_when_supply_too_few_args();
-    error_when_supply_too_many_args();
-    arguments_dont_leak_out();
+    RUN_TEST(define_lambda_noargs);
+    RUN_TEST(define_lambda_args);
+    RUN_TEST(noargs_function_works);
+    RUN_TEST(noargs_function_works_list_body);
+    RUN_TEST(onearg_function_works);
+    RUN_TEST(threearg_function_works);
+    RUN_TEST(error_when_supply_too_few_args);
+    RUN_TEST(error_when_supply_too_many_args);
+    RUN_TEST(arguments_dont_leak_out);
 }
 

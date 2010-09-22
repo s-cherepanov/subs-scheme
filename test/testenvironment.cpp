@@ -68,10 +68,12 @@ void insert_symbol_twice()
 
 }
 
+#define SUITENAME "TestEnvironment"
+
 void TestEnvironment::Run() const
 {
-    insert_symbol();
-    find_symbol();
-    insert_symbol_twice();
+    RUN_TEST(insert_symbol);
+    RUN_TEST(find_symbol);
+    RUN_TEST(insert_symbol_twice);
 }
 

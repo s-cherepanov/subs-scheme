@@ -313,23 +313,25 @@ void good_enough_bug()
 
 }
 
+#define SUITENAME "TestDefineProcedure"
+
 void TestDefineProcedure::Run() const
 {
-    define_proc_noargs();
-    define_proc_args();
-    noargs_proc_works();
-    noargs_proc_works_list_body();
-    onearg_proc_works();
-    threearg_proc_works();
-    error_when_supply_too_few_args();
-    error_when_supply_too_many_args();
-    proc_arguments_dont_leak_out();
-    define_doesnt_leak_out();
-    recursive_procedure();
-    double_recursive_procedure();
-    define_proc_inside_proc();
-    define_proc_inside_proc_overrides_previous();
-    good_enough_bug();
+    RUN_TEST(define_proc_noargs);
+    RUN_TEST(define_proc_args);
+    RUN_TEST(noargs_proc_works);
+    RUN_TEST(noargs_proc_works_list_body);
+    RUN_TEST(onearg_proc_works);
+    RUN_TEST(threearg_proc_works);
+    RUN_TEST(error_when_supply_too_few_args);
+    RUN_TEST(error_when_supply_too_many_args);
+    RUN_TEST(proc_arguments_dont_leak_out);
+    RUN_TEST(define_doesnt_leak_out);
+    RUN_TEST(recursive_procedure);
+    RUN_TEST(double_recursive_procedure);
+    RUN_TEST(define_proc_inside_proc);
+    RUN_TEST(define_proc_inside_proc_overrides_previous);
+    RUN_TEST(good_enough_bug);
 }
 
 

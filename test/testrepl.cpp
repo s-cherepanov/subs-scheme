@@ -158,17 +158,19 @@ void pressing_return_emits_dot()
 
 }
 
+#define SUITENAME "TestRepl"
+
 void TestRepl::Run() const
 {
-    prompt_gets_written();
-    single_symbol_gets_evaluated();
+    RUN_TEST(prompt_gets_written);
+    RUN_TEST(single_symbol_gets_evaluated);
     // INCORRECT could quote list_on_one_line_gets_evaluated_together();
-    bare_undefined_symbol_reports_error();
-    undefined_symbol_operator_reports_error();
-    undefined_symbol_operand_reports_error();
-    unclosed_combination_indents();
-    define_can_be_used_later();
-    response_comes_even_when_stream_is_not_closed();
-    pressing_return_emits_dot();
+    RUN_TEST(bare_undefined_symbol_reports_error);
+    RUN_TEST(undefined_symbol_operator_reports_error);
+    RUN_TEST(undefined_symbol_operand_reports_error);
+    RUN_TEST(unclosed_combination_indents);
+    RUN_TEST(define_can_be_used_later);
+    RUN_TEST(response_comes_even_when_stream_is_not_closed);
+    RUN_TEST(pressing_return_emits_dot);
 }
 

@@ -165,17 +165,19 @@ void too_many_parts_in_condition_is_an_error()
 
 }
 
+#define SUITENAME "TestCond"
+
 void TestCond::Run() const
 {
-    no_args_is_an_error();
-    single_else_returns_value();
-    single_true_condition_returns_value();
-    single_false_condition_returns_nothing();
-    multiple_conditions();
-    else_after_multiple_conditions_including_one_true();
-    else_after_multiple_conditions_all_false();
-    pair_after_else_is_an_error();
-    non_combo_condition_is_an_error();
-    too_many_parts_in_condition_is_an_error();
+    RUN_TEST(no_args_is_an_error);
+    RUN_TEST(single_else_returns_value);
+    RUN_TEST(single_true_condition_returns_value);
+    RUN_TEST(single_false_condition_returns_nothing);
+    RUN_TEST(multiple_conditions);
+    RUN_TEST(else_after_multiple_conditions_including_one_true);
+    RUN_TEST(else_after_multiple_conditions_all_false);
+    RUN_TEST(pair_after_else_is_an_error);
+    RUN_TEST(non_combo_condition_is_an_error);
+    RUN_TEST(too_many_parts_in_condition_is_an_error);
 }
 

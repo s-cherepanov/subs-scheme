@@ -102,11 +102,13 @@ void stack_can_unwind()
 
 }
 
+#define SUITENAME "TestNewLineProcessor"
+
 void TestNewLineProcessor::Run() const
 {
-    no_indent_writes_dot_space();
-    indent_writes_dot_space_indent();
-    multiple_calls_write_multiple_times();
-    stack_can_unwind();
+    RUN_TEST(no_indent_writes_dot_space);
+    RUN_TEST(indent_writes_dot_space_indent);
+    RUN_TEST(multiple_calls_write_multiple_times);
+    RUN_TEST(stack_can_unwind);
 }
 

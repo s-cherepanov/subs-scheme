@@ -24,6 +24,8 @@
 #include <string>
 #include <typeinfo>
 
+#include "lib/evaluationerror.h"
+
 #define RUN_TEST(TESTNAME) \
     { \
         try \

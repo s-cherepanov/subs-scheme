@@ -97,13 +97,15 @@ void display_symbol_evaluates_it_first()
 
 }
 
+#define SUITENAME "TestDisplay"
+
 void TestDisplay::Run() const
 {
-    newline_writes_a_newline();
-    newline_with_any_args_is_an_error();
-    display_int_writes_an_int();
-    display_with_wrong_number_of_args_is_an_error();
-    display_string_writes_with_no_quotes();
-    display_symbol_evaluates_it_first();
+    RUN_TEST(newline_writes_a_newline);
+    RUN_TEST(newline_with_any_args_is_an_error);
+    RUN_TEST(display_int_writes_an_int);
+    RUN_TEST(display_with_wrong_number_of_args_is_an_error);
+    RUN_TEST(display_string_writes_with_no_quotes);
+    RUN_TEST(display_symbol_evaluates_it_first);
 }
 

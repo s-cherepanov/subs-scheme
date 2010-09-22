@@ -127,16 +127,18 @@ void decimal_equal_to_integer_ends_in_point_zero()
 
 }
 
+#define SUITENAME "TestConstants"
+
 void TestConstants::Run() const
 {
-    empty_string_yields_empty_string();
-    bare_number_yields_itself();
-    negative_number_yields_itself();
-    decimal_number_yields_itself();
-    end_in_dot_is_failure();
-    two_dots_is_failure();
-    unparseable_integer_is_an_error();
-    decimal_equal_to_integer_ends_in_point_zero();
+    RUN_TEST(empty_string_yields_empty_string);
+    RUN_TEST(bare_number_yields_itself);
+    RUN_TEST(negative_number_yields_itself);
+    RUN_TEST(decimal_number_yields_itself);
+    RUN_TEST(end_in_dot_is_failure);
+    RUN_TEST(two_dots_is_failure);
+    RUN_TEST(unparseable_integer_is_an_error);
+    RUN_TEST(decimal_equal_to_integer_ends_in_point_zero);
     //INCORRECT could quote combo_yields_itself();
     //INCORRECT could quote combo_of_combos_yields_itself();
 }

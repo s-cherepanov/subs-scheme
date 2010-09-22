@@ -171,16 +171,18 @@ void multiline_multicombo_indents()
 
 }
 
+#define SUITENAME "TestBracketMatcher"
+
 void TestBracketMatcher::Run() const
 {
-    empty_input_yields_empty_list();
-    single_token_yields_one_item_list();
-    multiple_tokens_yield_multiple_one_item_lists();
-    combination_yields_all_tokens();
-    nested_combination_yields_all_tokens();
-    incomplete_combo_yields_empty_list();
-    multiline_combo_yields_all_tokens_and_indents();
-    multiline_multicombo_indents();
+    RUN_TEST(empty_input_yields_empty_list);
+    RUN_TEST(single_token_yields_one_item_list);
+    RUN_TEST(multiple_tokens_yield_multiple_one_item_lists);
+    RUN_TEST(combination_yields_all_tokens);
+    RUN_TEST(nested_combination_yields_all_tokens);
+    RUN_TEST(incomplete_combo_yields_empty_list);
+    RUN_TEST(multiline_combo_yields_all_tokens_and_indents);
+    RUN_TEST(multiline_multicombo_indents);
     // TODO: test passing false for print_prompt
 }
 

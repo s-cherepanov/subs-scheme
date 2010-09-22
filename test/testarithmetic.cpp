@@ -245,33 +245,35 @@ void remainder_produces_modulus()
 
 }
 
+#define SUITENAME "TestArithmetic"
+
 void TestArithmetic::Run() const
 {
-    addition_of_two_numbers_yields_correct_answer();
-    addition_of_three_numbers_yields_correct_answer();
-    null_addition_yields_zero();
-    single_number_addition_yields_that_number();
-    nested_addition_works();
+    RUN_TEST(addition_of_two_numbers_yields_correct_answer);
+    RUN_TEST(addition_of_three_numbers_yields_correct_answer);
+    RUN_TEST(null_addition_yields_zero);
+    RUN_TEST(single_number_addition_yields_that_number);
+    RUN_TEST(nested_addition_works);
 
-    multiplication_of_two_numbers_yields_correct_answer();
-    multiplication_of_three_numbers_yields_correct_answer();
-    null_multiplication_yields_one();
-    single_number_multiplication_yields_that_number();
+    RUN_TEST(multiplication_of_two_numbers_yields_correct_answer);
+    RUN_TEST(multiplication_of_three_numbers_yields_correct_answer);
+    RUN_TEST(null_multiplication_yields_one);
+    RUN_TEST(single_number_multiplication_yields_that_number);
 
-    subtraction_of_two_numbers_yields_correct_answer();
-    subtraction_of_three_numbers_yields_correct_answer();
-    null_subtraction_is_an_error();
-    single_number_subtraction_negates_that_number();
+    RUN_TEST(subtraction_of_two_numbers_yields_correct_answer);
+    RUN_TEST(subtraction_of_three_numbers_yields_correct_answer);
+    RUN_TEST(null_subtraction_is_an_error);
+    RUN_TEST(single_number_subtraction_negates_that_number);
 
-    exact_division_of_two_integers_yields_integer_answer();
-    inexact_division_of_two_integers_yields_decimal_answer();
-    null_division_is_an_error();
-    single_number_division_yields_reciprocal();
-    division_involving_decimal_yields_decimal_answer();
-    division_of_three_numbers_yields_correct_answer();
+    RUN_TEST(exact_division_of_two_integers_yields_integer_answer);
+    RUN_TEST(inexact_division_of_two_integers_yields_decimal_answer);
+    RUN_TEST(null_division_is_an_error);
+    RUN_TEST(single_number_division_yields_reciprocal);
+    RUN_TEST(division_involving_decimal_yields_decimal_answer);
+    RUN_TEST(division_of_three_numbers_yields_correct_answer);
 
-    remainder_with_wrong_num_arguments_is_an_error();
-    remainder_with_nonint_arguments_is_an_error();
-    remainder_produces_modulus();
+    RUN_TEST(remainder_with_wrong_num_arguments_is_an_error);
+    RUN_TEST(remainder_with_nonint_arguments_is_an_error);
+    RUN_TEST(remainder_produces_modulus);
 }
 

@@ -185,14 +185,16 @@ void string_becomes_string_value()
 
 }
 
+#define SUITENAME "TestParseConstants"
+
 void TestParseConstants::Run() const
 {
-    bare_number_becomes_single_value();
-    branch_becomes_combination_value();
-    name_becomes_symbol_value();
-    plus_becomes_symbol_value();
-    unclosed_bracket_throws();
-    too_many_close_brackets_throws();
-    string_becomes_string_value();
+    RUN_TEST(bare_number_becomes_single_value);
+    RUN_TEST(branch_becomes_combination_value);
+    RUN_TEST(name_becomes_symbol_value);
+    RUN_TEST(plus_becomes_symbol_value);
+    RUN_TEST(unclosed_bracket_throws);
+    RUN_TEST(too_many_close_brackets_throws);
+    RUN_TEST(string_becomes_string_value);
 }
 

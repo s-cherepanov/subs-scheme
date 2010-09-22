@@ -203,15 +203,17 @@ void count_with_let_optimised()
 
 }
 
+#define SUITENAME "TestTailCallOptimisation"
+
 void TestTailCallOptimisation::Run() const
 {
-    count_optimised();
-    bad_count_cant_be_optimised();
-    and_count_optimised();
-    bad_and_count_cant_be_optimised();
-    or_count_optimised();
-    bad_or_count_cant_be_optimised();
-    count_with_let_optimised();
+    RUN_TEST(count_optimised);
+    RUN_TEST(bad_count_cant_be_optimised);
+    RUN_TEST(and_count_optimised);
+    RUN_TEST(bad_and_count_cant_be_optimised);
+    RUN_TEST(or_count_optimised);
+    RUN_TEST(bad_or_count_cant_be_optimised);
+    RUN_TEST(count_with_let_optimised);
 }
 
 

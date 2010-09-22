@@ -27,12 +27,12 @@ search
 half-interval-method
 
 > (half-interval-method sin 2.0 4.0)
-3.14111328125
+3.14111
 
 > (half-interval-method (lambda (x) (- (* x x x) (* 2 x) 3))
 .                       1.0
 .                       2.0)
-1.89306640625
+1.89307
 
 > (define tolerance 0.00001)
 tolerance
@@ -49,11 +49,11 @@ tolerance
 fixed-point
 
 > (fixed-point cos 1.0)
-0.7390822985224023
+0.739082
 
 > (fixed-point (lambda (y) (+ (sin y) (cos y)))
 .              1.0)
-1.2587315962971173
+1.25873
 
 > (define (sqrt x)
 .         (fixed-point (lambda (y) (/ x y))

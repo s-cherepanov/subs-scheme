@@ -62,15 +62,15 @@ void Init( Environment& environment )
     environment.InsertSymbol( "#f", new FalseValue );
 
     // Arithmetic operations
-    InsertProcedure<PlusNativeFunctionValue>( environment );
-    InsertProcedure<MinusNativeFunctionValue>( environment );
-    InsertProcedure<TimesNativeFunctionValue>( environment );
+    InsertProcedure<PlusNativeFunctionValue>(   environment );
+    InsertProcedure<MinusNativeFunctionValue>(  environment );
+    InsertProcedure<TimesNativeFunctionValue>(  environment );
     InsertProcedure<DivideNativeFunctionValue>( environment );
 
     // Comparators
-    InsertProcedure<EqualsNativeFunctionValue>( environment );
+    InsertProcedure<EqualsNativeFunctionValue>(      environment );
     InsertProcedure<GreaterThanNativeFunctionValue>( environment );
-    InsertProcedure<LessThanNativeFunctionValue>( environment );
+    InsertProcedure<LessThanNativeFunctionValue>(    environment );
 
     // Boolean logic
     InsertProcedure<NotNativeFunctionValue>( environment );
@@ -78,12 +78,12 @@ void Init( Environment& environment )
     // in SpecialSymbolEvaluator.
 
     // Mathematical functions
-    InsertProcedure<CosNativeFunctionValue>( environment );
-    InsertProcedure<ExpNativeFunctionValue>( environment );
-    InsertProcedure<LogNativeFunctionValue>( environment );
+    InsertProcedure<CosNativeFunctionValue>(       environment );
+    InsertProcedure<ExpNativeFunctionValue>(       environment );
+    InsertProcedure<LogNativeFunctionValue>(       environment );
     InsertProcedure<RemainderNativeFunctionValue>( environment );
-    InsertProcedure<SinNativeFunctionValue>( environment );
-    InsertProcedure<TanNativeFunctionValue>( environment );
+    InsertProcedure<SinNativeFunctionValue>(       environment );
+    InsertProcedure<TanNativeFunctionValue>(       environment );
 }
 
 }

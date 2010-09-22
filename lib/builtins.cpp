@@ -27,13 +27,16 @@
 #include "lessthannativefunctionvalue.h"
 #include "lognativefunctionvalue.h"
 #include "minusnativefunctionvalue.h"
+#include "negativenativefunctionvalue.h"
 #include "notnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
+#include "positivenativefunctionvalue.h"
 #include "remaindernativefunctionvalue.h"
 #include "sinnativefunctionvalue.h"
 #include "tannativefunctionvalue.h"
 #include "timesnativefunctionvalue.h"
 #include "truevalue.h"
+#include "zeronativefunctionvalue.h"
 
 #include "builtins.h"
 
@@ -84,6 +87,11 @@ void Init( Environment& environment )
     InsertProcedure<RemainderNativeFunctionValue>( environment );
     InsertProcedure<SinNativeFunctionValue>(       environment );
     InsertProcedure<TanNativeFunctionValue>(       environment );
+
+    // Boolean numeric functions
+    InsertProcedure<PositiveNativeFunctionValue>( environment );
+    InsertProcedure<NegativeNativeFunctionValue>( environment );
+    InsertProcedure<ZeroNativeFunctionValue>(     environment );
 }
 
 }

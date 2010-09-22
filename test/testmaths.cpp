@@ -106,6 +106,53 @@ void tan_returns_tangent()
 
 
 
+void zero_wrong_number_of_args_is_an_error()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "zero?", 1 );
+}
+
+
+void zero_returns_equal_zero()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(zero? 1)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(zero? -1.5)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(zero? 0)" ), "#t" );
+}
+
+
+void positive_wrong_number_of_args_is_an_error()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "positive?", 1 );
+}
+
+
+void positive_returns_greater_than_zero()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(positive? 1)" ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(positive? -1.5)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(positive? 0)" ), "#f" );
+}
+
+void negative_wrong_number_of_args_is_an_error()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "negative?", 1 );
+}
+
+
+void negative_returns_less_than_zero()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(negative? 1)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(negative? -1.5)" ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(negative? 0)" ), "#f" );
+}
+
+
+
+
+
 
 
 }
@@ -124,5 +171,11 @@ void TestMaths::Run() const
     RUN_TEST(cos_returns_cosine);
     RUN_TEST(tan_wrong_number_of_args_is_an_error);
     RUN_TEST(tan_returns_tangent);
+    RUN_TEST(zero_wrong_number_of_args_is_an_error);
+    RUN_TEST(zero_returns_equal_zero);
+    RUN_TEST(positive_wrong_number_of_args_is_an_error);
+    RUN_TEST(positive_returns_greater_than_zero);
+    RUN_TEST(negative_wrong_number_of_args_is_an_error);
+    RUN_TEST(negative_returns_less_than_zero);
 }
 

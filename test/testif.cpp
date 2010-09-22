@@ -42,36 +42,9 @@ void basic_if()
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(if #f 10 20)" ), "20" );
 }
 
-void too_few_args_to_if_is_an_error()
+void wrong_number_of_args_to_if_is_an_error()
 {
-    bool exception_caught = false;
-    try
-    {
-        SubsInterpreter().Interpret( "(if #t 1)" );
-    }
-    catch( EvaluationError& e )
-    {
-        TEST_ASSERT_CAN_FIND( e.ToString(), "Not enough" );
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
-}
-
-void too_many_args_to_if_is_an_error()
-{
-    bool exception_caught = false;
-    try
-    {
-        SubsInterpreter().Interpret( "(if #t 1 2 3)" );
-    }
-    catch( EvaluationError& e )
-    {
-        TEST_ASSERT_CAN_FIND( e.ToString(), "Too many" );
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "if", 3 );
 }
 
 void everything_is_true_except_hash_f()
@@ -106,8 +79,7 @@ void TestIf::Run() const
 {
     RUN_TEST(true_and_false);
     RUN_TEST(basic_if);
-    RUN_TEST(too_few_args_to_if_is_an_error);
-    RUN_TEST(too_many_args_to_if_is_an_error);
+    RUN_TEST(wrong_number_of_args_to_if_is_an_error);
     RUN_TEST(everything_is_true_except_hash_f);
     RUN_TEST(comparator_works_in_if);
 }

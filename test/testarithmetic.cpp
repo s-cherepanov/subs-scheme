@@ -124,16 +124,11 @@ void subtraction_of_three_numbers_yields_correct_answer()
 
 void null_subtraction_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "(-)" );
     }
-    catch( EvaluationError& e )
-    {
-        exception_caught = true;
-    }
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Not enough" )
 }
 
 void single_number_subtraction_negates_that_number()
@@ -158,16 +153,11 @@ void inexact_division_of_two_integers_yields_decimal_answer()
 
 void null_division_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "(/)" );
     }
-    catch( EvaluationError& e )
-    {
-        exception_caught = true;
-    }
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Not enough" )
 }
 
 
@@ -200,25 +190,7 @@ void division_of_three_numbers_yields_correct_answer()
 
 void remainder_with_wrong_num_arguments_is_an_error()
 {
-    SubsInterpreter interpreter;
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(remainder)" );
-    }
-    TEST_ASSERT_THROWS_END("Not enough")
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(remainder 1)" );
-    }
-    TEST_ASSERT_THROWS_END("Not enough")
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(remainder 5 2 1)" );
-    }
-    TEST_ASSERT_THROWS_END("Too many")
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "remainder", 2 );
 }
 
 

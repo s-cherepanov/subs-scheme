@@ -42,17 +42,11 @@ void equals_works_for_integers()
 
 void too_few_operands_to_equals_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "(= 1)" );
     }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Not enough" )
 }
 
 
@@ -82,17 +76,11 @@ void lessthan_works_for_decimals()
 
 void too_few_operands_to_lessthan_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "(< 1)" );
     }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Not enough" )
 }
 
 
@@ -122,17 +110,11 @@ void greaterthan_works_for_decimals()
 
 void too_few_operands_to_greaterthan_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "(> 1)" );
     }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Not enough" )
 }
 
 }

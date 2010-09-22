@@ -28,34 +28,11 @@ using namespace std;
 namespace
 {
 
-void log_no_args_is_an_error()
+void log_wrong_number_of_args_is_an_error()
 {
-    bool exception_caught = false;
-    try
-    {
-        SubsInterpreter().Interpret( "(log)" );
-    }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "log", 1 );
 }
 
-
-void log_two_args_is_an_error()
-{
-    bool exception_caught = false;
-    try
-    {
-        SubsInterpreter().Interpret( "(log 1 2)" );
-    }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-    TEST_ASSERT_TRUE( exception_caught );
-}
 
 void log_calculates_ln_base_e()
 {
@@ -67,19 +44,7 @@ void log_calculates_ln_base_e()
 
 void exp_wrong_number_of_args_is_an_error()
 {
-    SubsInterpreter interpreter;
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(exp)" );
-    }
-    TEST_ASSERT_THROWS_END("Not enough")
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(exp 1 2)" );
-    }
-    TEST_ASSERT_THROWS_END("Too many")
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "exp", 1 );
 }
 
 
@@ -95,19 +60,7 @@ void exp_returns_e_to_the_x()
 
 void sin_wrong_number_of_args_is_an_error()
 {
-    SubsInterpreter interpreter;
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(sin)" );
-    }
-    TEST_ASSERT_THROWS_END("Not enough")
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(sin 1 2)" );
-    }
-    TEST_ASSERT_THROWS_END("Too many")
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "sin", 1 );
 }
 
 
@@ -123,19 +76,7 @@ void sin_returns_sine()
 
 void cos_wrong_number_of_args_is_an_error()
 {
-    SubsInterpreter interpreter;
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(cos)" );
-    }
-    TEST_ASSERT_THROWS_END("Not enough")
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(cos 1 2)" );
-    }
-    TEST_ASSERT_THROWS_END("Too many")
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "cos", 1 );
 }
 
 
@@ -149,22 +90,9 @@ void cos_returns_cosine()
 
 
 
-
 void tan_wrong_number_of_args_is_an_error()
 {
-    SubsInterpreter interpreter;
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(tan)" );
-    }
-    TEST_ASSERT_THROWS_END("Not enough")
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(tan 1 2)" );
-    }
-    TEST_ASSERT_THROWS_END("Too many")
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "tan", 1 );
 }
 
 
@@ -186,8 +114,7 @@ void tan_returns_tangent()
 
 void TestMaths::Run() const
 {
-    RUN_TEST(log_no_args_is_an_error);
-    RUN_TEST(log_two_args_is_an_error);
+    RUN_TEST(log_wrong_number_of_args_is_an_error);
     RUN_TEST(log_calculates_ln_base_e);
     RUN_TEST(exp_wrong_number_of_args_is_an_error);
     RUN_TEST(exp_returns_e_to_the_x);

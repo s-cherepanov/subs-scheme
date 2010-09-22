@@ -32,17 +32,11 @@ namespace
 
 void no_args_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "(cond)" );
     }
-    catch( EvaluationError& e )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Not enough" )
 }
 
 
@@ -108,58 +102,40 @@ void else_after_multiple_conditions_all_false()
 
 void pair_after_else_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret(
             "(cond ((= 0 1) 5)"
                   "(else 3)"
                   "((= 2 2) 4))" );
     }
-    catch( EvaluationError& e )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "The else pair must be the last pair" )
 }
 
 
 void non_combo_condition_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret(
             "(cond 3"
-                  "(else 3)"
-                  "((= 2 2) 4))" );
+                  "((= 2 2) 4))"
+                  "(else 3)" );
     }
-    catch( EvaluationError& e )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "The operands to 'cond' must be pairs" )
 }
 
 
 void too_many_parts_in_condition_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret(
             "(cond (#t 3 5)"
                   "(else 3)"
                   "((= 2 2) 4))" );
     }
-    catch( EvaluationError& e )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "The operands to 'cond' must be pairs" )
 }
 
 

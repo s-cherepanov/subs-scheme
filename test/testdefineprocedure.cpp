@@ -121,19 +121,11 @@ void error_when_supply_too_few_args()
 
     interpreter.Interpret( "(define (tri x y z) 3)" );
 
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         interpreter.Interpret( "(tri 3 2)" );
     }
-    catch( EvaluationError& e )
-    {
-        TEST_ASSERT_CAN_FIND( e.ToString(), "Not enough" );
-        TEST_ASSERT_CAN_FIND( e.ToString(), "Expected 3 but got 2" );
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END2( "Not enough", "Expected 3 but got 2" )
 }
 
 
@@ -143,19 +135,11 @@ void error_when_supply_too_many_args()
 
     interpreter.Interpret( "(define (tri x y z) 3)" );
 
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         interpreter.Interpret( "(tri 3 2 1 0)" );
     }
-    catch( EvaluationError& e )
-    {
-        TEST_ASSERT_CAN_FIND( e.ToString(), "Too many" );
-        TEST_ASSERT_CAN_FIND( e.ToString(), "Expected 3 but got 4" );
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END2( "Too many", "Expected 3 but got 4" )
 }
 
 
@@ -187,17 +171,11 @@ void define_doesnt_leak_out()
 
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(foo)" ), "3" );
 
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         interpreter.Interpret( "x" );
     }
-    catch( EvaluationError& e )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Undefined symbol 'x'" )
 }
 
 

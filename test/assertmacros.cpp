@@ -55,6 +55,25 @@ void throw_equal( std::string file, unsigned int line,
 namespace assertfns
 {
 
+namespace utils
+{
+
+std::string get_cmd_plus_args( const std::string& cmd, unsigned int num_args )
+{
+    std::string ret = "(";
+    ret += cmd;
+    for( unsigned int i = 0; i < num_args; ++i )
+    {
+        ret += " ";
+        ret += "1";
+    }
+    ret += ")";
+    return ret;
+}
+
+}
+
+
 void equal( std::string file, unsigned int line,
     std::string name1, std::string name2,
     std::string arg1,  std::string arg2 )

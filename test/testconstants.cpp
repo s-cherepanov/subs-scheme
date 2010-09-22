@@ -54,50 +54,32 @@ void decimal_number_yields_itself()
 
 void end_in_dot_is_failure()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "1." );
     }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Undefined symbol '1.'" )
 }
 
 
 
 void two_dots_is_failure()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "1.4.5" );
     }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Undefined symbol '1.4.5'" )
 }
 
 
 void unparseable_integer_is_an_error()
 {
-    bool exception_caught = false;
-    try
+    TEST_ASSERT_THROWS_BEGIN
     {
         SubsInterpreter().Interpret( "10,000" );
     }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_THROWS_END( "Undefined symbol '10,000'" )
 }
 
 

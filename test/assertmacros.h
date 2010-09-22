@@ -25,6 +25,7 @@
 #include <typeinfo>
 
 #include "lib/evaluationerror.h"
+#include "lib/subsinterpreter.h"
 
 #define RUN_TEST(TESTNAME) \
     { \
@@ -74,8 +75,44 @@
         TEST_ASSERT_TRUE( exception_thrown ); \
     }
 
+#define TEST_ASSERT_THROWS_END2(EXPECTED1,EXPECTED2) \
+        catch( EvaluationError& e ) \
+        { \
+            exception_thrown = true; \
+            TEST_ASSERT_CAN_FIND(e.ToString(),EXPECTED1); \
+            TEST_ASSERT_CAN_FIND(e.ToString(),EXPECTED2); \
+        } \
+        TEST_ASSERT_TRUE( exception_thrown ); \
+    }
+
+#define TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS(CMD, NUM) \
+    { \
+        SubsInterpreter interpreter; \
+        \
+        TEST_ASSERT_THROWS_BEGIN \
+        { \
+            interpreter.Interpret( assertfns::utils::get_cmd_plus_args( CMD, \
+                NUM - 1 ) ); \
+        } \
+        TEST_ASSERT_THROWS_END("Not enough") \
+        \
+        TEST_ASSERT_THROWS_BEGIN \
+        { \
+            interpreter.Interpret( assertfns::utils::get_cmd_plus_args( CMD, \
+                NUM + 1 ) ); \
+        } \
+        TEST_ASSERT_THROWS_END("Too many") \
+    }
+
 namespace assertfns
 {
+
+namespace utils
+{
+
+std::string get_cmd_plus_args( const std::string& cmd, unsigned int num_args );
+
+}
 
 void equal( std::string file, unsigned int line,
     std::string name1, std::string name2,

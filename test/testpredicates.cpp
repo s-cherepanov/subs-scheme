@@ -79,34 +79,9 @@ void and_multiple_things()
 }
 
 
-void not_nothing_is_an_error()
+void wrong_number_of_args_to_not_is_an_error()
 {
-    bool exception_caught = false;
-    try
-    {
-        SubsInterpreter().Interpret( "(not)" );
-    }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-    TEST_ASSERT_TRUE( exception_caught );
-}
-
-
-
-void not_two_things_is_an_error()
-{
-    bool exception_caught = false;
-    try
-    {
-        SubsInterpreter().Interpret( "(not 5 6)" );
-    }
-    catch( EvaluationError& )
-    {
-        exception_caught = true;
-    }
-    TEST_ASSERT_TRUE( exception_caught );
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "not", 1 )
 }
 
 
@@ -131,8 +106,7 @@ void TestPredicates::Run() const
     RUN_TEST(and_nothing_is_true);
     RUN_TEST(and_one_thing);
     RUN_TEST(and_multiple_things);
-    RUN_TEST(not_nothing_is_an_error);
-    RUN_TEST(not_two_things_is_an_error);
+    RUN_TEST(wrong_number_of_args_to_not_is_an_error);
     RUN_TEST(not_reverses_truthvalue);
 }
 

@@ -59,19 +59,7 @@ void display_int_writes_an_int()
 
 void display_with_wrong_number_of_args_is_an_error()
 {
-    SubsInterpreter interpreter;
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(display)" );
-    }
-    TEST_ASSERT_THROWS_END( "Not enough arguments to 'display'" );
-
-    TEST_ASSERT_THROWS_BEGIN
-    {
-        interpreter.Interpret( "(display 4 5)" );
-    }
-    TEST_ASSERT_THROWS_END( "Too many arguments to 'display'" );
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "display", 1 );
 }
 
 void display_string_writes_with_no_quotes()

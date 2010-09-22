@@ -52,6 +52,11 @@ testsicp_cmd = env.Command( ".testsicp.passed",
 	"./test_subs_sicp && echo 'Passed' > .testsicp.passed" )
 env.Alias( "testsicp", testsicp_cmd )
 
+testsicp_failing_cmd = env.Command( ".testsicp_failing.passed",
+	["subs","test_subs_sicp"] + Glob( "testsicp/*.scmsession" )
+		+ Glob( "testsicp/*.scmsession.fails" ),
+	"./test_subs_sicp_failing && echo 'Passed' > .testsicp_failing.passed" )
+env.Alias( "testsicp_failing", testsicp_failing_cmd )
 
 testvalgrind_cmd = env.Command( ".testvalgrind.passed", ["subs","test_subs"],
 	"valgrind --quiet --leak-check=full ./test_subs && echo 'Passed' > .testvalgrind.passed" )

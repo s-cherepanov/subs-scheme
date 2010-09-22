@@ -17,35 +17,41 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef NATIVEFUNCTIONVALUE_H
-#define NATIVEFUNCTIONVALUE_H
-
 #include <memory>
 #include <string>
 
-#include "value.h"
+#include "zeronativefunctionvalue.h"
 
-class CombinationValue;
-class Environment;
-class Value;
+using namespace std;
 
-class NativeFunctionValue : public Value
+//virtual
+std::auto_ptr<Value> ZeroNativeFunctionValue::Run(
+    const CombinationValue* argvalues ) const
 {
-public:
-    /**
-     * Run this procedure with the supplied (already evaluated)
-     * operands.
-     *
-     * @arg combo is the combination of the operator and operands.
-     */
-    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const = 0;
+    // TODO: == on a double is evil
+    double value = GetDoubleArg( argvalues );
+    return CreateBooleanValue( value == 0 );
+}
 
-    virtual std::string GetName() const = 0;
 
-protected:
-    double GetDoubleArg( const CombinationValue* argvalues ) const;
-    static std::auto_ptr<Value> CreateBooleanValue( bool value );
-};
+//virtual
+ZeroNativeFunctionValue* ZeroNativeFunctionValue::Clone() const
+{
+    return new ZeroNativeFunctionValue( *this );
+}
 
-#endif
+
+//virtual
+std::string ZeroNativeFunctionValue::GetName() const
+{
+    return StaticName();
+}
+
+//static
+const std::string& ZeroNativeFunctionValue::StaticName()
+{
+    static const string static_name( "zero?" );
+    return static_name;
+}
+
 

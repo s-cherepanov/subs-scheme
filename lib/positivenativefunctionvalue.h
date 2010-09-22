@@ -17,30 +17,29 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "numericquestionnativefunctionvalue.h"
+#ifndef POSITIVENATIVEFUNCTIONVALUE_H
+#define POSITIVENATIVEFUNCTIONVALUE_H
 
-namespace positivequestionutils
-{
+#include <memory>
+#include <string>
 
-// TODO: this whole template structure doesn't really help - get rid of it
-//       and just use the get_arg function (make another for int-only)
-class PositiveQuestion
+#include "nativefunctionvalue.h"
+
+class CombinationValue;
+class Environment;
+class Value;
+
+class PositiveNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    static bool Answer( double value )
-    {
-        return value > 0;
-    }
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
 
-    static const std::string& Name()
-    {
-        static std::string name( "positive?" );
-        return name;
-    }
+    virtual PositiveNativeFunctionValue* Clone() const;
+
+    virtual std::string GetName() const;
+
+    static const std::string& StaticName();
 };
 
-}
+#endif
 
-typedef
-    NumericQuestionNativeFunctionValue<positivequestionutils::PositiveQuestion>
-        PositiveNativeFunctionValue;

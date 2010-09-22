@@ -23,16 +23,17 @@
 #include "combinationvalue.h"
 #include "decimalvalue.h"
 #include "evaluationerror.h"
+#include "falsevalue.h"
 #include "integervalue.h"
-#include "numericquestionnativefunctionvalue.h"
+#include "nativefunctionvalue.h"
 #include "prettyprinter.h"
+#include "truevalue.h"
 
-namespace numericquestionutils
+//protected virtual
+double NativeFunctionValue::GetDoubleArg( const CombinationValue* argvalues )
+    const
 {
-
-double get_arg( const char* procedure_name, const CombinationValue* argvalues )
-{
-    ArgsChecker::CheckExactNumberOfArgs( procedure_name, argvalues, 1 );
+    ArgsChecker::CheckExactNumberOfArgs( GetName().c_str(), argvalues, 1 );
 
     CombinationValue::const_iterator it = argvalues->begin();
     assert( it != argvalues->end() );
@@ -50,7 +51,7 @@ double get_arg( const char* procedure_name, const CombinationValue* argvalues )
         if( !operand_int )
         {
             throw EvaluationError( "Invalid argument for "
-                + std::string( procedure_name )
+                + GetName()
                 + ": '"
                 + PrettyPrinter::Print( *it )
                 + "' is not an integer or a decimal." );
@@ -61,4 +62,16 @@ double get_arg( const char* procedure_name, const CombinationValue* argvalues )
     return value;
 }
 
+//protected static
+std::auto_ptr<Value> NativeFunctionValue::CreateBooleanValue( bool value )
+{
+    if( value )
+    {
+        return std::auto_ptr<Value>( new TrueValue );
+    }
+    else
+    {
+        return std::auto_ptr<Value>( new FalseValue );
+    }
 }
+

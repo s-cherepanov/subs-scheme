@@ -17,28 +17,29 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "numericquestionnativefunctionvalue.h"
+#ifndef ZERONATIVEFUNCTIONVALUE_H
+#define ZERONATIVEFUNCTIONVALUE_H
 
-namespace zeroquestionutils
-{
+#include <memory>
+#include <string>
 
-class ZeroQuestion
+#include "nativefunctionvalue.h"
+
+class CombinationValue;
+class Environment;
+class Value;
+
+class ZeroNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    static bool Answer( double value )
-    {
-        // TODO: nasty to compare a double against zero!
-        return value == 0;
-    }
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
 
-    static const std::string& Name()
-    {
-        static std::string name( "zero?" );
-        return name;
-    }
+    virtual ZeroNativeFunctionValue* Clone() const;
+
+    virtual std::string GetName() const;
+
+    static const std::string& StaticName();
 };
 
-}
+#endif
 
-typedef NumericQuestionNativeFunctionValue<zeroquestionutils::ZeroQuestion>
-    ZeroNativeFunctionValue;

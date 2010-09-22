@@ -17,28 +17,29 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "numericquestionnativefunctionvalue.h"
+#ifndef NEGATIVENATIVEFUNCTIONVALUE_H
+#define NEGATIVENATIVEFUNCTIONVALUE_H
 
-namespace negativequestionutils
-{
+#include <memory>
+#include <string>
 
-class NegativeQuestion
+#include "nativefunctionvalue.h"
+
+class CombinationValue;
+class Environment;
+class Value;
+
+class NegativeNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    static bool Answer( double value )
-    {
-        return value < 0;
-    }
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
 
-    static const std::string& Name()
-    {
-        static std::string name( "negative?" );
-        return name;
-    }
+    virtual NegativeNativeFunctionValue* Clone() const;
+
+    virtual std::string GetName() const;
+
+    static const std::string& StaticName();
 };
 
-}
+#endif
 
-typedef
-    NumericQuestionNativeFunctionValue<negativequestionutils::NegativeQuestion>
-        NegativeNativeFunctionValue;

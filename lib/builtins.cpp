@@ -17,6 +17,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include "cosnativefunctionvalue.h"
 #include "environment.h"
 #include "dividenativefunctionvalue.h"
 #include "equalsnativefunctionvalue.h"
@@ -29,6 +30,8 @@
 #include "notnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
 #include "remaindernativefunctionvalue.h"
+#include "sinnativefunctionvalue.h"
+#include "tannativefunctionvalue.h"
 #include "timesnativefunctionvalue.h"
 #include "truevalue.h"
 
@@ -75,9 +78,12 @@ void Init( Environment& environment )
     // in SpecialSymbolEvaluator.
 
     // Mathematical functions
+    InsertProcedure<CosNativeFunctionValue>( environment );
     InsertProcedure<ExpNativeFunctionValue>( environment );
     InsertProcedure<LogNativeFunctionValue>( environment );
     InsertProcedure<RemainderNativeFunctionValue>( environment );
+    InsertProcedure<SinNativeFunctionValue>( environment );
+    InsertProcedure<TanNativeFunctionValue>( environment );
 }
 
 }

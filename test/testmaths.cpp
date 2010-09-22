@@ -92,6 +92,94 @@ void exp_returns_e_to_the_x()
 }
 
 
+
+void sin_wrong_number_of_args_is_an_error()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(sin)" );
+    }
+    TEST_ASSERT_THROWS_END("Not enough")
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(sin 1 2)" );
+    }
+    TEST_ASSERT_THROWS_END("Too many")
+}
+
+
+void sin_returns_sine()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(sin 1)" ), "0.841471" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(sin 2)" ), "0.909297" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(sin 10)" ), "-0.544021" );
+}
+
+
+
+void cos_wrong_number_of_args_is_an_error()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(cos)" );
+    }
+    TEST_ASSERT_THROWS_END("Not enough")
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(cos 1 2)" );
+    }
+    TEST_ASSERT_THROWS_END("Too many")
+}
+
+
+void cos_returns_cosine()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(cos 1)" ), "0.540302" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(cos 2)" ), "-0.416147" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(cos 10)" ), "-0.839072" );
+}
+
+
+
+
+void tan_wrong_number_of_args_is_an_error()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(tan)" );
+    }
+    TEST_ASSERT_THROWS_END("Not enough")
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(tan 1 2)" );
+    }
+    TEST_ASSERT_THROWS_END("Too many")
+}
+
+
+void tan_returns_tangent()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(tan 1)" ), "1.55741" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(tan 2)" ), "-2.18504" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(tan 10)" ), "0.648361" );
+}
+
+
+
+
+
 }
 
 #define SUITENAME "TestMaths"
@@ -103,5 +191,11 @@ void TestMaths::Run() const
     RUN_TEST(log_calculates_ln_base_e);
     RUN_TEST(exp_wrong_number_of_args_is_an_error);
     RUN_TEST(exp_returns_e_to_the_x);
+    RUN_TEST(sin_wrong_number_of_args_is_an_error);
+    RUN_TEST(sin_returns_sine);
+    RUN_TEST(cos_wrong_number_of_args_is_an_error);
+    RUN_TEST(cos_returns_cosine);
+    RUN_TEST(tan_wrong_number_of_args_is_an_error);
+    RUN_TEST(tan_returns_tangent);
 }
 

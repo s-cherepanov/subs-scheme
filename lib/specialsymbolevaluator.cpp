@@ -21,6 +21,7 @@
 #include <memory>
 #include <sstream>
 
+#include "argschecker.h"
 #include "combinationvalue.h"
 #include "compoundprocedurevalue.h"
 #include "displayevaluator.h"
@@ -135,9 +136,8 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
     {
         if( combo->size() > 3 )
         {
-            throw EvaluationError(
-                "Too many operands to the define operator: there should "
-                "be 2." );
+            ArgsChecker::ThrowWrongNumArgsException( "define",
+                combo->size() - 1, 2 );
         }
 
         const SymbolValue* sym = dynamic_cast<const SymbolValue*>( to_define );

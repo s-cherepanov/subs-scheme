@@ -125,7 +125,7 @@ void error_when_supply_too_few_args()
     {
         interpreter.Interpret( "(tri 3 2)" );
     }
-    TEST_ASSERT_THROWS_END2( "Not enough", "Expected 3 but got 2" )
+    TEST_ASSERT_THROWS_END2( "Not enough", "were 2 but there should be 3" )
 }
 
 
@@ -139,7 +139,7 @@ void error_when_supply_too_many_args()
     {
         interpreter.Interpret( "(tri 3 2 1 0)" );
     }
-    TEST_ASSERT_THROWS_END2( "Too many", "Expected 3 but got 4" )
+    TEST_ASSERT_THROWS_END2( "Too many", "were 4 but there should be 3" )
 }
 
 

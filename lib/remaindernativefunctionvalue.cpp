@@ -21,6 +21,7 @@
 #include <memory>
 #include <sstream>
 
+#include "argschecker.h"
 #include "combinationvalue.h"
 #include "evaluationerror.h"
 #include "integervalue.h"
@@ -35,22 +36,7 @@ using namespace std;
 std::auto_ptr<Value> RemainderNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    if( argvalues->size() != 2 )
-    {
-        if( argvalues->size() < 2 )
-        {
-            throw EvaluationError( "Not enough operands to remainder: there "
-                "should be 2, but there were fewer." );
-        }
-        else
-        {
-            ostringstream ss;
-            ss << "Too many operands to remainder: there were ";
-            ss << argvalues->size();
-            ss << " but there should be 2.";
-            throw EvaluationError( ss.str() );
-        }
-    }
+    ArgsChecker::CheckExactNumberOfArgs( "remainder", argvalues, 2 );
 
     CombinationValue::const_iterator it = argvalues->begin();
     const IntegerValue* dividend = dynamic_cast<IntegerValue*>( *it );

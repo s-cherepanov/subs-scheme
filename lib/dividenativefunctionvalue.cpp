@@ -20,6 +20,7 @@
 #include <cassert>
 #include <memory>
 
+#include "argschecker.h"
 #include "combinationvalue.h"
 #include "decimalvalue.h"
 #include "evaluationerror.h"
@@ -75,8 +76,7 @@ std::auto_ptr<Value> DivideNativeFunctionValue::Run(
 
     if( it == argvalues->end() )
     {
-        throw EvaluationError( "Not enough operands for '/' - there must "
-            "be at least 1." );
+        ArgsChecker::ThrowNotEnoughArgsException( "/", argvalues->size(), 1 );
     }
 
     if( argvalues->size() > 1 )

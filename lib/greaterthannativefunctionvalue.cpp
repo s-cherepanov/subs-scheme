@@ -20,6 +20,7 @@
 #include <cassert>
 #include <memory>
 
+#include "argschecker.h"
 #include "combinationvalue.h"
 #include "decimalvalue.h"
 #include "evaluationerror.h"
@@ -41,8 +42,7 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
 
     if( it == argvalues->end() )
     {
-        throw EvaluationError( "Not enough operands to >: there should "
-            "be at least 2." );
+        ArgsChecker::ThrowNotEnoughArgsException( ">", argvalues->size(), 2 );
     }
 
     const IntegerValue* previous_int = dynamic_cast<const IntegerValue*>( *it );
@@ -63,8 +63,7 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
 
     if( it == argvalues->end() )
     {
-        throw EvaluationError( "Not enough operands to >: there should "
-            "be at least 2." );
+        ArgsChecker::ThrowNotEnoughArgsException( ">", argvalues->size(), 2 );
     }
 
     for( ; it != argvalues->end(); ++it )

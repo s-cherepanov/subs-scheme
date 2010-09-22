@@ -20,6 +20,7 @@
 #include <memory>
 #include <sstream>
 
+#include "argschecker.h"
 #include "combinationvalue.h"
 #include "evaluationerror.h"
 #include "falsevalue.h"
@@ -35,22 +36,7 @@ using namespace std;
 std::auto_ptr<Value> NotNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    if( argvalues->size() != 1 )
-    {
-        if( argvalues->empty() )
-        {
-            throw EvaluationError( "Not enough operands to not: there "
-                "should be 1, but there were none." );
-        }
-        else
-        {
-            ostringstream ss;
-            ss << "Too many operands to not: there were ";
-            ss << argvalues->size();
-            ss << " but there should be 1.";
-            throw EvaluationError( ss.str() );
-        }
-    }
+    ArgsChecker::CheckExactNumberOfArgs( "not", argvalues, 1 );
 
     CombinationValue::const_iterator it = argvalues->begin();
 

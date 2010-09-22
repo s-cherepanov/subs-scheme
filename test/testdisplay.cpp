@@ -44,7 +44,7 @@ void newline_with_any_args_is_an_error()
     {
         SubsInterpreter().Interpret( "(newline 4)" );
     }
-    TEST_ASSERT_THROWS_END( "Too many arguments to 'newline'" );
+    TEST_ASSERT_THROWS_END( "Too many operands to newline" );
 }
 
 

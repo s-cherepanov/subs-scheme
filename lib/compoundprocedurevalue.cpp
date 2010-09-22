@@ -21,6 +21,7 @@
 #include <sstream>
 #include <memory>
 
+#include "argschecker.h"
 #include "combinationvalue.h"
 #include "evaluationerror.h"
 #include "evaluator.h"
@@ -92,12 +93,8 @@ std::auto_ptr<Environment> CompoundProcedureValue::ExtendEnvironmentWithArgs(
     {
         if( itargvalue == argvalues->end() )
         {
-            ostringstream err;
-            err << "Not enough arguments to procedure '" << name_
-                << "'.  Expected "
-                << argnames_->size() << " but got " << argvalues->size()
-                << ".";
-            throw EvaluationError( err.str() );
+            ArgsChecker::ThrowWrongNumArgsException( name_.c_str(),
+                argvalues->size(), argnames_->size() );
         }
 
         const SymbolValue* argsym = dynamic_cast<const SymbolValue*>(
@@ -115,10 +112,8 @@ std::auto_ptr<Environment> CompoundProcedureValue::ExtendEnvironmentWithArgs(
 
     if( itargvalue != argvalues->end() )
     {
-        ostringstream err;
-        err << "Too many arguments to procedure '" << name_ << "'.  Expected "
-            << argnames_->size() << " but got " << argvalues->size() << ".";
-        throw EvaluationError( err.str() );
+        ArgsChecker::ThrowWrongNumArgsException( name_.c_str(),
+            argvalues->size(), argnames_->size() );
     }
 
     return ret_environment;

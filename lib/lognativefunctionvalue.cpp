@@ -23,6 +23,7 @@
 #include <sstream>
 #include <string>
 
+#include "argschecker.h"
 #include "combinationvalue.h"
 #include "decimalvalue.h"
 #include "evaluationerror.h"
@@ -38,22 +39,7 @@ using namespace std;
 std::auto_ptr<Value> LogNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    if( argvalues->size() != 1 )
-    {
-        if( argvalues->empty() )
-        {
-            throw EvaluationError( "Not enough operands to log: there "
-                "should be 1, but there were none." );
-        }
-        else
-        {
-            ostringstream ss;
-            ss << "Too many operands to log: there were ";
-            ss << argvalues->size();
-            ss << " but there should be 1.";
-            throw EvaluationError( ss.str() );
-        }
-    }
+    ArgsChecker::CheckExactNumberOfArgs( "log", argvalues, 1 );
 
     CombinationValue::const_iterator it = argvalues->begin();
     assert( it != argvalues->end() );

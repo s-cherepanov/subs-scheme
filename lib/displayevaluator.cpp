@@ -20,6 +20,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "argschecker.h"
 #include "combinationvalue.h"
 #include "displayevaluator.h"
 #include "environment.h"
@@ -52,12 +53,8 @@ void write_newline( const CombinationValue* combo, std::ostream& outstream )
 {
     if( combo->size() > 1 )
     {
-        ostringstream ss;
-        ss  << "Too many arguments to 'newline'.  There should be none"
-            << ", but there were "
-            << combo->size() - 1
-            << ".";
-        throw EvaluationError( ss.str() );
+        ArgsChecker::ThrowWrongNumArgsException( "newline", combo->size() - 1,
+            0 );
     }
 
     outstream << std::endl;
@@ -68,20 +65,8 @@ void write_display( Evaluator* evaluator, const CombinationValue* combo,
 {
     if( combo->size() != 2 )
     {
-        if( combo->size() == 1 )
-        {
-            throw EvaluationError( "Not enough arguments to 'display'."
-                "  There should be 1, but there were none." );
-        }
-        else
-        {
-            ostringstream ss;
-            ss  << "Too many arguments to 'display'.  There should be 1"
-                << ", but there were "
-                << combo->size() - 1
-                << ".";
-            throw EvaluationError( ss.str() );
-        }
+        ArgsChecker::ThrowWrongNumArgsException( "display", combo->size() - 1,
+            1 );
     }
 
     std::auto_ptr<Value> value = evaluator->EvalInContext(

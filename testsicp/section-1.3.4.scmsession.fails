@@ -1,0 +1,90 @@
+> (define (average-damp f)
+.         (lambda (x) (average x (f x))))
+average-damp
+
+> ((average-damp square) 10)
+55
+
+> (define (sqrt x)
+.         (fixed-point (average-damp (lambda (y) (/ x y)))
+.                      1.0))
+sqrt
+
+> (sqrt 9)
+3.0
+
+> (define (cube-root x)
+.         (fixed-point (average-damp (lambda (y) (/ x (square y))))
+.                      1.0))
+cube-root
+
+> (cube-root 27)
+3.0
+
+> (cube-root 8)
+2.0
+
+> (define dx 0.00001)
+dx
+
+> (define (deriv g)
+.         (lambda (x)
+.                 (/ (- (g (+ x dx)) (g x))
+.                    dx)))
+
+> (define (cube x) (* x x x))
+cube
+
+> ((deriv cube) 5)
+75.00014999664018
+
+> (define (newton-transform g)
+.         (lambda (x)
+.                 (- x (/ (g x) ((deriv g) x)))))
+newton-transform
+
+> (define (newtons-method g guess)
+.         (fixed-point (newton-transform g) guess))
+newtons-method
+
+> (define (sqrt x)
+.         (newtons-method (lambda (y) (- (square y) x))
+.                         1.0))
+sqrt
+
+> (sqrt 4)
+2.0
+
+> (sqrt 9)
+3.0
+
+> (define (fixed-point-of-transform g transform guess)
+.         (fixed-point (transform g) guess))
+fixed-point-of-transform
+
+> (define (sqrt x)
+.         (fixed-point-of-transform (lambda (y) (/ x y))
+.                                   average-damp
+.                                   1.0))
+sqrt
+
+> (sqrt 4)
+2.0
+
+> (sqrt 9)
+3.0
+
+> (define (sqrt x)
+.         (fixed-point-of-transform (lambda (y) (- (square y) x))
+.                                   newton-transform
+.                                   1.0))
+sqrt
+
+> (sqrt 4)
+2.0
+
+> (sqrt 9)
+3.0
+
+
+

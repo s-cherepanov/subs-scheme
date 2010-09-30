@@ -158,6 +158,42 @@ void arguments_dont_leak_out()
 }
 
 
+void run_immediately_no_args()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "((lambda () 3))" ), "3" );
+}
+
+
+
+
+void run_immediately_args()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "((lambda (x) x) 3)" ), "3" );
+}
+
+void use_args_passed_to_parent_inside()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (foo x)"
+        "        (lambda () x))" );
+
+    TEST_ASSERT_EQUAL(
+        interpreter.Interpret( "((foo 3))" ), "3" );
+}
+
+void return_and_run()
+{
+    SubsInterpreter interpreter;
+    interpreter.Interpret( "(define (foo) (lambda (y) (+ 2 y)))" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "((foo) 5)" ), "7" );
+}
+
+
+
 
 }
 
@@ -174,5 +210,9 @@ void TestLambda::Run() const
     RUN_TEST(error_when_supply_too_few_args);
     RUN_TEST(error_when_supply_too_many_args);
     RUN_TEST(arguments_dont_leak_out);
+    RUN_TEST(run_immediately_no_args);
+    RUN_TEST(run_immediately_args);
+    RUN_TEST(use_args_passed_to_parent_inside);
+    RUN_TEST(return_and_run);
 }
 

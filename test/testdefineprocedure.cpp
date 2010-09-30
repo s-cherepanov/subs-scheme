@@ -288,6 +288,39 @@ void good_enough_bug()
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(sqrt 16)" ), "4.0" );
 }
 
+void use_args_passed_to_parent_inside()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (foo x)"
+        "        (define (bar) x)"
+        "        bar)" );
+
+    TEST_ASSERT_EQUAL(
+        interpreter.Interpret( "((foo 3))" ), "3" );
+}
+
+
+
+void use_later_after_being_put_into_other_env()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (foo x)"
+        "        (define (bar y)"
+        "                (define (baz) (+ x y))"
+        "                (baz))"
+        "        (define po bar)"
+        "        po)" );
+
+    TEST_ASSERT_EQUAL(
+        interpreter.Interpret( "((foo 3) 2)" ), "5" );
+}
+
+
+
 
 }
 
@@ -310,6 +343,8 @@ void TestDefineProcedure::Run() const
     RUN_TEST(define_proc_inside_proc);
     RUN_TEST(define_proc_inside_proc_overrides_previous);
     RUN_TEST(good_enough_bug);
+    RUN_TEST(use_args_passed_to_parent_inside);
+    RUN_TEST(use_later_after_being_put_into_other_env);
 }
 
 

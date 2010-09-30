@@ -20,6 +20,7 @@
 #include <iostream>
 #include <map>
 
+#include "compoundprocedurevalue.h"
 #include "value.h"
 
 #include "environment.h"
@@ -27,12 +28,13 @@
 using namespace std;
 
 Environment::Environment()
-: extended_parent_( NULL )
+// extended_parent_ gets initialised to NULL
 {
 }
 
-Environment::Environment( const Environment& parent_to_extend, bool )
-: extended_parent_( &parent_to_extend )
+Environment::Environment(
+    const boost::shared_ptr<const Environment>& parent_to_extend, bool )
+: extended_parent_( parent_to_extend )
 {
 }
 
@@ -73,5 +75,10 @@ const Value* Environment::FindSymbol( const std::string& name ) const
     {
         return NULL;
     }
+}
+
+const Environment* Environment::GetExtendedParent() const
+{
+    return extended_parent_.get();
 }
 

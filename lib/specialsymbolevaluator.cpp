@@ -21,6 +21,8 @@
 #include <memory>
 #include <sstream>
 
+#include <boost/shared_ptr.hpp>
+
 #include "argschecker.h"
 #include "combinationvalue.h"
 #include "compoundprocedurevalue.h"
@@ -40,14 +42,38 @@ using namespace std;
 namespace
 {
 
+/**
+ * Insert the supplied value into the supplied environment under the supplied
+ * name.  Note that value will be release()d when inserted into environment,
+ *
+ * If value is a compound procedure, and it owns the environment into which
+ * it is being inserted (or one of that environment's parents), stop it
+ * from owning it.
+ */
+void insert_value_into_environment( boost::shared_ptr<Environment>& environment,
+    const string& name, auto_ptr<Value>& value )
+{
+    CompoundProcedureValue* proc = dynamic_cast<CompoundProcedureValue*>(
+        value.get() );
+
+    if( proc )
+    {
+        proc->NotifyBeingInsertedInto( *environment );
+    }
+
+    environment->InsertSymbol( name, value.release() );
+}
 
 std::auto_ptr<Value> eval_define_symbol( Evaluator* ev,
-    Environment& environment, const SymbolValue* to_define,
-    const Value* definition, std::ostream& outstream )
+    boost::shared_ptr<Environment>& environment,
+    const SymbolValue* to_define, const Value* definition,
+    std::ostream& outstream )
 {
-    environment.InsertSymbol( to_define->GetStringValue(),
-        ev->EvalInContext( definition, environment, outstream, false
-            ).release() );
+    auto_ptr<Value> value = ev->EvalInContext( definition, environment,
+        outstream, false );
+
+    insert_value_into_environment( environment, to_define->GetStringValue(),
+        value );
 
     return auto_ptr<Value>( to_define->Clone() );
 }
@@ -77,16 +103,18 @@ std::auto_ptr<Value> define_procedure(
     const CombinationValue::const_iterator& argsend,
     CombinationValue::const_iterator itbody,
     const CombinationValue::const_iterator& bodyend,
+    const boost::shared_ptr<Environment>& environment,
     const std::string& name = "" )
 {
     return auto_ptr<Value>( new CompoundProcedureValue(
         clone_partial_combo( itarg, argsend ).release(),
-        clone_partial_combo( itbody, bodyend ).release(), name ) );
+        clone_partial_combo( itbody, bodyend ).release(), name, environment ) );
 }
 
 
 std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, std::ostream& outstream )
+    boost::shared_ptr<Environment>& environment,
+    std::ostream& outstream )
 {
     if( combo->size() < 3 )
     {
@@ -130,7 +158,7 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
 
         return eval_define_symbol( ev, environment, sym,
             define_procedure( itarg, comb_to_define->end(), it,
-                combo->end(), sym->GetStringValue() ).get(), outstream );
+                combo->end(), environment, sym->GetStringValue() ).get(), outstream );
     }
     else
     {
@@ -152,7 +180,8 @@ std::auto_ptr<Value> eval_define( Evaluator* ev, const CombinationValue* combo,
     }
 }
 
-std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
+std::auto_ptr<Value> eval_lambda( const CombinationValue* combo,
+    const boost::shared_ptr<Environment>& environment )
 {
     if( combo->size() < 3 )
     {
@@ -181,7 +210,8 @@ std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
     // Copy the whole arguments combo as the args of the procedure, and
     // copy the rest of the main combo (unevaluated) as the body
     // of the function
-    return define_procedure( args->begin(), args->end(), it, combo->end() );
+    return define_procedure( args->begin(), args->end(), it, combo->end(),
+        environment );
 }
 
 
@@ -192,7 +222,7 @@ std::auto_ptr<Value> eval_lambda( const CombinationValue* combo )
  * so the leaking out of the defined values has no effect.
  */
 const Value* process_let_tail_call( Evaluator* ev,
-    const CombinationValue* combo, Environment& environment,
+    const CombinationValue* combo, boost::shared_ptr<Environment>& environment,
     std::ostream& outstream )
 {
     if( combo->size() < 3 )
@@ -243,13 +273,13 @@ const Value* process_let_tail_call( Evaluator* ev,
             values_array_[index] = value;
         }
 
-        const string& GetSymbol( size_t index )
+        const string& GetSymbol( size_t index ) const
         {
             assert( index < size_ );
             return symbols_array_[index];
         }
 
-        auto_ptr<Value> GetValue( size_t index )
+        auto_ptr<Value>& GetValue( size_t index )
         {
             assert( index < size_ );
             return values_array_[index];
@@ -261,6 +291,9 @@ const Value* process_let_tail_call( Evaluator* ev,
         }
 
     private:
+        // Ensure no copy constructor since we own auto_ptrs
+        SymbolValuePairArray( const SymbolValuePairArray& other );
+
         size_t size_;
         string* symbols_array_;
         auto_ptr<Value>* values_array_;
@@ -323,8 +356,8 @@ const Value* process_let_tail_call( Evaluator* ev,
     // into the environment.
     for( size_t idx = 0; idx != symvalpairs.size(); ++idx )
     {
-        environment.InsertSymbol( symvalpairs.GetSymbol( idx ),
-            symvalpairs.GetValue( idx ).release() );
+        insert_value_into_environment( environment,
+            symvalpairs.GetSymbol( idx ), symvalpairs.GetValue( idx ) );
     }
 
     // Evaluate the body if the let except the last item (similar to
@@ -356,7 +389,7 @@ const Value* process_let_tail_call( Evaluator* ev,
  * we exit the let.
  */
 std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
-    const CombinationValue* combo, Environment& environment,
+    const CombinationValue* combo, boost::shared_ptr<Environment>& environment,
     std::ostream& outstream )
 {
     if( combo->size() < 3 )
@@ -436,7 +469,7 @@ std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
         lambdadefn->push_back( (*it)->Clone() );
     }
 
-    std::auto_ptr<Value> lambda = eval_lambda( lambdadefn.get() );
+    std::auto_ptr<Value> lambda = eval_lambda( lambdadefn.get(), environment );
 
     *(lambdacall->begin()) = lambda.release();
 
@@ -527,8 +560,9 @@ public:
  */
 template<class PredicateProperties>
 const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, std::auto_ptr<Value>& new_value_,
-    std::ostream& outstream, bool is_tail_call )
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value_, std::ostream& outstream,
+    bool is_tail_call )
 {
     CombinationValue::const_iterator itlast = combo->end();
     assert( itlast != combo->begin() );
@@ -564,7 +598,8 @@ const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
 
 
 const Value* process_if( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, std::ostream& outstream, bool is_tail_call )
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream,
+    bool is_tail_call )
 {
     // TODO: only one if needed here (in the normal case)
 
@@ -661,7 +696,8 @@ bool is_else( const Value* value )
 }
 
 const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
-    Environment& environment, std::ostream& outstream, bool is_tail_call )
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream,
+    bool is_tail_call )
 {
     // Look for pairs of predicate and value
     // or "else" and value, which must be last.
@@ -727,7 +763,9 @@ SpecialSymbolEvaluator::SpecialSymbolEvaluator( Evaluator* evaluator,
 
 SpecialSymbolEvaluator::ESymbolType
 SpecialSymbolEvaluator::ProcessSpecialSymbol(
-    const CombinationValue* combo, Environment& environment, bool is_tail_call )
+    const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    bool is_tail_call )
 {
     // Check to see whether it's a special symbol
     const SymbolValue* sym = dynamic_cast<const SymbolValue*>(
@@ -749,7 +787,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     if( is_lambda_symbol( symref ) )
     {
-        new_value_ = eval_lambda( combo );
+        new_value_ = eval_lambda( combo, environment );
 
         return eReturnNewValue;
     }

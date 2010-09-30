@@ -23,6 +23,8 @@
 #include <map>
 #include <string>
 
+#include <boost/shared_ptr.hpp>
+
 class Value;
 
 /**
@@ -36,15 +38,13 @@ public:
      */
     Environment();
 
-    // Note compiler-provided copy constructor exists and performs
-    // a shallow copy.
-
     /**
      * Create an environment by extending another.
      * The second argument is a dummy to differentiate this from
      * a copy constructor.
      */
-    Environment( const Environment& parent_to_extend, bool );
+    Environment( const boost::shared_ptr<const Environment>& parent_to_extend,
+        bool );
 
     ~Environment();
 
@@ -57,11 +57,23 @@ public:
 
     const Value* FindSymbol( const std::string& name ) const;
 
+    const Environment* GetExtendedParent() const;
+
 private:
+
+    // Disable copy constructor
+    Environment( const Environment& other );
 
     typedef std::map<std::string, Value*> MapType;
     MapType symbols_;
-    const Environment* extended_parent_;
+
+    /**
+     * We hold a shared pointer to the parent we are extending, since it
+     * must exist as long as we exist, but we may share ownership with
+     * other environments that also extend it, and with compound procedures
+     * that execute within it.
+     */
+    const boost::shared_ptr<const Environment> extended_parent_;
 };
 
 #endif

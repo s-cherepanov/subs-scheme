@@ -22,6 +22,9 @@
 
 #include <memory>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+
 #include "nativefunctionvalue.h"
 
 class Environment;
@@ -36,24 +39,63 @@ class Environment;
 {
 public:
     CompoundProcedureValue( CombinationValue* argnames,
-        CombinationValue* body, const std::string& name );
+        CombinationValue* body, const std::string& name,
+        const boost::shared_ptr<Environment>& environment );
 
+    /**
+     * Note we take ownership of other's execution env even if it didn't own it
+     */
     CompoundProcedureValue( const CompoundProcedureValue& other );
 
+    /**
+     * Note the new value will own our execution environment even if we don't
+     */
     virtual CompoundProcedureValue* Clone() const;
 
     virtual std::string GetName() const;
 
     const CombinationValue* GetBody() const;
 
-    std::auto_ptr<Environment> ExtendEnvironmentWithArgs(
-        const CombinationValue* argvalues, const Environment& environment
-        ) const;
+    boost::shared_ptr<Environment> ExtendEnvironmentWithArgs(
+        const CombinationValue* argvalues ) const;
+
+    /**
+     * We are being inserted into an environment - if we own it or one of its
+     * ancestors, we must stop owning it, since now it will own us, and we
+     * don't want a circular reference.
+     *
+     * We can trust that it won't be deleted while we are still around,
+     * because when it's deleted, we will be too.
+     */
+    void NotifyBeingInsertedInto( const Environment& environment );
 
 private:
     std::auto_ptr<CombinationValue> argnames_;
     std::auto_ptr<CombinationValue> body_;
     std::string name_;
+
+    /**
+     * If this procedure is passed around it must carry its environment
+     * with it (and the environment must not be deleted).  When this is
+     * happening, we hold our environment in this shared pointer, ensuring it
+     * is not deleted.
+     *
+     * However, when this procedure is inserted into its own environment
+     * as a symbol, we know the environment will not be deleted because someone
+     * else is interested in it, so we don't need a smart pointer to it, and
+     * to hold one would cause a circular reference, so in these cases
+     * owned_environment_ will be NULL.
+     *
+     * When owned_environment_ is not NULL, it points to the same env as
+     * execution_environment_.
+     */
+    boost::shared_ptr<Environment> owned_environment_;
+
+    /**
+     * This always points to the environment in which this procedure will
+     * execute.
+     */
+    const boost::weak_ptr<Environment> execution_environment_;
 };
 
 #endif

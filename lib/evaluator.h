@@ -23,6 +23,8 @@
 #include <iosfwd>
 #include <memory>
 
+#include <boost/shared_ptr.hpp>
+
 #include "environment.h"
 #include "nulltracer.h"
 
@@ -43,14 +45,15 @@ public:
     std::auto_ptr<Value> Eval( const Value* value, std::ostream& outstream );
 
     std::auto_ptr<Value> EvalInContext( const Value* value,
-        Environment& environment, std::ostream& outstream, bool is_tail_call );
+        boost::shared_ptr<Environment>& environment,
+        std::ostream& outstream, bool is_tail_call );
 
     void SetTracer( Tracer* tracer );
     Tracer* GetTracer();
 
 private:
 
-    Environment global_environment_;
+    boost::shared_ptr<Environment> global_environment_;
 
     Tracer* tracer_;
     NullTracer null_tracer_;

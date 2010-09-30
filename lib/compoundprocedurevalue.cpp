@@ -21,8 +21,12 @@
 #include <sstream>
 #include <memory>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+
 #include "argschecker.h"
 #include "combinationvalue.h"
+#include "environment.h"
 #include "evaluationerror.h"
 #include "evaluator.h"
 #include "prettyprinter.h"
@@ -36,10 +40,13 @@ using namespace std;
 CompoundProcedureValue::CompoundProcedureValue(
     CombinationValue* argnames,
     CombinationValue* body,
-    const std::string& name )
+    const std::string& name,
+    const boost::shared_ptr<Environment>& environment )
 : argnames_( argnames )
 , body_( body )
 , name_( name )
+, owned_environment_( environment )
+, execution_environment_( environment )
 {
     // TODO: validate that each of the elements of args is a symbol?
 }
@@ -49,6 +56,8 @@ CompoundProcedureValue::CompoundProcedureValue(
 : argnames_( other.argnames_->Clone() )
 , body_( other.body_->Clone() )
 , name_( other.name_ )
+, owned_environment_( other.execution_environment_ )
+, execution_environment_( other.execution_environment_ )
 {
 }
 
@@ -79,12 +88,13 @@ const CombinationValue* CompoundProcedureValue::GetBody() const
 }
 
 
-std::auto_ptr<Environment> CompoundProcedureValue::ExtendEnvironmentWithArgs(
-    const CombinationValue* argvalues, const Environment& environment ) const
+boost::shared_ptr<Environment>
+CompoundProcedureValue::ExtendEnvironmentWithArgs(
+    const CombinationValue* argvalues ) const
 {
     // Set up an environment that extends the existing one
-    std::auto_ptr<Environment> ret_environment( new Environment(
-        environment, true ) );
+    boost::shared_ptr<Environment> ret_environment(
+        new Environment( execution_environment_.lock(), true ) );
 
     // Process the arguments, adding them to our environment
     CombinationValue::const_iterator itargname = argnames_->begin();
@@ -119,4 +129,21 @@ std::auto_ptr<Environment> CompoundProcedureValue::ExtendEnvironmentWithArgs(
     return ret_environment;
 }
 
+void CompoundProcedureValue::NotifyBeingInsertedInto(
+    const Environment& environment )
+{
+    const Environment* own_env = owned_environment_.get();
+
+    // Step through this environment and up through all its ancestors
+    for( const Environment* env = &environment; env;
+        env = env->GetExtendedParent() )
+    {
+        if( own_env == env )
+        {
+            // If we own an ancestor, stop owning it and bail out
+            owned_environment_.reset();
+            return;
+        }
+    }
+}
 

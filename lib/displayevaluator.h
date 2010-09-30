@@ -22,6 +22,8 @@
 
 #include <iosfwd>
 
+#include <boost/shared_ptr.hpp>
+
 class CombinationValue;
 class Environment;
 class Evaluator;
@@ -35,7 +37,7 @@ namespace DisplayEvaluator
  * display as appropriate.
  */
 bool ProcessDisplaySymbol( Evaluator* evaluator, const CombinationValue* combo,
-    Environment& environment, const SymbolValue& sym,
+    boost::shared_ptr<Environment>& environment, const SymbolValue& sym,
     std::ostream& outstream );
 
 }

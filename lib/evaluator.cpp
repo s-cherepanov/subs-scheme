@@ -21,10 +21,11 @@
 #include <sstream>
 #include <typeinfo>
 
+#include <boost/shared_ptr.hpp>
+
 #include "builtins.h"
 #include "combinationvalue.h"
 #include "environment.h"
-#include "environmentholder.h"
 #include "evaluationerror.h"
 #include "equalsnativefunctionvalue.h"
 #include "nativefunctionvalue.h"
@@ -43,7 +44,7 @@ namespace
 {
 
 std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
-    Environment& environment )
+    const Environment& environment )
 {
     const Value* value = environment.FindSymbol( sym->GetStringValue() );
 
@@ -81,9 +82,10 @@ private:
 }
 
 Evaluator::Evaluator()
+: global_environment_( new Environment )
 {
     tracer_ = &null_tracer_;
-    BuiltIns::Init( global_environment_ );
+    BuiltIns::Init( *global_environment_ );
 }
 
 std::auto_ptr<Value> Evaluator::Eval( const Value* value,
@@ -103,15 +105,15 @@ std::auto_ptr<Value> Evaluator::Eval( const Value* value,
 
 
 std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
-    Environment& environment, std::ostream& outstream, bool is_tail_call )
+    boost::shared_ptr<Environment>& environment,
+    std::ostream& outstream, bool is_tail_call )
 {
     EvalDepthMarker dm( GetTracer() );
 
     // TODO: replace switch-style dispatch with a virtual method on Value
 
     auto_ptr<Value> new_value;
-    EnvironmentHolder env_holder;
-    Environment* env_ptr = &environment;
+    boost::shared_ptr<Environment> run_env( environment );
 
     // This loop continues every time we can do a tail-call optimisation.
     while( true )
@@ -122,7 +124,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
             value );
         if( plainsym )
         {
-            return eval_symbol( plainsym, *env_ptr );
+            return eval_symbol( plainsym, *run_env );
         }
 
         // Maybe value is a combination?
@@ -149,7 +151,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         SpecialSymbolEvaluator special_symbol_evaluator( this, outstream );
 
         switch( special_symbol_evaluator.ProcessSpecialSymbol( combo,
-            *env_ptr, is_tail_call ) )
+            run_env, is_tail_call ) )
         {
             case SpecialSymbolEvaluator::eReturnNewValue:
             {
@@ -186,7 +188,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         CombinationValue::const_iterator cmbit = combo->begin();
 
         // Otherwise we evaluate the operator
-        auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, *env_ptr,
+        auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, run_env,
             outstream, false );
 
         ++cmbit; // Skip past the procedure to the arguments
@@ -195,7 +197,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         auto_ptr<CombinationValue> argvalues( new CombinationValue );
         for( ; cmbit != combo->end(); ++cmbit )
         {
-            argvalues->push_back( EvalInContext( *cmbit, *env_ptr, outstream,
+            argvalues->push_back( EvalInContext( *cmbit, run_env, outstream,
                 false ).release() );
         }
 
@@ -220,12 +222,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
                 + "', which is not a procedure." );
         }
 
-        // Replace the current environment with one containing the
-        // original environment and the argument values of the new
-        // procedure.
-        env_holder.push_back( proc->ExtendEnvironmentWithArgs( argvalues.get(),
-            *env_ptr ).release() );
-        env_ptr = env_holder.back();
+        run_env = proc->ExtendEnvironmentWithArgs( argvalues.get() );
 
         CombinationValue::const_iterator itbody = proc->GetBody()->begin();
         CombinationValue::const_iterator itbodyend = proc->GetBody()->end();
@@ -239,7 +236,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         {
             // eval_in_context returns an auto_ptr, so
             // each returned value will be deleted.
-            EvalInContext( *itbody, *env_ptr, outstream, false );
+            EvalInContext( *itbody, run_env, outstream, false );
         }
 
         // Now we have the last bit of the body, which is the bit

@@ -20,6 +20,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <boost/shared_ptr.hpp>
+
 #include "argschecker.h"
 #include "combinationvalue.h"
 #include "displayevaluator.h"
@@ -61,7 +63,7 @@ void write_newline( const CombinationValue* combo, std::ostream& outstream )
 }
 
 void write_display( Evaluator* evaluator, const CombinationValue* combo,
-    Environment& environment, std::ostream& outstream )
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
 {
     if( combo->size() != 2 )
     {
@@ -94,7 +96,8 @@ namespace DisplayEvaluator
  * display as appropriate.
  */
 bool ProcessDisplaySymbol( Evaluator* evaluator, const CombinationValue* combo,
-    Environment& environment, const SymbolValue& sym, std::ostream& outstream )
+    boost::shared_ptr<Environment>& environment, const SymbolValue& sym,
+    std::ostream& outstream )
 {
     if( is_newline_symbol( sym ) )
     {

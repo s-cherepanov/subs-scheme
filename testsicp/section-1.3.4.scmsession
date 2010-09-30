@@ -31,12 +31,13 @@ dx
 .         (lambda (x)
 .                 (/ (- (g (+ x dx)) (g x))
 .                    dx)))
+deriv
 
 > (define (cube x) (* x x x))
 cube
 
 > ((deriv cube) 5)
-75.00014999664018
+75.0001
 
 > (define (newton-transform g)
 .         (lambda (x)

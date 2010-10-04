@@ -561,8 +561,7 @@ public:
 template<class PredicateProperties>
 const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
     boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value_, std::ostream& outstream,
-    bool is_tail_call )
+    std::auto_ptr<Value>& new_value_, std::ostream& outstream )
 {
     CombinationValue::const_iterator itlast = combo->end();
     assert( itlast != combo->begin() );
@@ -582,7 +581,7 @@ const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
     for( ; it != itlast; ++it )
     {
         std::auto_ptr<Value> value = ev->EvalInContext( *it, environment,
-            outstream, is_tail_call );
+            outstream, false );
         if( PredicateProperties::EarlyExit( value.get() ) )
         {
             // One of the arguments allow us to exit early - set the answer
@@ -598,8 +597,7 @@ const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
 
 
 const Value* process_if( Evaluator* ev, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment, std::ostream& outstream,
-    bool is_tail_call )
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
 {
     // TODO: only one if needed here (in the normal case)
 
@@ -628,7 +626,7 @@ const Value* process_if( Evaluator* ev, const CombinationValue* combo,
     assert( it != combo->end() );
 
     std::auto_ptr<Value> evald_pred = ev->EvalInContext( predicate,
-        environment, outstream, is_tail_call );
+        environment, outstream, false );
 
     if( ValueUtilities::IsFalse( evald_pred.get() ) )
     {
@@ -696,8 +694,7 @@ bool is_else( const Value* value )
 }
 
 const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment, std::ostream& outstream,
-    bool is_tail_call )
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
 {
     // Look for pairs of predicate and value
     // or "else" and value, which must be last.
@@ -736,7 +733,7 @@ const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
         else
         {
             std::auto_ptr<Value> evald_test = ev->EvalInContext( test,
-                environment, outstream, is_tail_call );
+                environment, outstream, false );
 
             if( ValueUtilities::IsTrue( evald_test.get() ) )
             {
@@ -811,7 +808,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_if_symbol( symref ) )
     {
         existing_value_ = process_if( evaluator_, combo, environment,
-            outstream_, is_tail_call );
+            outstream_ );
 
         return eEvaluateExistingSymbol;
     }
@@ -819,7 +816,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_cond_symbol( symref ) )
     {
         existing_value_ = process_cond( evaluator_, combo, environment,
-            outstream_, is_tail_call );
+            outstream_ );
 
         return eEvaluateExistingSymbol;
     }
@@ -827,7 +824,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_or_symbol( symref ) )
     {
         existing_value_ = eval_predicate<OrProperties>( evaluator_, combo,
-            environment, new_value_, outstream_, is_tail_call );
+            environment, new_value_, outstream_ );
 
         if( existing_value_ )
         {
@@ -844,7 +841,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_and_symbol( symref ) )
     {
         existing_value_ = eval_predicate<AndProperties>( evaluator_, combo,
-            environment, new_value_, outstream_, is_tail_call );
+            environment, new_value_, outstream_ );
 
         if( existing_value_ )
         {

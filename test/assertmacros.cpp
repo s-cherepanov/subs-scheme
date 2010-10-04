@@ -156,7 +156,7 @@ void not_equal( std::string file, unsigned int line,
 
 void not_null( std::string file, unsigned int line,
     std::string name,
-    void* arg )
+    const void* arg )
 {
     if( !arg )
     {
@@ -170,7 +170,7 @@ void not_null( std::string file, unsigned int line,
 
 void null( std::string file, unsigned int line,
     std::string name,
-    void* arg )
+    const void* arg )
 {
     if( arg )
     {

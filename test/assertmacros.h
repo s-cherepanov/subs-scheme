@@ -140,10 +140,10 @@ void not_equal( std::string file, unsigned int line,
 
 
 void not_null( std::string file, unsigned int line,
-    std::string name, void* arg );
+    std::string name, const void* arg );
 
 void null( std::string file, unsigned int line,
-    std::string name, void* arg );
+    std::string name, const void* arg );
 
 
 void is_true( std::string file, unsigned int line,

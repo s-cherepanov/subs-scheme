@@ -26,6 +26,7 @@
 #include "falsevalue.h"
 #include "integervalue.h"
 #include "nativefunctionvalue.h"
+#include "pairvalue.h"
 #include "stringvalue.h"
 #include "symbolvalue.h"
 #include "truevalue.h"
@@ -120,6 +121,13 @@ void print_compound_procedure( const CompoundProcedureValue* value,
     result << "<<" << value->GetName() << ">>";
 }
 
+void print_pair( const PairValue* value, ostream& result )
+{
+    result << "<<PAIR " << PrettyPrinter::Print( value->GetFirst() )
+        << " " << PrettyPrinter::Print( value->GetSecond() ) << ">>";
+}
+
+
 
 
 }
@@ -212,6 +220,14 @@ void Print( const Value* value, std::ostream& result )
     if( procvalue )
     {
         print_compound_procedure( procvalue, result );
+        return;
+    }
+
+    const PairValue* pairvalue = dynamic_cast<
+        const PairValue*>( value );
+    if( pairvalue )
+    {
+        print_pair( pairvalue, result );
         return;
     }
 

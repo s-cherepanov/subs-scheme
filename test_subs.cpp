@@ -25,6 +25,7 @@
 #include "test/testbracketmatcher.h"
 #include "test/testcomparators.h"
 #include "test/testcond.h"
+#include "test/testcons.h"
 #include "test/testconstants.h"
 #include "test/testdefineprocedure.h"
 #include "test/testdefinesymbol.h"
@@ -72,6 +73,7 @@ int main()
         TestMaths(                ).Run();
         TestDisplay(              ).Run();
         TestLet(                  ).Run();
+        TestCons(                 ).Run();
     }
     catch( AssertionFailed& e )
     {

@@ -23,8 +23,11 @@
 
 #include "assertmacros.h"
 #include "lib/evaluator.h"
+#include "lib/integervalue.h"
 #include "lib/lexer.h"
+#include "lib/pairvalue.h"
 #include "lib/parser.h"
+#include "lib/stringvalue.h"
 #include "lib/symbolvalue.h"
 #include "lib/token.h"
 #include "lib/valuefactory.h"
@@ -80,6 +83,38 @@ void evaluate_null_value()
 
 
 
+void pair_create_clone_delete()
+{
+    std::auto_ptr<PairValue> pair;
+
+    {
+        std::auto_ptr<Value> i( new IntegerValue( 3 ) );
+        std::auto_ptr<Value> s( new StringValue( "foo" ) );
+
+        pair.reset( new PairValue( i, s ) );
+
+        // i and s get deleted here
+    }
+
+    // We can clone it and no memory is leaked
+    // TODO: Clone should return an auto_ptr
+    std::auto_ptr<Value> clone( pair->Clone() );
+
+    // The ones in the pair should be preserved
+    const IntegerValue* iv = dynamic_cast<const IntegerValue*>(
+        pair->GetFirst() );
+    TEST_ASSERT_NOT_NULL( iv );
+    int ii = iv->GetIntValue();
+    TEST_ASSERT_EQUAL( ii, 3 );
+
+    const StringValue* sv = dynamic_cast<const StringValue*>(
+        pair->GetSecond() );
+    TEST_ASSERT_NOT_NULL( sv );
+    string sd = sv->GetStringValue();
+    TEST_ASSERT_EQUAL( sd, "foo" );
+}
+
+
 
 }
 
@@ -92,5 +127,6 @@ void TestMemory::Run() const
     RUN_TEST(valuefactory_create_plus);
     RUN_TEST(parse_emptystring);
     RUN_TEST(evaluate_null_value);
+    RUN_TEST(pair_create_clone_delete);
 }
 

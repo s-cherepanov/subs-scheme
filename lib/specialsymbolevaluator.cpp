@@ -31,6 +31,7 @@
 #include "evaluationerror.h"
 #include "evaluator.h"
 #include "falsevalue.h"
+#include "pairvalue.h"
 #include "prettyprinter.h"
 #include "symbolvalue.h"
 #include "specialsymbolevaluator.h"
@@ -523,6 +524,27 @@ bool is_and_symbol( const SymbolValue& sym )
 }
 
 
+bool is_cons_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "cons" );
+}
+
+
+bool is_car_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "car" );
+}
+
+
+bool is_cdr_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "cdr" );
+}
+
+
 class AndProperties
 {
 public:
@@ -747,6 +769,92 @@ const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
 }
 
 
+
+std::auto_ptr<Value> eval_cons( Evaluator* ev, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
+{
+    if( combo->size() != 3 )
+    {
+        ArgsChecker::ThrowWrongNumArgsException( "cons", combo->size() - 1, 2 );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // First of 3 - "cons" (ignore)
+
+    ++it;
+    assert( it != combo->end() ); // Second of 3 - first in pair
+    const Value* first = *it;
+
+    ++it;
+    assert( it != combo->end() ); // Third of 3 - second in pair
+
+    return std::auto_ptr<Value>( new PairValue(
+        ev->EvalInContext( first, environment, outstream, false ),
+        ev->EvalInContext( *it,   environment, outstream, false ) ) );
+}
+
+
+std::auto_ptr<Value> eval_car( Evaluator* ev, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
+{
+    if( combo->size() != 2 )
+    {
+        ArgsChecker::ThrowWrongNumArgsException( "car", combo->size() - 1, 1 );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // "car" - there are 2 items
+
+    ++it;
+    assert( it != combo->end() ); // the pair to extract from
+
+    std::auto_ptr<Value> evald_arg = ev->EvalInContext( *it,
+        environment, outstream, false );
+
+    PairValue* pair = dynamic_cast<PairValue*>( evald_arg.get() );
+
+    if( !pair )
+    {
+        throw EvaluationError( "The argument to car must be a pair. '" +
+            PrettyPrinter::Print( *it ) + "' is not a pair." );
+    }
+
+    return ev->EvalInContext( pair->GetFirst(), environment,
+        outstream, false );
+}
+
+
+
+std::auto_ptr<Value> eval_cdr( Evaluator* ev, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
+{
+    if( combo->size() != 2 )
+    {
+        ArgsChecker::ThrowWrongNumArgsException( "cdr", combo->size() - 1, 1 );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // "cdr" - there are 2 items
+
+    ++it;
+    assert( it != combo->end() ); // the pair to extract from
+
+    std::auto_ptr<Value> evald_arg = ev->EvalInContext( *it,
+        environment, outstream, false );
+
+    PairValue* pair = dynamic_cast<PairValue*>( evald_arg.get() );
+
+    if( !pair )
+    {
+        throw EvaluationError( "The argument to cdr must be a pair. '" +
+            PrettyPrinter::Print( *it ) + "' is not a pair." );
+    }
+
+    return ev->EvalInContext( pair->GetSecond(), environment,
+        outstream, false );
+}
+
+
 }
 
 SpecialSymbolEvaluator::SpecialSymbolEvaluator( Evaluator* evaluator,
@@ -853,6 +961,24 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
             assert( new_value_.get() );
             return eReturnNewValue;
         }
+    }
+
+    if( is_cons_symbol( symref ) )
+    {
+        new_value_ = eval_cons( evaluator_, combo, environment, outstream_ );
+        return eReturnNewValue;
+    }
+
+    if( is_car_symbol( symref ) )
+    {
+        new_value_ = eval_car( evaluator_, combo, environment, outstream_ );
+        return eReturnNewValue;
+    }
+
+    if( is_cdr_symbol( symref ) )
+    {
+        new_value_ = eval_cdr( evaluator_, combo, environment, outstream_ );
+        return eReturnNewValue;
     }
 
     if( DisplayEvaluator::ProcessDisplaySymbol( evaluator_, combo,

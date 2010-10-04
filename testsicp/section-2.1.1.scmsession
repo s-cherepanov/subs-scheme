@@ -1,0 +1,95 @@
+
+> (define x (cons 1 2))
+x
+
+> (car x)
+1
+
+> (cdr x)
+2
+
+
+> (define x (cons 1 2))
+x
+
+> (define y (cons 3 4))
+y
+
+> (define z (cons x y))
+z
+
+> (car (car z))
+1
+
+> (car (cdr z))
+3
+
+> (define (make-rat n d) (cons n d))
+make-rat
+
+> (define (numer x) (car x))
+numer
+
+> (define (denom x) (cdr x))
+denom
+
+> (define (print-rat x)
+.         (newline)
+.         (display (numer x))
+.         (display "/")
+.         (display (denom x))
+.         (newline))
+print-rat
+
+
+> (define (add-rat x y)
+.         (make-rat (+ (* (numer x) (denom y))
+.                      (* (numer y) (denom x)))
+.                   (* (denom x) (denom y))))
+add-rat
+
+> (define (sub-rat x y)
+.         (make-rat (- (* (numer x) (denom y))
+.                      (* (numer y) (denom x)))
+.                   (* (denom x) (denom y))))
+sub-rat
+
+> (define (mul-rat x y)
+.         (make-rat (* (numer x) (numer y))
+.                   (* (denom x) (denom y))))
+mul-rat
+
+> (define (div-rat x y)
+.         (make-rat (* (numer x) (denom y))
+.                   (* (denom x) (numer y))))
+div-rat
+
+> (define (equal-rat? x y)
+.         (= (* (numer x) (denom y))
+.            (* (numer y) (denom x))))
+equal-rat?
+
+
+> (define one-half (make-rat 1 2))
+one-half
+
+> one-half
+<<PAIR 1 2>>
+
+> (print-rat one-half)
+1/2
+
+> (define one-third (make-rat 1 3))
+one-third
+
+> (print-rat (add-rat one-half one-third))
+5/6
+
+> (print-rat (mul-rat one-half one-third))
+1/6
+
+> (print-rat (add-rat one-third one-third))
+6/9
+
+
+

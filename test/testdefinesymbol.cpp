@@ -151,6 +151,25 @@ void define_is_scoped_within_its_parent_combination()
 
 
 
+void define_overrides_special_symbols()
+{
+    SubsInterpreter interpreter;
+
+    // Redefine what "define" means :)
+    interpreter.Interpret( "(define define 2)" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "define" ), "2" );
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        // Now you can't define anything else :(
+        interpreter.Interpret( "(define (fn) 3)" );
+    }
+    TEST_ASSERT_THROWS_END( "Undefined symbol 'fn'" )
+}
+
+
+
 
 
 
@@ -169,5 +188,6 @@ void TestDefineSymbol::Run() const
     RUN_TEST(define_in_terms_of_other_does_not_follow_other_when_changed);
     RUN_TEST(define_symbol_to_be_procedure_allows_evaluating_procedure);
     RUN_TEST(define_is_scoped_within_its_parent_combination);
+    RUN_TEST(define_overrides_special_symbols);
 }
 

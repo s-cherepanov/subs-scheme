@@ -876,12 +876,19 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     const SymbolValue* sym = dynamic_cast<const SymbolValue*>(
         *( combo->begin() ) );
 
+    // If it's not a symbol, get out of here...
     if( !sym )
     {
         return eNoSpecialSymbol;
     }
 
     const SymbolValue& symref = *sym;
+
+    // If it's defined in the current environment, get out of here...
+    if( environment->FindSymbol( symref.GetStringValue() ) )
+    {
+        return eNoSpecialSymbol;
+    }
 
     if( is_define_symbol( symref ) )
     {

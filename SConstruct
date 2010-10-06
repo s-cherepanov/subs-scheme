@@ -18,7 +18,7 @@
 #
 
 NAME="subs-scheme"
-VERSION="1.3.4"
+VERSION="2.1.1"
 
 NAMVER="%s-%s" % ( NAME, VERSION )
 

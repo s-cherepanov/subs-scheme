@@ -133,6 +133,24 @@ void define_symbol_to_be_procedure_allows_evaluating_procedure()
 
 
 
+void define_is_scoped_within_its_parent_combination()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define foo 2)" );
+
+    interpreter.Interpret(
+        "(define (fn)"
+        "        (define foo 3)"
+        "        foo)" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "foo" ), "2" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(fn)" ), "3" );
+}
+
+
+
 
 
 
@@ -150,7 +168,6 @@ void TestDefineSymbol::Run() const
     RUN_TEST(define_in_terms_of_other_defined_symbol_succeds);
     RUN_TEST(define_in_terms_of_other_does_not_follow_other_when_changed);
     RUN_TEST(define_symbol_to_be_procedure_allows_evaluating_procedure);
-
-    //NOTDONE define_is_scoped_within_its_parent_combination()
+    RUN_TEST(define_is_scoped_within_its_parent_combination);
 }
 

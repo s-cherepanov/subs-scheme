@@ -1,0 +1,18 @@
+> (define (make-rat n d)
+.         (cons n d))
+make-rat
+
+> (define (numer x)
+.         (let ((g (gcd (car x) (cdr x))))
+.              (/ (car x) g)))
+numer
+
+> (define (denom x)
+.         (let ((g (gcd (car x) (cdr x))))
+.              (/ (cdr x) g)))
+denom
+
+> (print-rat (add-rat one-third one-third))
+2/3
+
+

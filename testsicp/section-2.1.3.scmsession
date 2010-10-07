@@ -1,0 +1,60 @@
+> (define (cons x y)
+.         (define (dispatch m)
+.                 (cond ((= m 0) x)
+.                       ((= m 1) y)
+.                       (else (error "Argument not 0 or 1 -- CONS" m))))
+.         dispatch)
+cons
+
+> (define (car z) (z 0))
+car
+
+> (define (cdr z) (z 1))
+cdr
+
+> (define x (cons 1 2))
+x
+
+> (car x)
+1
+
+> (cdr x)
+2
+
+
+
+
+> (define (cons x y)
+.         (lambda (m) (m x y)))
+cons
+
+> (define (car z)
+.         (z (lambda (p q) p)))
+car
+
+> (define (cdr z)
+.         (z (lambda (p q) q)))
+cdr
+
+
+> (define x (cons 1 2))
+x
+
+> (car x)
+1
+
+> (cdr x)
+2
+
+
+
+> (define zero (lambda (f) (lambda (x) x)))
+zero
+
+> (define (add-1 n)
+.         (lambda (f) (lambda (x) (f ((n f) x)))))
+add-1
+
+
+
+

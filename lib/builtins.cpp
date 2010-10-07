@@ -26,7 +26,9 @@
 #include "greaterthannativefunctionvalue.h"
 #include "lessthannativefunctionvalue.h"
 #include "lognativefunctionvalue.h"
+#include "minnativefunctionvalue.h"
 #include "minusnativefunctionvalue.h"
+#include "maxnativefunctionvalue.h"
 #include "negativenativefunctionvalue.h"
 #include "notnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
@@ -84,6 +86,8 @@ void Init( Environment& environment )
     InsertProcedure<CosNativeFunctionValue>(       environment );
     InsertProcedure<ExpNativeFunctionValue>(       environment );
     InsertProcedure<LogNativeFunctionValue>(       environment );
+    InsertProcedure<MaxNativeFunctionValue>(       environment );
+    InsertProcedure<MinNativeFunctionValue>(       environment );
     InsertProcedure<RemainderNativeFunctionValue>( environment );
     InsertProcedure<SinNativeFunctionValue>(       environment );
     InsertProcedure<TanNativeFunctionValue>(       environment );

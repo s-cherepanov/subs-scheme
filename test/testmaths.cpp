@@ -151,6 +151,47 @@ void negative_returns_less_than_zero()
 
 
 
+void min_with_no_args_is_an_error()
+{
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        SubsInterpreter().Interpret( "(min)" );
+    }
+    TEST_ASSERT_THROWS_END( "Not enough" )
+}
+
+
+
+void min_returns_the_minimum()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(min 1)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(min 5 12 3 6)" ), "3" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(min 2.7 3.3)" ), "2.7" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(min 3 -1.5 2.7)" ), "-1.5" );
+}
+
+
+
+void max_with_no_args_is_an_error()
+{
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        SubsInterpreter().Interpret( "(max)" );
+    }
+    TEST_ASSERT_THROWS_END( "Not enough" )
+}
+
+
+void max_returns_the_maximum()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(max 1)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(max 5 12 3 6)" ), "12" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(max 2.7 3.3)" ), "3.3" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(max 3 -1.5 2.7)" ), "3.0" );
+}
+
 
 
 
@@ -177,5 +218,9 @@ void TestMaths::Run() const
     RUN_TEST(positive_returns_greater_than_zero);
     RUN_TEST(negative_wrong_number_of_args_is_an_error);
     RUN_TEST(negative_returns_less_than_zero);
+    RUN_TEST(min_with_no_args_is_an_error);
+    RUN_TEST(min_returns_the_minimum);
+    RUN_TEST(max_with_no_args_is_an_error);
+    RUN_TEST(max_returns_the_maximum);
 }
 

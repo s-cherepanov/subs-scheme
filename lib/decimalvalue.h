@@ -37,6 +37,9 @@ public:
 
     virtual DecimalValue* Clone() const;
 
+    DecimalValue& operator=( const DecimalValue& other );
+    DecimalValue& operator=( const IntegerValue& other );
+
     DecimalValue& operator+=( const IntegerValue& other );
     DecimalValue& operator+=( const DecimalValue& other );
     DecimalValue& operator-=( const IntegerValue& other );
@@ -68,6 +71,24 @@ public:
         const IntegerValue& right );
 
     friend bool operator<=( const DecimalValue& left,
+        const DecimalValue& right );
+
+    friend bool operator>( const IntegerValue& left,
+        const DecimalValue& right );
+
+    friend bool operator>( const DecimalValue& left,
+        const IntegerValue& right );
+
+    friend bool operator>( const DecimalValue& left,
+        const DecimalValue& right );
+
+    friend bool operator<( const IntegerValue& left,
+        const DecimalValue& right );
+
+    friend bool operator<( const DecimalValue& left,
+        const IntegerValue& right );
+
+    friend bool operator<( const DecimalValue& left,
         const DecimalValue& right );
 
 private:

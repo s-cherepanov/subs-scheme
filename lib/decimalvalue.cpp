@@ -48,6 +48,18 @@ DecimalValue* DecimalValue::Clone() const
     return new DecimalValue( *this );
 }
 
+DecimalValue& DecimalValue::operator=( const DecimalValue& other )
+{
+    value_ = other.value_;
+    return *this;
+}
+
+DecimalValue& DecimalValue::operator=( const IntegerValue& other )
+{
+    value_ = other.GetIntValue();
+    return *this;
+}
+
 DecimalValue& DecimalValue::operator+=( const IntegerValue& other )
 {
     value_ += static_cast<double>( other.GetIntValue() );
@@ -142,5 +154,38 @@ bool operator<=( const DecimalValue& left, const DecimalValue& right )
 {
     return ( left.value_ <= right.value_ );
 }
+
+
+
+bool operator>( const IntegerValue& left, const DecimalValue& right )
+{
+    return ( left.GetIntValue() > right.value_ );
+}
+
+bool operator>( const DecimalValue& left, const IntegerValue& right )
+{
+    return ( left.value_ > right.GetIntValue() );
+}
+
+bool operator>( const DecimalValue& left, const DecimalValue& right )
+{
+    return ( left.value_ > right.value_ );
+}
+
+bool operator<( const IntegerValue& left, const DecimalValue& right )
+{
+    return ( left.GetIntValue() < right.value_ );
+}
+
+bool operator<( const DecimalValue& left, const IntegerValue& right )
+{
+    return ( left.value_ < right.GetIntValue() );
+}
+
+bool operator<( const DecimalValue& left, const DecimalValue& right )
+{
+    return ( left.value_ < right.value_ );
+}
+
 
 

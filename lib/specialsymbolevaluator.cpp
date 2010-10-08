@@ -478,6 +478,7 @@ std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
 }
 
 
+
 bool is_define_symbol( const SymbolValue& sym )
 {
     // TODO: case insensitive?

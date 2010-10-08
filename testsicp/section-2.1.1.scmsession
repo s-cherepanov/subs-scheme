@@ -74,7 +74,7 @@ equal-rat?
 one-half
 
 > one-half
-<<PAIR 1 2>>
+(1 . 2)
 
 > (print-rat one-half)
 1/2

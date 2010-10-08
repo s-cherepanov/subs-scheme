@@ -26,6 +26,7 @@
 #include "falsevalue.h"
 #include "integervalue.h"
 #include "nativefunctionvalue.h"
+#include "nilvalue.h"
 #include "pairvalue.h"
 #include "stringvalue.h"
 #include "symbolvalue.h"
@@ -80,6 +81,13 @@ void print_false( const FalseValue*, ostream& result )
     result << "#f";
 }
 
+
+void print_nil( const NilValue*, ostream& result )
+{
+    result << "nil";
+}
+
+
 void print_combination( const CombinationValue* value, ostream& result )
 {
     result << "(";
@@ -121,12 +129,36 @@ void print_compound_procedure( const CompoundProcedureValue* value,
     result << "<<" << value->GetName() << ">>";
 }
 
+
 void print_pair( const PairValue* value, ostream& result )
 {
-    result << "<<PAIR " << PrettyPrinter::Print( value->GetFirst() )
-        << " " << PrettyPrinter::Print( value->GetSecond() ) << ">>";
-}
+    const Value* second = NULL;
 
+    result << "(";
+
+    while( true )
+    {
+        result << PrettyPrinter::Print( value->GetFirst() );
+
+        second = value->GetSecond();
+        value = dynamic_cast<const PairValue*>( second );
+        if( value )
+        {
+            result << " ";
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    if( !dynamic_cast<const NilValue*>( second ) )
+    {
+        result << " . " << PrettyPrinter::Print( second );
+    }
+
+    result << ")";
+}
 
 
 
@@ -188,6 +220,14 @@ void Print( const Value* value, std::ostream& result )
     if( falsevalue )
     {
         print_false( falsevalue, result );
+        return;
+    }
+
+    const NilValue* nilvalue = dynamic_cast<const NilValue*>(
+        value );
+    if( nilvalue )
+    {
+        print_nil( nilvalue, result );
         return;
     }
 

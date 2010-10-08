@@ -89,6 +89,10 @@ void decimal_equal_to_integer_ends_in_point_zero()
 }
 
 
+void nil()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "nil" ), "nil" );
+}
 
 
 
@@ -123,5 +127,6 @@ void TestConstants::Run() const
     RUN_TEST(decimal_equal_to_integer_ends_in_point_zero);
     //INCORRECT could quote combo_yields_itself();
     //INCORRECT could quote combo_of_combos_yields_itself();
+    RUN_TEST(nil);
 }
 

@@ -30,6 +30,7 @@
 #include "minusnativefunctionvalue.h"
 #include "maxnativefunctionvalue.h"
 #include "negativenativefunctionvalue.h"
+#include "nilvalue.h"
 #include "notnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
 #include "positivenativefunctionvalue.h"
@@ -65,6 +66,7 @@ void Init( Environment& environment )
     // Constants
     environment.InsertSymbol( "#t", new TrueValue );
     environment.InsertSymbol( "#f", new FalseValue );
+    environment.InsertSymbol( "nil", new NilValue );
 
     // Arithmetic operations
     InsertProcedure<PlusNativeFunctionValue>(   environment );

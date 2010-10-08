@@ -17,9 +17,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <memory>
+
 #include "assertmacros.h"
 #include "lib/combinationvalue.h"
 #include "lib/integervalue.h"
+#include "lib/nilvalue.h"
+#include "lib/pairvalue.h"
 #include "lib/prettyprinter.h"
 #include "lib/stringvalue.h"
 
@@ -71,6 +75,58 @@ void string_written_in_quotes()
     TEST_ASSERT_EQUAL( PrettyPrinter::Print( &value_foo_bar ), "\"foo bar\"" );
 }
 
+
+void nil_value_written_as_nil()
+{
+    NilValue nilvalue;
+
+    TEST_ASSERT_EQUAL( PrettyPrinter::Print( &nilvalue ), "nil" );
+}
+
+
+
+
+void pair_shows_dot_separated()
+{
+    std::auto_ptr<Value> one( new IntegerValue( 1 ) );
+    std::auto_ptr<Value>   x( new StringValue( "x" ) );
+
+    PairValue pair( one, x );
+
+    TEST_ASSERT_EQUAL( PrettyPrinter::Print( &pair ), "(1 . \"x\")" );
+}
+
+
+void list_shows_with_no_dots()
+{
+    std::auto_ptr<Value> one(   new IntegerValue( 1 ) );
+    std::auto_ptr<Value> two(   new IntegerValue( 2 ) );
+    std::auto_ptr<Value> three( new IntegerValue( 3 ) );
+
+    std::auto_ptr<Value> nil( new NilValue );
+
+    std::auto_ptr<Value> threenil( new PairValue( three, nil ) );
+    std::auto_ptr<Value> twothreenil( new PairValue( two, threenil ) );
+    PairValue onetwothreenil( one, twothreenil );
+
+    TEST_ASSERT_EQUAL( PrettyPrinter::Print( &onetwothreenil ), "(1 2 3)" );
+}
+
+
+void non_null_terminated_list_ends_with_dot_before_last()
+{
+    std::auto_ptr<Value> one(   new IntegerValue( 1 ) );
+    std::auto_ptr<Value> two(   new IntegerValue( 2 ) );
+    std::auto_ptr<Value> three( new IntegerValue( 3 ) );
+
+    std::auto_ptr<Value> twothree( new PairValue( two, three ) );
+    PairValue onetwothree( one, twothree );
+
+    TEST_ASSERT_EQUAL( PrettyPrinter::Print( &onetwothree ), "(1 2 . 3)" );
+}
+
+
+
 }
 
 #define SUITENAME "TestPrettyPrintConstants"
@@ -82,5 +138,9 @@ void TestPrettyPrintConstants::Run() const
     RUN_TEST(combination_within_combination);
     RUN_TEST(string_written_in_quotes);
     //NOTDONE: string_escapes_internal_quotes();
+    RUN_TEST(nil_value_written_as_nil);
+    RUN_TEST(pair_shows_dot_separated);
+    RUN_TEST(list_shows_with_no_dots);
+    RUN_TEST(non_null_terminated_list_ends_with_dot_before_last);
 }
 

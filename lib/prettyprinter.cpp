@@ -84,7 +84,7 @@ void print_false( const FalseValue*, ostream& result )
 
 void print_nil( const NilValue*, ostream& result )
 {
-    result << "nil";
+    result << "()";
 }
 
 

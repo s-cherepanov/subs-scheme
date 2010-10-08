@@ -80,7 +80,7 @@ void nil_value_written_as_nil()
 {
     NilValue nilvalue;
 
-    TEST_ASSERT_EQUAL( PrettyPrinter::Print( &nilvalue ), "nil" );
+    TEST_ASSERT_EQUAL( PrettyPrinter::Print( &nilvalue ), "()" );
 }
 
 

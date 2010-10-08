@@ -61,6 +61,21 @@ void can_nest_pairs()
 }
 
 
+void list_creates_nested_pairs()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define x (list 1 2 3))" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(car x)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(cdr x)" ), "(2 3)" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(car (cdr x))" ), "2" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(car (cdr (cdr x)))" ), "3" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(cdr (cdr (cdr x)))" ), "()" );
+}
+
+
+
 }
 
 #define SUITENAME "TestCons"
@@ -70,5 +85,6 @@ void TestCons::Run() const
     RUN_TEST(wrong_num_args_is_an_error);
     RUN_TEST(cons_creates_a_pair);
     RUN_TEST(can_nest_pairs);
+    RUN_TEST(list_creates_nested_pairs);
 }
 

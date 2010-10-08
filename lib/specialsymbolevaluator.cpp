@@ -31,6 +31,7 @@
 #include "evaluationerror.h"
 #include "evaluator.h"
 #include "falsevalue.h"
+#include "nilvalue.h"
 #include "pairvalue.h"
 #include "prettyprinter.h"
 #include "symbolvalue.h"
@@ -545,6 +546,12 @@ bool is_cdr_symbol( const SymbolValue& sym )
     return ( sym.GetStringValue() == "cdr" );
 }
 
+bool is_list_symbol( const SymbolValue& sym )
+{
+    // TODO: case insensitive?
+    return ( sym.GetStringValue() == "list" );
+}
+
 
 class AndProperties
 {
@@ -855,6 +862,40 @@ std::auto_ptr<Value> eval_cdr( Evaluator* ev, const CombinationValue* combo,
         outstream, false );
 }
 
+std::auto_ptr<Value> eval_list_elems( CombinationValue::const_iterator it,
+    Evaluator* ev, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
+{
+    if( it == combo->end() )
+    {
+        return std::auto_ptr<Value>( new NilValue );
+    }
+
+    const Value* value = *it;
+
+    ++it;
+
+    return std::auto_ptr<Value>( new PairValue(
+        ev->EvalInContext( value, environment, outstream, false ),
+        eval_list_elems( it, ev, combo, environment, outstream ) ) );
+}
+
+
+std::auto_ptr<Value> eval_list( Evaluator* ev, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
+{
+    // TODO: consider implementing a ListValue that allocates no Pair objects.
+
+    CombinationValue::const_iterator it = combo->begin();
+
+    assert( it != combo->end() ); // "list" (ignore)
+
+    ++it;
+
+    return eval_list_elems( it, ev, combo, environment, outstream );
+}
+
+
 
 }
 
@@ -986,6 +1027,12 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
     if( is_cdr_symbol( symref ) )
     {
         new_value_ = eval_cdr( evaluator_, combo, environment, outstream_ );
+        return eReturnNewValue;
+    }
+
+    if( is_list_symbol( symref ) )
+    {
+        new_value_ = eval_list( evaluator_, combo, environment, outstream_ );
         return eReturnNewValue;
     }
 

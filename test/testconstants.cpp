@@ -91,7 +91,7 @@ void decimal_equal_to_integer_ends_in_point_zero()
 
 void nil()
 {
-    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "nil" ), "nil" );
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "nil" ), "()" );
 }
 
 

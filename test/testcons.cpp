@@ -33,6 +33,8 @@ namespace
 void wrong_num_args_is_an_error()
 {
     TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "cons", 2 );
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "car", 1 );
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "cdr", 1 );
 }
 
 
@@ -61,18 +63,34 @@ void can_nest_pairs()
 }
 
 
-void list_creates_nested_pairs()
+void car_requires_a_pair()
 {
     SubsInterpreter interpreter;
 
-    interpreter.Interpret( "(define x (list 1 2 3))" );
+    interpreter.Interpret( "(define x 1)" );
 
-    TEST_ASSERT_EQUAL( interpreter.Interpret( "(car x)" ), "1" );
-    TEST_ASSERT_EQUAL( interpreter.Interpret( "(cdr x)" ), "(2 3)" );
-    TEST_ASSERT_EQUAL( interpreter.Interpret( "(car (cdr x))" ), "2" );
-    TEST_ASSERT_EQUAL( interpreter.Interpret( "(car (cdr (cdr x)))" ), "3" );
-    TEST_ASSERT_EQUAL( interpreter.Interpret( "(cdr (cdr (cdr x)))" ), "()" );
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(car x)" );
+    }
+    TEST_ASSERT_THROWS_END( "The argument to car must be a pair. '1' is not" )
 }
+
+
+
+void cdr_requires_a_pair()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define x 1)" );
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(cdr x)" );
+    }
+    TEST_ASSERT_THROWS_END( "The argument to cdr must be a pair. '1' is not" )
+}
+
 
 
 
@@ -85,6 +103,7 @@ void TestCons::Run() const
     RUN_TEST(wrong_num_args_is_an_error);
     RUN_TEST(cons_creates_a_pair);
     RUN_TEST(can_nest_pairs);
-    RUN_TEST(list_creates_nested_pairs);
+    RUN_TEST(car_requires_a_pair);
+    RUN_TEST(cdr_requires_a_pair);
 }
 

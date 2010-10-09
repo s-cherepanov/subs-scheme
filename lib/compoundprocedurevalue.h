@@ -25,8 +25,9 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "nativefunctionvalue.h"
+#include "value.h"
 
+class CombinationValue;
 class Environment;
 
 /**

@@ -26,7 +26,6 @@
 #include "nativefunctionvalue.h"
 
 class CombinationValue;
-class Environment;
 class Value;
 
 class NegativeNativeFunctionValue : public NativeFunctionValue

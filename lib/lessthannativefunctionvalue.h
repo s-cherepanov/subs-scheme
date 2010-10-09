@@ -22,7 +22,8 @@
 
 #include "nativefunctionvalue.h"
 
-class Environment;
+class CombinationValue;
+class Value;
 
 class LessThanNativeFunctionValue : public NativeFunctionValue
 {

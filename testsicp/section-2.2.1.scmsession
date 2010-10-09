@@ -1,0 +1,138 @@
+
+> (cons 1
+.       (cons 2
+.             (cons 3
+.                   (cons 4 nil))))
+(1 2 3 4)
+
+> (define one-through-four (list 1 2 3 4))
+one-through-four
+
+> one-through-four
+(1 2 3 4)
+
+> (car one-through-four)
+1
+
+> (cdr one-through-four)
+(2 3 4)
+
+> (car (cdr one-through-four))
+2
+
+> (cons 10 one-through-four)
+(10 1 2 3 4)
+
+> (cons 5 one-through-four)
+(5 1 2 3 4)
+
+> (define (mylist-ref items n)
+.         (if (= n 0)
+.             (car items)
+.             (mylist-ref (cdr items) (- n 1))))
+mylist-ref
+
+> (define squares (list 1 4 9 16 25))
+squares
+
+> (mylist-ref squares 3)
+16
+
+> (define (mylength items)
+.         (if (null? items)
+.             0
+.             (+ 1 (mylength (cdr items)))))
+mylength
+
+> (define odds (list 1 3 5 7))
+odds
+
+> (mylength odds)
+4
+
+
+> (define (mylength items)
+.         (define (length-iter a count)
+.           (if (null? a)
+.               count
+.               (length-iter (cdr a) (+ 1 count))))
+.         (length-iter items 0))
+mylength
+
+> (mylength odds)
+4
+
+> (define (myappend list1 list2)
+.         (if (null? list1)
+.             list2
+.             (cons (car list1) (myappend (cdr list1) list2))))
+myappend
+
+> (myappend squares odds)
+(1 4 9 16 25 1 3 5 7)
+
+> (myappend odds squares)
+(1 3 5 7 1 4 9 16 25)
+
+> (define (scale-list items factor)
+.         (if (null? items)
+.             nil
+.             (cons (* (car items) factor)
+.                   (scale-list (cdr items) factor))))
+scale-list
+
+> (scale-list (list 1 2 3 4 5) 10)
+(10 20 30 40 50)
+
+
+> (define (mymap proc items)
+.         (if (null? items)
+.             nil
+.             (cons (proc (car items))
+.                   (mymap proc (cdr items)))))
+mymap
+
+> (mymap abs (list -10 2.5 -11.6 17))
+(10 2.5 11.6 17)
+
+> (mymap (lambda (x) (* x x))
+.        (list 1 2 3 4))
+(1 4 9 16)
+
+
+> (define (scale-list items factor)
+.         (mymap (lambda (x) (* x factor))
+.              items))
+scale-list
+
+> (scale-list (list 1 2 3 4 5) 10)
+(10 20 30 40 50)
+
+
+> (define (square-list items)
+.         (define (iter things answer)
+.           (if (null? things)
+.               answer
+.               (iter (cdr things)
+.                     (cons (square (car things))
+.                           answer))))
+.         (iter items nil))
+square-list
+
+> (square-list (list 1 2))
+(4 1)
+
+> (define (square-list items)
+.         (define (iter things answer)
+.                 (if (null? things)
+.                     answer
+.                     (iter (cdr things)
+.                           (cons answer
+.                                 (square (car things))))))
+.         (iter items nil))
+square-list
+
+> (square-list (list 1 2))
+((() . 1) . 4)
+
+

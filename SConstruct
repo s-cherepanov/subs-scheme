@@ -31,11 +31,13 @@ env.Program(
 	["test_subs.cpp"]
 	+ Glob( "test/*.cpp")
 	+ Glob( "lib/*.cpp")
+	+ Glob( "scmlib/*.cpp")
 	)
 
 env.Program(
 	["subs.cpp"]
 	+ Glob( "lib/*.cpp")
+	+ Glob( "scmlib/*.cpp")
 	)
 
 test_cmd = env.Command( ".test.passed", ["subs","test_subs"],

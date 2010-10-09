@@ -35,6 +35,7 @@
 #include "test/testlambda.h"
 #include "test/testlet.h"
 #include "test/testlexer.h"
+#include "test/testlists.h"
 #include "test/testmaths.h"
 #include "test/testmemory.h"
 #include "test/testnewlineprocessor.h"
@@ -74,6 +75,7 @@ int main()
         TestDisplay(              ).Run();
         TestLet(                  ).Run();
         TestCons(                 ).Run();
+        TestLists(                ).Run();
     }
     catch( AssertionFailed& e )
     {

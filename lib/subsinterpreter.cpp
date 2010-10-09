@@ -28,6 +28,7 @@
 #include "prettyprinter.h"
 #include "subsinterpreter.h"
 #include "tokenlist.h"
+#include "scmlib/scmlib.h"
 
 using namespace std;
 
@@ -63,6 +64,7 @@ void interpret_values( Parser& parser, Evaluator& evaluator,
 SubsInterpreter::SubsInterpreter( std::ostream& outstream /*= std::cout*/ )
 : outstream_( outstream )
 {
+    scmlib_load( *this );
 }
 
 std::string SubsInterpreter::Interpret( const std::string& codestring )

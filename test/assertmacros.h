@@ -38,6 +38,11 @@
             std::cerr << "Error running test '" #TESTNAME "' in suite '" SUITENAME "':" << std::endl; \
             throw; \
         } \
+        catch( ... ) \
+        { \
+            std::cerr << "Unknown error running test '" #TESTNAME "' in suite '" SUITENAME "'." << std::endl; \
+            throw; \
+        } \
     }
 
 #define TEST_ASSERT_EQUAL(ARG1,ARG2) \

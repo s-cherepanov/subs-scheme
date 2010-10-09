@@ -824,7 +824,7 @@ std::auto_ptr<Value> eval_car( Evaluator* ev, const CombinationValue* combo,
     if( !pair )
     {
         throw EvaluationError( "The argument to car must be a pair. '" +
-            PrettyPrinter::Print( *it ) + "' is not a pair." );
+            PrettyPrinter::Print( evald_arg.get() ) + "' is not a pair." );
     }
 
     return ev->EvalInContext( pair->GetFirst(), environment,
@@ -855,7 +855,7 @@ std::auto_ptr<Value> eval_cdr( Evaluator* ev, const CombinationValue* combo,
     if( !pair )
     {
         throw EvaluationError( "The argument to cdr must be a pair. '" +
-            PrettyPrinter::Print( *it ) + "' is not a pair." );
+            PrettyPrinter::Print( evald_arg.get() ) + "' is not a pair." );
     }
 
     return ev->EvalInContext( pair->GetSecond(), environment,

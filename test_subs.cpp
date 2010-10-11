@@ -42,6 +42,7 @@
 #include "test/testparseconstants.h"
 #include "test/testpredicates.h"
 #include "test/testprettyprintconstants.h"
+#include "test/testquestionfunctions.h"
 #include "test/testrepl.h"
 #include "test/testtailcalloptimisation.h"
 #include "test/testtokenlist.h"
@@ -76,6 +77,7 @@ int main()
         TestLet(                  ).Run();
         TestCons(                 ).Run();
         TestLists(                ).Run();
+        TestQuestionFunctions(    ).Run();
     }
     catch( AssertionFailed& e )
     {

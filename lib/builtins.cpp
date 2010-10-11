@@ -33,6 +33,7 @@
 #include "nilvalue.h"
 #include "notnativefunctionvalue.h"
 #include "nullnativefunctionvalue.h"
+#include "pairnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
 #include "positivenativefunctionvalue.h"
 #include "remaindernativefunctionvalue.h"
@@ -96,10 +97,11 @@ void Init( Environment& environment )
     InsertProcedure<TanNativeFunctionValue>(       environment );
 
     // Question functions
+    InsertProcedure<PairNativeFunctionValue>(     environment );
     InsertProcedure<PositiveNativeFunctionValue>( environment );
     InsertProcedure<NegativeNativeFunctionValue>( environment );
-    InsertProcedure<ZeroNativeFunctionValue>(     environment );
     InsertProcedure<NullNativeFunctionValue>(     environment );
+    InsertProcedure<ZeroNativeFunctionValue>(     environment );
 }
 
 }

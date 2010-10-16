@@ -24,6 +24,7 @@
 #include <string>
 #include <typeinfo>
 
+#include "assertionfailed.h"
 #include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
 
@@ -32,6 +33,10 @@
         try \
         { \
             TESTNAME(); \
+        } \
+        catch( AssertionFailed& ) \
+        { \
+            throw; \
         } \
         catch( EvaluationError& e ) \
         { \

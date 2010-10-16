@@ -205,6 +205,85 @@ void list_ref_finds_an_item_in_the_list()
 
 
 
+void filter_returns_list_of_items_satisfying_predicate()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL(interpreter.Interpret(
+        "(filter even? (list 4 9 6))" ), "(4 6)" );
+
+    TEST_ASSERT_EQUAL(interpreter.Interpret(
+        "(filter even? (list 1 2 3))" ), "(2)" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret(
+        "(filter even? (list 1 5))" ), "()" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret(
+        "(filter even? (list))" ), "()" );
+}
+
+
+
+void filter_requires_2_args()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "filter", 2 );
+}
+
+
+void filter_requires_a_function_first()
+{
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        SubsInterpreter().Interpret( "(filter 1 (list 2 3))" );
+    }
+    TEST_ASSERT_THROWS_END( "Attempted to run '1', which is not a procedure." )
+}
+
+
+
+
+void filter_requires_a_unary_function_first()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define (myfn x y) 1)" );
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(filter myfn (list 2 3))" );
+    }
+    TEST_ASSERT_THROWS_END( "Not enough operands to myfn" )
+}
+
+
+
+void filter_requires_a_pair_second()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(filter even? 1)" );
+    }
+    TEST_ASSERT_THROWS_END( "'1' is not a pair" )
+}
+
+
+
+void filter_requires_a_list_second()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(filter even? (cons 1 2))" );
+    }
+    TEST_ASSERT_THROWS_END( "'2' is not a pair" )
+}
+
+
+
+
 
 }
 
@@ -227,5 +306,11 @@ void TestLists::Run() const
     RUN_TEST(append_concatenates_2_lists);
     RUN_TEST(list_ref_requires_2_args);
     RUN_TEST(list_ref_finds_an_item_in_the_list);
+    RUN_TEST(filter_returns_list_of_items_satisfying_predicate);
+    RUN_TEST(filter_requires_2_args);
+    RUN_TEST(filter_requires_a_function_first);
+    RUN_TEST(filter_requires_a_unary_function_first);
+    RUN_TEST(filter_requires_a_pair_second);
+    RUN_TEST(filter_requires_a_list_second);
 }
 

@@ -25,11 +25,17 @@ const char** scmlib_lists()
 {
     static const char* ret[] =
     {
-        "(define (map fn list) "
+        "(define (append list1 list2) "
+                "(if (null? list1) "
+                    "list2 "
+                    "(cons (car list1) (append (cdr list1) list2)))) ",
+
+        "(define (filter predicate list) "
                 "(if (null? list) "
                     "nil "
-                    "(cons (fn (car list)) "
-                          "(map fn (cdr list))))) ",
+                    "(if (predicate (car list)) "
+                        "(cons (car list) (filter predicate (cdr list))) "
+                        "(filter predicate (cdr list)))))",
 
         "(define (length list) "
                 "(define (length-iter total list) "
@@ -38,15 +44,16 @@ const char** scmlib_lists()
                             "(length-iter (+ total 1) (cdr list)))) "
                 "(length-iter 0 list)) ",
 
-        "(define (append list1 list2) "
-                "(if (null? list1) "
-                    "list2 "
-                    "(cons (car list1) (append (cdr list1) list2)))) ",
-
         "(define (list-ref list n) "
                 "(if (= n 0) "
                     "(car list) "
                     "(list-ref (cdr list) (- n 1)))) ",
+
+        "(define (map fn list) "
+                "(if (null? list) "
+                    "nil "
+                    "(cons (fn (car list)) "
+                          "(map fn (cdr list))))) ",
 
         ""
     };

@@ -91,6 +91,17 @@ void write_display( Evaluator* evaluator, const CombinationValue* combo,
 namespace DisplayEvaluator
 {
 
+bool IsSpecialSymbol( const SymbolValue& sym )
+{
+    // TODO: See SpecialSymbolEvaluator::IsSpecialSymbol for how we should
+    //       handle this more efficiently and elegantly.
+
+    return (
+           is_newline_symbol( sym )
+        || is_display_symbol( sym )
+        );
+}
+
 /**
  * Check whether the supplied symbol is a display symbol, and if so
  * display as appropriate.

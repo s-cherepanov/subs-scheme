@@ -28,6 +28,7 @@
 class CombinationValue;
 class Environment;
 class Evaluator;
+class SymbolValue;
 class Value;
 
 class SpecialSymbolEvaluator
@@ -43,9 +44,11 @@ public:
 
     SpecialSymbolEvaluator( Evaluator* evaluator, std::ostream& outstream );
 
-    ESymbolType ProcessSpecialSymbol( const CombinationValue* combo,
-        boost::shared_ptr<Environment>& environment,
-        bool is_tail_call );
+    bool IsSpecialSymbol( const SymbolValue& sym ) const;
+
+    ESymbolType ProcessSpecialSymbol( const Value* optr,
+        const CombinationValue* combo,
+        boost::shared_ptr<Environment>& environment, bool is_tail_call );
 
     std::auto_ptr<Value> NewValue();
     const Value* ExistingValue();

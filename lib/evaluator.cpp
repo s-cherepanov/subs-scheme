@@ -44,17 +44,23 @@ namespace
 {
 
 std::auto_ptr<Value> eval_symbol( const SymbolValue* sym,
-    const Environment& environment )
+    const Environment& environment,
+    const SpecialSymbolEvaluator& special_symbol_evaluator )
 {
     const Value* value = environment.FindSymbol( sym->GetStringValue() );
 
     if( !value )
     {
+        if( special_symbol_evaluator.IsSpecialSymbol( *sym ) )
+        {
+            return std::auto_ptr<Value>( sym->Clone() );
+        }
+
         throw EvaluationError( "Undefined symbol '"
             + PrettyPrinter::Print( sym ) + "'." );
     }
 
-    // TODO: avoid the copy here?
+    // TODO: avoid the copy here?  Would need some kind of copy-on-write.
     return auto_ptr<Value>( value->Clone() );
 }
 
@@ -119,12 +125,14 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
     while( true )
     {
 
+        SpecialSymbolEvaluator special_symbol_evaluator( this, outstream );
+
         // If value is a symbol, we look it up and return the result
         const SymbolValue* plainsym = dynamic_cast<const SymbolValue*>(
             value );
         if( plainsym )
         {
-            return eval_symbol( plainsym, *run_env );
+            return eval_symbol( plainsym, *run_env, special_symbol_evaluator );
         }
 
         // Maybe value is a combination?
@@ -148,10 +156,14 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
                 "Attepted to evaluate an empty combination" );
         }
 
-        SpecialSymbolEvaluator special_symbol_evaluator( this, outstream );
+        CombinationValue::const_iterator cmbit = combo->begin();
 
-        switch( special_symbol_evaluator.ProcessSpecialSymbol( combo,
-            run_env, is_tail_call ) )
+        // Evaluate the operator
+        auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, run_env,
+            outstream, false );
+
+        switch( special_symbol_evaluator.ProcessSpecialSymbol( evaldoptr.get(),
+            combo, run_env, is_tail_call ) )
         {
             case SpecialSymbolEvaluator::eReturnNewValue:
             {
@@ -184,12 +196,6 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
                 break;
             }
         }
-
-        CombinationValue::const_iterator cmbit = combo->begin();
-
-        // Otherwise we evaluate the operator
-        auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, run_env,
-            outstream, false );
 
         ++cmbit; // Skip past the procedure to the arguments
 
@@ -238,6 +244,9 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
             // each returned value will be deleted.
             EvalInContext( *itbody, run_env, outstream, false );
         }
+
+        // TODO: Tail recursion modulo cons
+        // http://en.wikipedia.org/wiki/Tail_call#Tail_recursion_modulo_cons
 
         // Now we have the last bit of the body, which is the bit
         // we will tail-call optimise by setting value to it, and

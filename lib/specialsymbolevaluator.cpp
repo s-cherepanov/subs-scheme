@@ -884,7 +884,8 @@ std::auto_ptr<Value> eval_list_elems( CombinationValue::const_iterator it,
 std::auto_ptr<Value> eval_list( Evaluator* ev, const CombinationValue* combo,
     boost::shared_ptr<Environment>& environment, std::ostream& outstream )
 {
-    // TODO: consider implementing a ListValue that allocates no Pair objects.
+    // TODO: Consider implementing a ListValue that allocates no Pair objects.
+    //       This could also significantly improve performance of map & filter
 
     CombinationValue::const_iterator it = combo->begin();
 
@@ -908,15 +909,35 @@ SpecialSymbolEvaluator::SpecialSymbolEvaluator( Evaluator* evaluator,
 {
 }
 
+bool SpecialSymbolEvaluator::IsSpecialSymbol( const SymbolValue& sym ) const
+{
+    // TODO: Share this code with ProcessSpecialSymbol, and make it more
+    //       efficient.  Maybe recognise special symbols in the parser and
+    //       use an enum to tag them.
+    return (
+           is_define_symbol( sym )
+        || is_lambda_symbol( sym )
+        || is_let_symbol(    sym )
+        || is_if_symbol(     sym )
+        || is_cond_symbol(   sym )
+        || is_or_symbol(     sym )
+        || is_and_symbol(    sym )
+        || is_cons_symbol(   sym )
+        || is_car_symbol(    sym )
+        || is_cdr_symbol(    sym )
+        || is_list_symbol(   sym )
+        || DisplayEvaluator::IsSpecialSymbol( sym )
+        );
+}
+
 SpecialSymbolEvaluator::ESymbolType
 SpecialSymbolEvaluator::ProcessSpecialSymbol(
-    const CombinationValue* combo,
+    const Value* optr, const CombinationValue* combo,
     boost::shared_ptr<Environment>& environment,
     bool is_tail_call )
 {
     // Check to see whether it's a special symbol
-    const SymbolValue* sym = dynamic_cast<const SymbolValue*>(
-        *( combo->begin() ) );
+    const SymbolValue* sym = dynamic_cast<const SymbolValue*>( optr );
 
     // If it's not a symbol, get out of here...
     if( !sym )

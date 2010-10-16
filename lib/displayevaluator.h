@@ -32,6 +32,8 @@ class SymbolValue;
 namespace DisplayEvaluator
 {
 
+bool IsSpecialSymbol( const SymbolValue& sym );
+
 /**
  * Check whether the supplied symbol is a display symbol, and if so
  * display as appropriate.

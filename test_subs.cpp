@@ -31,6 +31,7 @@
 #include "test/testdefinesymbol.h"
 #include "test/testdisplay.h"
 #include "test/testenvironment.h"
+#include "test/testequal.h"
 #include "test/testif.h"
 #include "test/testlambda.h"
 #include "test/testlet.h"
@@ -78,6 +79,7 @@ int main()
         TestCons(                 ).Run();
         TestLists(                ).Run();
         TestQuestionFunctions(    ).Run();
+        TestEqual(                ).Run();
     }
     catch( AssertionFailed& e )
     {

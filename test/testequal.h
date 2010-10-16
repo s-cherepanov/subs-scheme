@@ -17,28 +17,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef STRINGVALUE_H
-#define STRINGVALUE_H
+#ifndef TESTEQUAL_H
+#define TESTEQUAL_H
 
-#include <string>
-
-#include "value.h"
-
-class StringValue : public Value
+class TestEqual
 {
 public:
-    StringValue( const std::string& symbol );
-
-    const std::string& GetStringValue() const;
-
-    virtual StringValue* Clone() const;
-
-    friend bool operator==( const StringValue& left, const StringValue& right );
-
-    friend bool operator!=( const StringValue& left, const StringValue& right );
-
-private:
-    std::string value_;
+    void Run() const;
 };
 
 #endif

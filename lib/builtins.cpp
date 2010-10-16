@@ -20,6 +20,7 @@
 #include "cosnativefunctionvalue.h"
 #include "environment.h"
 #include "dividenativefunctionvalue.h"
+#include "equalnativefunctionvalue.h"
 #include "equalsnativefunctionvalue.h"
 #include "evennativefunctionvalue.h"
 #include "expnativefunctionvalue.h"
@@ -95,17 +96,18 @@ void Init( Environment& environment )
     InsertProcedure<LogNativeFunctionValue>(       environment );
     InsertProcedure<MaxNativeFunctionValue>(       environment );
     InsertProcedure<MinNativeFunctionValue>(       environment );
+    InsertProcedure<NegativeNativeFunctionValue>(  environment );
     InsertProcedure<OddNativeFunctionValue>(       environment );
+    InsertProcedure<PositiveNativeFunctionValue>(  environment );
     InsertProcedure<RemainderNativeFunctionValue>( environment );
     InsertProcedure<SinNativeFunctionValue>(       environment );
     InsertProcedure<TanNativeFunctionValue>(       environment );
+    InsertProcedure<ZeroNativeFunctionValue>(     environment );
 
     // Question functions
+    InsertProcedure<EqualNativeFunctionValue>(    environment );
     InsertProcedure<PairNativeFunctionValue>(     environment );
-    InsertProcedure<PositiveNativeFunctionValue>( environment );
-    InsertProcedure<NegativeNativeFunctionValue>( environment );
     InsertProcedure<NullNativeFunctionValue>(     environment );
-    InsertProcedure<ZeroNativeFunctionValue>(     environment );
 }
 
 }

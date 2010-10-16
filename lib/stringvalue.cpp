@@ -38,3 +38,14 @@ StringValue* StringValue::Clone() const
 }
 
 
+bool operator==( const StringValue& left, const StringValue& right )
+{
+    return ( left.value_ == right.value_ );
+}
+
+bool operator!=( const StringValue& left, const StringValue& right )
+{
+    return ( left.value_ != right.value_ );
+}
+
+

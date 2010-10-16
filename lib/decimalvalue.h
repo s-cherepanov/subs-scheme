@@ -62,6 +62,12 @@ public:
     friend std::auto_ptr<Value> operator/( const DecimalValue& left,
         const DecimalValue& right );
 
+    friend bool operator==( const DecimalValue& left,
+        const DecimalValue& right );
+
+    friend bool operator!=( const DecimalValue& left,
+        const DecimalValue& right );
+
     friend bool operator>=( const IntegerValue& left,
         const DecimalValue& right );
 

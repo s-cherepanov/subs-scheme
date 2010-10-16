@@ -141,6 +141,18 @@ std::auto_ptr<Value> operator/( const DecimalValue& left,
 }
 
 
+
+bool operator==( const DecimalValue& left, const DecimalValue& right )
+{
+    return ( left.value_ == right.value_ );
+}
+
+bool operator!=( const DecimalValue& left, const DecimalValue& right )
+{
+    return ( left.value_ != right.value_ );
+}
+
+
 bool operator>=( const IntegerValue& left, const DecimalValue& right )
 {
     return ( left.GetIntValue() >= right.value_ );

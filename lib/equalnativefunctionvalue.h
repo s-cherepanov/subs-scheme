@@ -17,28 +17,27 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef STRINGVALUE_H
-#define STRINGVALUE_H
+#ifndef EQUALNATIVEFUNCTIONVALUE_H
+#define EQUALNATIVEFUNCTIONVALUE_H
 
+#include <memory>
 #include <string>
 
-#include "value.h"
+#include "nativefunctionvalue.h"
 
-class StringValue : public Value
+class CombinationValue;
+class Value;
+
+class EqualNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    StringValue( const std::string& symbol );
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
 
-    const std::string& GetStringValue() const;
+    virtual EqualNativeFunctionValue* Clone() const;
 
-    virtual StringValue* Clone() const;
+    virtual std::string GetName() const;
 
-    friend bool operator==( const StringValue& left, const StringValue& right );
-
-    friend bool operator!=( const StringValue& left, const StringValue& right );
-
-private:
-    std::string value_;
+    static const std::string& StaticName();
 };
 
 #endif

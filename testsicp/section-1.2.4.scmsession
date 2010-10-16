@@ -72,8 +72,8 @@ my*
 .               ((even? count)
 .                (fib-iter a
 .                          b
-.                          0
-.                          0
+.                          0 ; the exercise is to fill in these
+.                          0 ; the exercise is to fill in these
 .                          (/ count 2)))
 .               (else (fib-iter (+ (* b q) (* a q) (* a p))
 .                               (+ (* b p) (* a q))
@@ -86,7 +86,15 @@ fib-iter
 .         (fib-iter 1 0 0 1 n))
 fib
 
-
 > ; Exercise 1.19 uses a comment
+
+> ; Clean-up: put back a correct implementation of fib:
+> (define (fib n)
+.   (define (fib-iter a b count)
+.     (if (= count 0)
+.         b
+.         (fib-iter (+ a b) a (- count 1))))
+.   (fib-iter 1 0 n))
+fib
 
 

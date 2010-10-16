@@ -17,35 +17,49 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef NATIVEFUNCTIONVALUE_H
-#define NATIVEFUNCTIONVALUE_H
-
 #include <memory>
 #include <string>
 
-#include "value.h"
+#include "evennativefunctionvalue.h"
 
-class CombinationValue;
+using namespace std;
 
-class NativeFunctionValue : public Value
+namespace
 {
-public:
-    /**
-     * Run this procedure with the supplied (already evaluated)
-     * operands.
-     *
-     * @arg combo is the combination of the operator and operands.
-     */
-    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const = 0;
 
-    virtual std::string GetName() const = 0;
+bool is_even( int i )
+{
+    return ( i % 2 == 0 );
+}
 
-protected:
-    double GetDoubleArg( const CombinationValue* argvalues ) const;
-    int GetConvertibleToIntArg( const CombinationValue* argvalues ) const;
+}
 
-    static std::auto_ptr<Value> CreateBooleanValue( bool value );
-};
+//virtual
+std::auto_ptr<Value> EvenNativeFunctionValue::Run(
+    const CombinationValue* argvalues ) const
+{
+    return CreateBooleanValue( is_even( GetConvertibleToIntArg( argvalues ) ) );
+}
 
-#endif
+
+//virtual
+EvenNativeFunctionValue* EvenNativeFunctionValue::Clone() const
+{
+    return new EvenNativeFunctionValue( *this );
+}
+
+
+//virtual
+std::string EvenNativeFunctionValue::GetName() const
+{
+    return StaticName();
+}
+
+//static
+const std::string& EvenNativeFunctionValue::StaticName()
+{
+    static const string static_name( "even?" );
+    return static_name;
+}
+
 

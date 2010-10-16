@@ -17,34 +17,27 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef NATIVEFUNCTIONVALUE_H
-#define NATIVEFUNCTIONVALUE_H
+#ifndef EVENNATIVEFUNCTIONVALUE_H
+#define EVENNATIVEFUNCTIONVALUE_H
 
 #include <memory>
 #include <string>
 
-#include "value.h"
+#include "nativefunctionvalue.h"
 
 class CombinationValue;
+class Value;
 
-class NativeFunctionValue : public Value
+class EvenNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    /**
-     * Run this procedure with the supplied (already evaluated)
-     * operands.
-     *
-     * @arg combo is the combination of the operator and operands.
-     */
-    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const = 0;
+    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
 
-    virtual std::string GetName() const = 0;
+    virtual EvenNativeFunctionValue* Clone() const;
 
-protected:
-    double GetDoubleArg( const CombinationValue* argvalues ) const;
-    int GetConvertibleToIntArg( const CombinationValue* argvalues ) const;
+    virtual std::string GetName() const;
 
-    static std::auto_ptr<Value> CreateBooleanValue( bool value );
+    static const std::string& StaticName();
 };
 
 #endif

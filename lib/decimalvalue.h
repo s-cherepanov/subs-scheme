@@ -49,6 +49,13 @@ public:
     DecimalValue& operator/=( const IntegerValue& other );
     DecimalValue& operator/=( const DecimalValue& other );
 
+    /**
+     * If this decimal value is exactly equal to an integer, return
+     * that integer and set succeeded to true.  Otherwise set succeeded to
+     * false and return 0.
+     */
+    int AsExactInt( bool& succeeded ) const;
+
     friend std::auto_ptr<Value> operator/( const IntegerValue& left,
         const DecimalValue& right );
 

@@ -110,6 +110,22 @@ DecimalValue& DecimalValue::operator/=( const DecimalValue& other )
 }
 
 
+int DecimalValue::AsExactInt( bool& succeeded ) const
+{
+    int ans = static_cast<int>( value_ );
+    if( ans == value_ )
+    {
+        succeeded = true;
+        return ans;
+    }
+    else
+    {
+        succeeded = false;
+        return 0;
+    }
+}
+
+
 std::auto_ptr<Value> operator/( const IntegerValue& left,
     const DecimalValue& right )
 {

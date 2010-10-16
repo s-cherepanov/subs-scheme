@@ -193,6 +193,41 @@ void max_returns_the_maximum()
 }
 
 
+void odd_wrong_number_of_args_is_an_error()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "odd?", 1 );
+}
+
+
+void odd_returns_not_divisible_by_2()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(odd? 1)" ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(odd? 12)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(odd? 13)" ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(odd? 0)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(odd? -3)" ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(odd? -4)" ), "#f" );
+}
+
+
+
+void even_wrong_number_of_args_is_an_error()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "even?", 1 );
+}
+
+
+void even_returns_divisible_by_2()
+{
+    SubsInterpreter interpreter;
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(even? 1)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(even? 12)" ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(even? 13)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(even? 0)" ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(even? -3)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(even? -4)" ), "#t" );
+}
 
 
 
@@ -222,5 +257,9 @@ void TestMaths::Run() const
     RUN_TEST(min_returns_the_minimum);
     RUN_TEST(max_with_no_args_is_an_error);
     RUN_TEST(max_returns_the_maximum);
+    RUN_TEST(odd_wrong_number_of_args_is_an_error);
+    RUN_TEST(odd_returns_not_divisible_by_2);
+    RUN_TEST(even_wrong_number_of_args_is_an_error);
+    RUN_TEST(even_returns_divisible_by_2);
 }
 

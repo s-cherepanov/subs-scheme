@@ -29,7 +29,7 @@
 #include "prettyprinter.h"
 #include "truevalue.h"
 
-//protected virtual
+//protected
 double NativeFunctionValue::GetDoubleArg( const CombinationValue* argvalues )
     const
 {
@@ -61,6 +61,50 @@ double NativeFunctionValue::GetDoubleArg( const CombinationValue* argvalues )
 
     return value;
 }
+
+//protected
+int NativeFunctionValue::GetConvertibleToIntArg(
+    const CombinationValue* argvalues ) const
+{
+    ArgsChecker::CheckExactNumberOfArgs( GetName().c_str(), argvalues, 1 );
+
+    CombinationValue::const_iterator it = argvalues->begin();
+    assert( it != argvalues->end() );
+
+    Value* value = *it;
+
+    const IntegerValue* ivalue = dynamic_cast<const IntegerValue*>( value );
+
+    if( ivalue )
+    {
+        return ivalue->GetIntValue();
+    }
+
+    const DecimalValue* dvalue = dynamic_cast<const DecimalValue*>( value );
+
+    if( !dvalue )
+    {
+        throw EvaluationError( "Invalid argument for "
+                + GetName()
+                + ": '"
+                + PrettyPrinter::Print( value )
+                + "' is not an integer or a decimal." );
+    }
+
+    bool was_int;
+    int i = dvalue->AsExactInt( was_int );
+    if( !was_int )
+    {
+        throw EvaluationError( "Invalid argument for "
+            + GetName()
+            + ": '"
+            + PrettyPrinter::Print( value )
+            + "' is a decimal that does not have an integer value." );
+    }
+
+    return i;
+}
+
 
 //protected static
 std::auto_ptr<Value> NativeFunctionValue::CreateBooleanValue( bool value )

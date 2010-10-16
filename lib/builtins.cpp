@@ -21,6 +21,7 @@
 #include "environment.h"
 #include "dividenativefunctionvalue.h"
 #include "equalsnativefunctionvalue.h"
+#include "evennativefunctionvalue.h"
 #include "expnativefunctionvalue.h"
 #include "falsevalue.h"
 #include "greaterthannativefunctionvalue.h"
@@ -33,6 +34,7 @@
 #include "nilvalue.h"
 #include "notnativefunctionvalue.h"
 #include "nullnativefunctionvalue.h"
+#include "oddnativefunctionvalue.h"
 #include "pairnativefunctionvalue.h"
 #include "plusnativefunctionvalue.h"
 #include "positivenativefunctionvalue.h"
@@ -89,9 +91,11 @@ void Init( Environment& environment )
     // Mathematical functions
     InsertProcedure<CosNativeFunctionValue>(       environment );
     InsertProcedure<ExpNativeFunctionValue>(       environment );
+    InsertProcedure<EvenNativeFunctionValue>(      environment );
     InsertProcedure<LogNativeFunctionValue>(       environment );
     InsertProcedure<MaxNativeFunctionValue>(       environment );
     InsertProcedure<MinNativeFunctionValue>(       environment );
+    InsertProcedure<OddNativeFunctionValue>(       environment );
     InsertProcedure<RemainderNativeFunctionValue>( environment );
     InsertProcedure<SinNativeFunctionValue>(       environment );
     InsertProcedure<TanNativeFunctionValue>(       environment );

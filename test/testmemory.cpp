@@ -22,13 +22,13 @@
 #include <typeinfo>
 
 #include "assertmacros.h"
+#include "lib/customsymbolvalue.h"
 #include "lib/evaluator.h"
 #include "lib/integervalue.h"
 #include "lib/lexer.h"
 #include "lib/pairvalue.h"
 #include "lib/parser.h"
 #include "lib/stringvalue.h"
-#include "lib/symbolvalue.h"
 #include "lib/token.h"
 #include "lib/valuefactory.h"
 
@@ -50,7 +50,7 @@ void lex_empty_string()
 
 void create_symbolvalue()
 {
-    auto_ptr<Value> v( new SymbolValue( "+" ) );
+    auto_ptr<Value> v( new CustomSymbolValue( "+" ) );
 }
 
 

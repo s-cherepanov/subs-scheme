@@ -19,22 +19,23 @@
 
 #include <string>
 
-#include "symbolvalue.h"
+#include "customsymbolvalue.h"
 
-SymbolValue::SymbolValue( const std::string& symbol )
+CustomSymbolValue::CustomSymbolValue( const std::string& symbol )
 : symbol_( symbol )
 {
 }
 
-const std::string& SymbolValue::GetStringValue() const
+//virtual
+const std::string& CustomSymbolValue::GetStringValue() const
 {
     return symbol_;
 }
 
 //virtual
-SymbolValue* SymbolValue::Clone() const
+CustomSymbolValue* CustomSymbolValue::Clone() const
 {
-    return new SymbolValue( *this );
+    return new CustomSymbolValue( *this );
 }
 
 

@@ -26,6 +26,7 @@
 #include "argschecker.h"
 #include "combinationvalue.h"
 #include "compoundprocedurevalue.h"
+#include "customsymbolvalue.h"
 #include "displayevaluator.h"
 #include "environment.h"
 #include "evaluationerror.h"
@@ -462,7 +463,7 @@ std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
     std::auto_ptr<CombinationValue> lambdadefn =
         std::auto_ptr<CombinationValue>( new CombinationValue );
 
-    lambdadefn->push_back( new SymbolValue( "lambda" ) );
+    lambdadefn->push_back( new CustomSymbolValue( "lambda" ) );
     lambdadefn->push_back( argnames.release() );
 
     ++it;

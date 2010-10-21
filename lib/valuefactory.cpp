@@ -21,10 +21,10 @@
 #include <sstream>
 #include <string>
 
+#include "customsymbolvalue.h"
 #include "decimalvalue.h"
 #include "integervalue.h"
 #include "stringvalue.h"
-#include "symbolvalue.h"
 #include "token.h"
 #include "value.h"
 
@@ -129,7 +129,7 @@ std::auto_ptr<Value> CreateValue( const Token& token )
         }
         default:
         {
-            return auto_ptr<Value>( new SymbolValue( token_name ) );
+            return auto_ptr<Value>( new CustomSymbolValue( token_name ) );
         }
     }
 }

@@ -37,6 +37,7 @@
 #include "prettyprinter.h"
 #include "symbolvalue.h"
 #include "specialsymbolevaluator.h"
+#include "specialsymbolvalue.h"
 #include "truevalue.h"
 #include "valueutilities.h"
 
@@ -463,7 +464,8 @@ std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
     std::auto_ptr<CombinationValue> lambdadefn =
         std::auto_ptr<CombinationValue>( new CombinationValue );
 
-    lambdadefn->push_back( new CustomSymbolValue( "lambda" ) );
+        lambdadefn->push_back( new SpecialSymbolValue(
+            SpecialSymbolValue::t_lambda ) );
     lambdadefn->push_back( argnames.release() );
 
     ++it;
@@ -478,81 +480,6 @@ std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
 
     return ev->EvalInContext( lambdacall.get(), environment, outstream, false );
 }
-
-
-
-bool is_define_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "define" );
-}
-
-bool is_let_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "let" );
-}
-
-bool is_if_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "if" );
-}
-
-bool is_cond_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "cond" );
-}
-
-
-bool is_lambda_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "lambda" );
-}
-
-
-bool is_or_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "or" );
-}
-
-
-bool is_and_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "and" );
-}
-
-
-bool is_cons_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "cons" );
-}
-
-
-bool is_car_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "car" );
-}
-
-
-bool is_cdr_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "cdr" );
-}
-
-bool is_list_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "list" );
-}
-
 
 class AndProperties
 {
@@ -718,10 +645,10 @@ bool is_else( const Value* value )
 {
     // TODO: break this file into several (and test these functions?)
 
-    const SymbolValue* sym = dynamic_cast<const SymbolValue*>( value );
+    const SpecialSymbolValue* sym = dynamic_cast<const SpecialSymbolValue*>(
+        value );
 
-    // TODO: case insensitive?
-    return ( sym && sym->GetStringValue() == "else" );
+    return ( sym && sym->GetSymbolType() == SpecialSymbolValue::t_else );
 }
 
 const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
@@ -912,23 +839,7 @@ SpecialSymbolEvaluator::SpecialSymbolEvaluator( Evaluator* evaluator,
 
 bool SpecialSymbolEvaluator::IsSpecialSymbol( const SymbolValue& sym ) const
 {
-    // TODO: Share this code with ProcessSpecialSymbol, and make it more
-    //       efficient.  Maybe recognise special symbols in the parser and
-    //       use an enum to tag them.
-    return (
-           is_define_symbol( sym )
-        || is_lambda_symbol( sym )
-        || is_let_symbol(    sym )
-        || is_if_symbol(     sym )
-        || is_cond_symbol(   sym )
-        || is_or_symbol(     sym )
-        || is_and_symbol(    sym )
-        || is_cons_symbol(   sym )
-        || is_car_symbol(    sym )
-        || is_cdr_symbol(    sym )
-        || is_list_symbol(   sym )
-        || DisplayEvaluator::IsSpecialSymbol( sym )
-        );
+    return dynamic_cast<const SpecialSymbolValue*>( &sym );
 }
 
 SpecialSymbolEvaluator::ESymbolType
@@ -954,115 +865,131 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
         return eNoSpecialSymbol;
     }
 
-    if( is_define_symbol( symref ) )
+    const SpecialSymbolValue* specsym =
+        dynamic_cast<const SpecialSymbolValue*>( sym );
+
+    if( specsym )
     {
-        new_value_ = eval_define( evaluator_, combo, environment, outstream_ );
-
-        return eReturnNewValue;
-    }
-
-    if( is_lambda_symbol( symref ) )
-    {
-        new_value_ = eval_lambda( combo, environment );
-
-        return eReturnNewValue;
-    }
-
-    if( is_let_symbol( symref ) )
-    {
-        if( is_tail_call )
+        // TODO: this switch implies we should use a virtual method ...
+        switch( specsym->GetSymbolType() )
         {
-            existing_value_ = process_let_tail_call( evaluator_, combo,
-                environment, outstream_ );
-            return eEvaluateExistingSymbol;
+            case SpecialSymbolValue::t_and:
+            {
+                existing_value_ = eval_predicate<AndProperties>( evaluator_,
+                    combo, environment, new_value_, outstream_ );
+                if( existing_value_ )
+                {
+                    assert( !new_value_.get() );
+                    return eEvaluateExistingSymbol;
+                }
+                else
+                {
+                    assert( new_value_.get() );
+                    return eReturnNewValue;
+                }
+            }
+            case SpecialSymbolValue::t_car:
+            {
+                new_value_ = eval_car( evaluator_, combo, environment,
+                    outstream_ );
+                return eReturnNewValue;
+            }
+            case SpecialSymbolValue::t_cdr:
+            {
+                new_value_ = eval_cdr( evaluator_, combo, environment,
+                    outstream_ );
+                return eReturnNewValue;
+            }
+            case SpecialSymbolValue::t_cond:
+            {
+                existing_value_ = process_cond( evaluator_, combo, environment,
+                    outstream_ );
+                return eEvaluateExistingSymbol;
+            }
+            case SpecialSymbolValue::t_cons:
+            {
+                new_value_ = eval_cons( evaluator_, combo, environment,
+                    outstream_ );
+                return eReturnNewValue;
+            }
+            case SpecialSymbolValue::t_define:
+            {
+                new_value_ = eval_define( evaluator_, combo, environment,
+                    outstream_ );
+                return eReturnNewValue;
+            }
+            case SpecialSymbolValue::t_display:
+            {
+                DisplayEvaluator::WriteDisplay( evaluator_, combo, environment,
+                    outstream_ );
+                existing_value_ = NULL;
+                return eEvaluateExistingSymbol;
+            }
+            case SpecialSymbolValue::t_else:
+            {
+                // We ignore else in this context - it will be treated
+                // as a normal symbol.  "else" only occurs inside a "cond".
+                break;
+            }
+            case SpecialSymbolValue::t_if:
+            {
+                existing_value_ = process_if( evaluator_, combo, environment,
+                    outstream_ );
+                return eEvaluateExistingSymbol;
+            }
+            case SpecialSymbolValue::t_lambda:
+            {
+                new_value_ = eval_lambda( combo, environment );
+                return eReturnNewValue;
+            }
+            case SpecialSymbolValue::t_let:
+            {
+                if( is_tail_call )
+                {
+                    existing_value_ = process_let_tail_call( evaluator_, combo,
+                        environment, outstream_ );
+                    return eEvaluateExistingSymbol;
+                }
+                else
+                {
+                    new_value_ = eval_let_not_tail_call( evaluator_, combo,
+                        environment, outstream_ );
+                    return eReturnNewValue;
+                }
+            }
+            case SpecialSymbolValue::t_list:
+            {
+                new_value_ = eval_list( evaluator_, combo, environment,
+                    outstream_ );
+                return eReturnNewValue;
+            }
+            case SpecialSymbolValue::t_newline:
+            {
+                DisplayEvaluator::WriteNewline( combo, outstream_ );
+                existing_value_ = NULL;
+                return eEvaluateExistingSymbol;
+            }
+            case SpecialSymbolValue::t_or:
+            {
+                existing_value_ = eval_predicate<OrProperties>( evaluator_,
+                    combo, environment, new_value_, outstream_ );
+
+                if( existing_value_ )
+                {
+                    assert( !new_value_.get() );
+                    return eEvaluateExistingSymbol;
+                }
+                else
+                {
+                    assert( new_value_.get() );
+                    return eReturnNewValue;
+                }
+            }
+            default:
+            {
+                assert( "!!! Unknown special symbol type !!!" == 0 );
+            }
         }
-        else
-        {
-            new_value_ = eval_let_not_tail_call( evaluator_, combo,
-                environment, outstream_ );
-            return eReturnNewValue;
-        }
-    }
-
-    if( is_if_symbol( symref ) )
-    {
-        existing_value_ = process_if( evaluator_, combo, environment,
-            outstream_ );
-
-        return eEvaluateExistingSymbol;
-    }
-
-    if( is_cond_symbol( symref ) )
-    {
-        existing_value_ = process_cond( evaluator_, combo, environment,
-            outstream_ );
-
-        return eEvaluateExistingSymbol;
-    }
-
-    if( is_or_symbol( symref ) )
-    {
-        existing_value_ = eval_predicate<OrProperties>( evaluator_, combo,
-            environment, new_value_, outstream_ );
-
-        if( existing_value_ )
-        {
-            assert( !new_value_.get() );
-            return eEvaluateExistingSymbol;
-        }
-        else
-        {
-            assert( new_value_.get() );
-            return eReturnNewValue;
-        }
-    }
-
-    if( is_and_symbol( symref ) )
-    {
-        existing_value_ = eval_predicate<AndProperties>( evaluator_, combo,
-            environment, new_value_, outstream_ );
-
-        if( existing_value_ )
-        {
-            assert( !new_value_.get() );
-            return eEvaluateExistingSymbol;
-        }
-        else
-        {
-            assert( new_value_.get() );
-            return eReturnNewValue;
-        }
-    }
-
-    if( is_cons_symbol( symref ) )
-    {
-        new_value_ = eval_cons( evaluator_, combo, environment, outstream_ );
-        return eReturnNewValue;
-    }
-
-    if( is_car_symbol( symref ) )
-    {
-        new_value_ = eval_car( evaluator_, combo, environment, outstream_ );
-        return eReturnNewValue;
-    }
-
-    if( is_cdr_symbol( symref ) )
-    {
-        new_value_ = eval_cdr( evaluator_, combo, environment, outstream_ );
-        return eReturnNewValue;
-    }
-
-    if( is_list_symbol( symref ) )
-    {
-        new_value_ = eval_list( evaluator_, combo, environment, outstream_ );
-        return eReturnNewValue;
-    }
-
-    if( DisplayEvaluator::ProcessDisplaySymbol( evaluator_, combo,
-            environment, symref, outstream_ ) )
-    {
-        existing_value_ = NULL;
-        return eEvaluateExistingSymbol;
     }
 
     return eNoSpecialSymbol;

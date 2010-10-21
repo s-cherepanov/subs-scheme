@@ -30,21 +30,23 @@ namespace
 
 const string* get_symbols( const string*& ret_end )
 {
+    // TODO: case insensitive
     // NOTE: keep in sync with enum SymbolType in header (including length)
     static const string ret[] = {
-          "and"           //  0
-        , "car"           //  1
-        , "cdr"           //  2
-        , "cond"          //  3
-        , "define"        //  4
-        , "display"       //  5
-        , "else"          //  6
-        , "if"            //  7
-        , "lambda"        //  8
-        , "let"           //  9
-        , "list"          // 10
-        , "newline"       // 11
-        , "or"            // 12
+          "and"
+        , "car"
+        , "cdr"
+        , "cond"
+        , "cons"
+        , "define"
+        , "display"
+        , "else"
+        , "if"
+        , "lambda"
+        , "let"
+        , "list"
+        , "newline"
+        , "or"
     };
 
     ret_end = ret + ( sizeof( ret ) / sizeof( string ) );
@@ -72,6 +74,11 @@ const std::string& SpecialSymbolValue::GetStringValue() const
 SpecialSymbolValue* SpecialSymbolValue::Clone() const
 {
     return new SpecialSymbolValue( *this );
+}
+
+SpecialSymbolValue::SymbolType SpecialSymbolValue::GetSymbolType() const
+{
+    return symbol_type_;
 }
 
 //static

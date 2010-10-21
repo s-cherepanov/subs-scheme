@@ -27,20 +27,14 @@
 class CombinationValue;
 class Environment;
 class Evaluator;
-class SymbolValue;
 
 namespace DisplayEvaluator
 {
 
-bool IsSpecialSymbol( const SymbolValue& sym );
+void WriteNewline( const CombinationValue* combo, std::ostream& outstream );
 
-/**
- * Check whether the supplied symbol is a display symbol, and if so
- * display as appropriate.
- */
-bool ProcessDisplaySymbol( Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment, const SymbolValue& sym,
-    std::ostream& outstream );
+void WriteDisplay( Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream );
 
 }
 

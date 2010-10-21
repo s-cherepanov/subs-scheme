@@ -26,32 +26,17 @@
 #include "combinationvalue.h"
 #include "displayevaluator.h"
 #include "environment.h"
-#include "evaluationerror.h"
 #include "evaluator.h"
 #include "prettyprinter.h"
 #include "stringvalue.h"
-#include "symbolvalue.h"
 
 using namespace std;
 
-namespace
+namespace DisplayEvaluator
 {
 
 
-bool is_newline_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "newline" );
-}
-
-
-bool is_display_symbol( const SymbolValue& sym )
-{
-    // TODO: case insensitive?
-    return ( sym.GetStringValue() == "display" );
-}
-
-void write_newline( const CombinationValue* combo, std::ostream& outstream )
+void WriteNewline( const CombinationValue* combo, std::ostream& outstream )
 {
     if( combo->size() > 1 )
     {
@@ -62,7 +47,7 @@ void write_newline( const CombinationValue* combo, std::ostream& outstream )
     outstream << std::endl;
 }
 
-void write_display( Evaluator* evaluator, const CombinationValue* combo,
+void WriteDisplay( Evaluator* evaluator, const CombinationValue* combo,
     boost::shared_ptr<Environment>& environment, std::ostream& outstream )
 {
     if( combo->size() != 2 )
@@ -84,44 +69,6 @@ void write_display( Evaluator* evaluator, const CombinationValue* combo,
     {
         outstream << PrettyPrinter::Print( value.get() );
     }
-}
-
-}
-
-namespace DisplayEvaluator
-{
-
-bool IsSpecialSymbol( const SymbolValue& sym )
-{
-    // TODO: See SpecialSymbolEvaluator::IsSpecialSymbol for how we should
-    //       handle this more efficiently and elegantly.
-
-    return (
-           is_newline_symbol( sym )
-        || is_display_symbol( sym )
-        );
-}
-
-/**
- * Check whether the supplied symbol is a display symbol, and if so
- * display as appropriate.
- */
-bool ProcessDisplaySymbol( Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment, const SymbolValue& sym,
-    std::ostream& outstream )
-{
-    if( is_newline_symbol( sym ) )
-    {
-        write_newline( combo, outstream );
-        return true;
-    }
-    else if( is_display_symbol( sym ) )
-    {
-        write_display( evaluator, combo, environment, outstream );
-        return true;
-    }
-
-    return false;
 }
 
 }

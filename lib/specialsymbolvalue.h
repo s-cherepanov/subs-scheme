@@ -35,6 +35,7 @@ public:
         , t_car
         , t_cdr
         , t_cond
+        , t_cons
         , t_define
         , t_display
         , t_else
@@ -51,6 +52,8 @@ public:
     virtual const std::string& GetStringValue() const;
 
     virtual SpecialSymbolValue* Clone() const;
+
+    SpecialSymbolValue::SymbolType GetSymbolType() const;
 
     static SpecialSymbolValue::SymbolType String2SymbolType(
         const std::string& symbol_name );

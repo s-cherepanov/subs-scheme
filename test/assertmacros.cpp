@@ -20,9 +20,8 @@
 #include <sstream>
 #include <string>
 
-#include "assertionfailed.h"
-
-#include "assertmacros.h"
+#include "test/assertionfailed.h"
+#include "test/assertmacros.h"
 
 using namespace std;
 

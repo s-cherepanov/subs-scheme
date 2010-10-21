@@ -22,8 +22,8 @@
 
 #include <iosfwd>
 
-#include "newlineprocessor.h"
-#include "tokenlist.h"
+#include "lib/newlineprocessor.h"
+#include "lib/tokenlist.h"
 
 class Lexer;
 

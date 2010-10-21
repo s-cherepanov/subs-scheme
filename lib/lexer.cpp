@@ -19,9 +19,9 @@
 
 #include <iostream>
 
-#include "lexer.h"
-#include "newlineprocessor.h"
-#include "token.h"
+#include "lib/lexer.h"
+#include "lib/newlineprocessor.h"
+#include "lib/token.h"
 
 using namespace std;
 

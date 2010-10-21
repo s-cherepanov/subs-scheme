@@ -17,38 +17,32 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#ifndef PAIRVALUE_H
+#define PAIRVALUE_H
+
 #include <memory>
 
-#include "pairvalue.h"
-#include "value.h"
+#include "lib/value.h"
 
-PairValue::PairValue( std::auto_ptr<Value> first, std::auto_ptr<Value> second )
-: first_(  first )
-, second_( second )
+class PairValue : public Value
 {
-}
+public:
+    /**
+     * Create a pair, taking ownership of the supplied values.
+     */
+    PairValue( std::auto_ptr<Value> first, std::auto_ptr<Value> second );
 
-PairValue::PairValue( const PairValue& other )
-: first_(  other.first_->Clone() )
-, second_( other.second_->Clone() )
-{
-}
+    PairValue( const PairValue& other );
 
-const Value* PairValue::GetFirst() const
-{
-    return first_.get();
-}
+    const Value* GetFirst() const;
+    const Value* GetSecond() const;
 
-const Value* PairValue::GetSecond() const
-{
-    return second_.get();
-}
+    virtual PairValue* Clone() const;
 
-//virtual
-PairValue* PairValue::Clone() const
-{
-    return new PairValue( *this );
-}
+private:
+    std::auto_ptr<Value> first_;
+    std::auto_ptr<Value> second_;
+};
 
-
+#endif
 

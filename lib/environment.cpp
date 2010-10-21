@@ -20,10 +20,9 @@
 #include <iostream>
 #include <map>
 
-#include "compoundprocedurevalue.h"
-#include "value.h"
-
-#include "environment.h"
+#include "lib/value/basic/compoundprocedurevalue.h"
+#include "lib/environment.h"
+#include "lib/value.h"
 
 using namespace std;
 

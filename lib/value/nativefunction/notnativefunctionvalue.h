@@ -20,7 +20,7 @@
 #ifndef NOTNATIVEFUNCTIONVALUE_H
 #define NOTNATIVEFUNCTIONVALUE_H
 
-#include "nativefunctionvalue.h"
+#include "lib/value/nativefunction/nativefunctionvalue.h"
 
 class CombinationValue;
 class Value;

@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-#include "specialsymbolvalue.h"
+#include "lib/value/symbol/specialsymbolvalue.h"
 
 using namespace std;
 

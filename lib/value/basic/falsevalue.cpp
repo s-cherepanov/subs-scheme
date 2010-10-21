@@ -17,16 +17,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef TRUEVALUE_H
-#define TRUEVALUE_H
+#include "lib/value/basic/falsevalue.h"
 
-#include "value.h"
-
-class TrueValue : public Value
+//virtual
+FalseValue* FalseValue::Clone() const
 {
-public:
-    virtual TrueValue* Clone() const;
-};
+    return new FalseValue( *this );
+}
 
-#endif
+
 

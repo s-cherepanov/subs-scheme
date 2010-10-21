@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "evaluationerror.h"
+#include "lib/evaluationerror.h"
 
 using namespace std;
 

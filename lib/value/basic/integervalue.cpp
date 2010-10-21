@@ -17,8 +17,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "decimalvalue.h"
-#include "integervalue.h"
+#include "lib/value/basic/decimalvalue.h"
+#include "lib/value/basic/integervalue.h"
 
 using namespace std;
 

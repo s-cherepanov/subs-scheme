@@ -17,32 +17,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef PAIRVALUE_H
-#define PAIRVALUE_H
+#include "lib/value/basic/truevalue.h"
 
-#include <memory>
-
-#include "value.h"
-
-class PairValue : public Value
+//virtual
+TrueValue* TrueValue::Clone() const
 {
-public:
-    /**
-     * Create a pair, taking ownership of the supplied values.
-     */
-    PairValue( std::auto_ptr<Value> first, std::auto_ptr<Value> second );
+    return new TrueValue( *this );
+}
 
-    PairValue( const PairValue& other );
 
-    const Value* GetFirst() const;
-    const Value* GetSecond() const;
-
-    virtual PairValue* Clone() const;
-
-private:
-    std::auto_ptr<Value> first_;
-    std::auto_ptr<Value> second_;
-};
-
-#endif
 

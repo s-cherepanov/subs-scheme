@@ -20,12 +20,11 @@
 #include <memory>
 #include <string>
 
-#include "assertmacros.h"
-#include "evaldepthtracer.h"
 #include "lib/subsinterpreter.h"
-#include "lib/compoundprocedurevalue.h"
-
-#include "testtailcalloptimisation.h"
+#include "lib/value/basic/compoundprocedurevalue.h"
+#include "test/assertmacros.h"
+#include "test/evaldepthtracer.h"
+#include "test/testtailcalloptimisation.h"
 
 using namespace std;
 

@@ -17,16 +17,38 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef FALSEVALUE_H
-#define FALSEVALUE_H
+#include <memory>
 
-#include "value.h"
+#include "lib/value.h"
+#include "lib/value/basic/pairvalue.h"
 
-class FalseValue : public Value
+PairValue::PairValue( std::auto_ptr<Value> first, std::auto_ptr<Value> second )
+: first_(  first )
+, second_( second )
 {
-public:
-    virtual FalseValue* Clone() const;
-};
+}
 
-#endif
+PairValue::PairValue( const PairValue& other )
+: first_(  other.first_->Clone() )
+, second_( other.second_->Clone() )
+{
+}
+
+const Value* PairValue::GetFirst() const
+{
+    return first_.get();
+}
+
+const Value* PairValue::GetSecond() const
+{
+    return second_.get();
+}
+
+//virtual
+PairValue* PairValue::Clone() const
+{
+    return new PairValue( *this );
+}
+
+
 

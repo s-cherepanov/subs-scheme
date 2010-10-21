@@ -20,7 +20,7 @@
 #ifndef EQUALSNATIVEFUNCTIONVALUE_H
 #define EQUALSNATIVEFUNCTIONVALUE_H
 
-#include "nativefunctionvalue.h"
+#include "lib/value/nativefunction/nativefunctionvalue.h"
 
 class CombinationValue;
 class Value;

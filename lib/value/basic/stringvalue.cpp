@@ -17,13 +17,35 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "truevalue.h"
+#include <string>
 
-//virtual
-TrueValue* TrueValue::Clone() const
+#include "lib/value/basic/stringvalue.h"
+
+StringValue::StringValue( const std::string& string )
+: value_( string )
 {
-    return new TrueValue( *this );
 }
 
+const std::string& StringValue::GetStringValue() const
+{
+    return value_;
+}
+
+//virtual
+StringValue* StringValue::Clone() const
+{
+    return new StringValue( *this );
+}
+
+
+bool operator==( const StringValue& left, const StringValue& right )
+{
+    return ( left.value_ == right.value_ );
+}
+
+bool operator!=( const StringValue& left, const StringValue& right )
+{
+    return ( left.value_ != right.value_ );
+}
 
 

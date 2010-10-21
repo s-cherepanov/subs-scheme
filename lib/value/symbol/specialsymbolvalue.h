@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "symbolvalue.h"
+#include "lib/value/symbol/symbolvalue.h"
 
 class SpecialSymbolValue : public SymbolValue
 {

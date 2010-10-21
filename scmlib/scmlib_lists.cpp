@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "scmlib_lists.h"
+#include "scmlib/scmlib_lists.h"
 
 const char** scmlib_lists()
 {

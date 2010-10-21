@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-#include "newlineprocessor.h"
+#include "lib/newlineprocessor.h"
 
 using namespace std;
 

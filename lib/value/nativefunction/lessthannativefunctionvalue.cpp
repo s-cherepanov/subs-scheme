@@ -20,17 +20,16 @@
 #include <cassert>
 #include <memory>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/decimalvalue.h"
+#include "lib/value/basic/falsevalue.h"
+#include "lib/value/basic/integervalue.h"
+#include "lib/value/basic/truevalue.h"
+#include "lib/value/nativefunction/lessthannativefunctionvalue.h"
 #include "lib/argschecker.h"
-#include "lib/combinationvalue.h"
-#include "lib/decimalvalue.h"
 #include "lib/evaluationerror.h"
-#include "lib/falsevalue.h"
-#include "lib/integervalue.h"
 #include "lib/prettyprinter.h"
-#include "lib/truevalue.h"
 #include "lib/value.h"
-
-#include "lessthannativefunctionvalue.h"
 
 using namespace std;
 

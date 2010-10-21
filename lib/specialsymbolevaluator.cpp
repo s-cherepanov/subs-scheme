@@ -23,24 +23,23 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "value/symbol/customsymbolvalue.h"
-#include "value/symbol/specialsymbolvalue.h"
-#include "value/symbol/symbolvalue.h"
-
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "compoundprocedurevalue.h"
-#include "displayevaluator.h"
-#include "environment.h"
-#include "evaluationerror.h"
-#include "evaluator.h"
-#include "falsevalue.h"
-#include "nilvalue.h"
-#include "pairvalue.h"
-#include "prettyprinter.h"
-#include "specialsymbolevaluator.h"
-#include "truevalue.h"
-#include "valueutilities.h"
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/compoundprocedurevalue.h"
+#include "lib/value/basic/falsevalue.h"
+#include "lib/value/basic/nilvalue.h"
+#include "lib/value/basic/pairvalue.h"
+#include "lib/value/basic/truevalue.h"
+#include "lib/value/symbol/customsymbolvalue.h"
+#include "lib/value/symbol/specialsymbolvalue.h"
+#include "lib/value/symbol/symbolvalue.h"
+#include "lib/argschecker.h"
+#include "lib/displayevaluator.h"
+#include "lib/environment.h"
+#include "lib/evaluationerror.h"
+#include "lib/evaluator.h"
+#include "lib/prettyprinter.h"
+#include "lib/specialsymbolevaluator.h"
+#include "lib/valueutilities.h"
 
 using namespace std;
 

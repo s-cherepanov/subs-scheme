@@ -17,28 +17,25 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef STRINGVALUE_H
-#define STRINGVALUE_H
+#ifndef COMBINATIONVALUE_H
+#define COMBINATIONVALUE_H
 
-#include <string>
+#include <vector>
 
-#include "value.h"
+#include "lib/value.h"
 
-class StringValue : public Value
+/**
+ * A class representing a combination of Values, which are held by pointer
+ * and are owned by this object.
+ */
+class CombinationValue : public Value, public std::vector<Value*>
 {
 public:
-    StringValue( const std::string& symbol );
+    CombinationValue();
+    CombinationValue( const CombinationValue& other );
+    virtual ~CombinationValue();
 
-    const std::string& GetStringValue() const;
-
-    virtual StringValue* Clone() const;
-
-    friend bool operator==( const StringValue& left, const StringValue& right );
-
-    friend bool operator!=( const StringValue& left, const StringValue& right );
-
-private:
-    std::string value_;
+    virtual CombinationValue* Clone() const;
 };
 
 #endif

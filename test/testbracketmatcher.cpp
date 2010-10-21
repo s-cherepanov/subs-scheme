@@ -19,12 +19,11 @@
 
 #include <sstream>
 
-#include "assertmacros.h"
 #include "lib/bracketmatcher.h"
 #include "lib/lexer.h"
 #include "lib/tokenlist.h"
-
-#include "testbracketmatcher.h"
+#include "test/assertmacros.h"
+#include "test/testbracketmatcher.h"
 
 using namespace std;
 

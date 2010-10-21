@@ -19,8 +19,8 @@
 
 #include <vector>
 
-#include "token.h"
-#include "tokenlist.h"
+#include "lib/token.h"
+#include "lib/tokenlist.h"
 
 void TokenList::AddToken( const Token& token )
 {

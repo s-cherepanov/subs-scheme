@@ -19,8 +19,8 @@
 
 #include <memory>
 
-#include "decimalvalue.h"
-#include "integervalue.h"
+#include "lib/value/basic/decimalvalue.h"
+#include "lib/value/basic/integervalue.h"
 
 using namespace std;
 

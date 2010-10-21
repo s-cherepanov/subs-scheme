@@ -23,20 +23,19 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "value/nativefunction/equalsnativefunctionvalue.h"
-#include "value/nativefunction/nativefunctionvalue.h"
-#include "value/symbol/symbolvalue.h"
-
-#include "builtins.h"
-#include "combinationvalue.h"
-#include "environment.h"
-#include "evaluationerror.h"
-#include "evaluator.h"
-#include "prettyprinter.h"
-#include "specialsymbolevaluator.h"
-#include "tracer.h"
-#include "compoundprocedurevalue.h"
-#include "value.h"
+#include "lib/value/basic/compoundprocedurevalue.h"
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/nativefunction/equalsnativefunctionvalue.h"
+#include "lib/value/nativefunction/nativefunctionvalue.h"
+#include "lib/value/symbol/symbolvalue.h"
+#include "lib/builtins.h"
+#include "lib/environment.h"
+#include "lib/evaluationerror.h"
+#include "lib/evaluator.h"
+#include "lib/prettyprinter.h"
+#include "lib/specialsymbolevaluator.h"
+#include "lib/tracer.h"
+#include "lib/value.h"
 
 
 using namespace std;

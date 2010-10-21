@@ -20,11 +20,10 @@
 #include <memory>
 #include <sstream>
 
-#include "assertmacros.h"
 #include "lib/lexer.h"
 #include "lib/token.h"
-
-#include "testlexer.h"
+#include "test/assertmacros.h"
+#include "test/testlexer.h"
 
 using namespace std;
 

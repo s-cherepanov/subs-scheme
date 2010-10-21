@@ -21,18 +21,17 @@
 #include <sstream>
 #include <typeinfo>
 
+#include "lib/value/basic/integervalue.h"
 #include "lib/value/symbol/customsymbolvalue.h"
+#include "lib/value/basic/pairvalue.h"
+#include "lib/value/basic/stringvalue.h"
 #include "lib/evaluator.h"
-#include "lib/integervalue.h"
 #include "lib/lexer.h"
-#include "lib/pairvalue.h"
 #include "lib/parser.h"
-#include "lib/stringvalue.h"
 #include "lib/token.h"
 #include "lib/valuefactory.h"
-
-#include "assertmacros.h"
-#include "testmemory.h"
+#include "test/assertmacros.h"
+#include "test/testmemory.h"
 
 using namespace std;
 

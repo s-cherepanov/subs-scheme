@@ -23,8 +23,8 @@
 #include <string>
 #include <vector>
 
-#include "replsessiontester.h"
-#include "subsrepl.h"
+#include "lib/replsessiontester.h"
+#include "lib/subsrepl.h"
 
 using namespace std;
 

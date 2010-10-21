@@ -25,8 +25,8 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "environment.h"
-#include "nulltracer.h"
+#include "lib/environment.h"
+#include "lib/nulltracer.h"
 
 class CombinationValue;
 class Tracer;

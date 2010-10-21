@@ -22,12 +22,12 @@
 #include <sstream>
 #include <string>
 
-#include "evaluator.h"
-#include "lexer.h"
-#include "parser.h"
-#include "prettyprinter.h"
-#include "subsinterpreter.h"
-#include "tokenlist.h"
+#include "lib/evaluator.h"
+#include "lib/lexer.h"
+#include "lib/parser.h"
+#include "lib/prettyprinter.h"
+#include "lib/subsinterpreter.h"
+#include "lib/tokenlist.h"
 #include "scmlib/scmlib.h"
 
 using namespace std;

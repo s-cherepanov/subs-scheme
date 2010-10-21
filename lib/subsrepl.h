@@ -22,7 +22,7 @@
 
 #include <iosfwd>
 
-#include "subsinterpreter.h"
+#include "lib/subsinterpreter.h"
 
 // TODO: rename this and SubInterpreter to remove "Subs"
 // TODO: move this and supporting classes into a subdir

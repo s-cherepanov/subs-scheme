@@ -20,7 +20,7 @@
 #include <sstream>
 #include <string>
 
-#include "assertionfailed.h"
+#include "test/assertionfailed.h"
 
 using namespace std;
 

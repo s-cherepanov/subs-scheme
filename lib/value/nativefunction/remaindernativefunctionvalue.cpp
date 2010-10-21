@@ -21,14 +21,13 @@
 #include <memory>
 #include <sstream>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/integervalue.h"
+#include "lib/value/nativefunction/remaindernativefunctionvalue.h"
 #include "lib/argschecker.h"
-#include "lib/combinationvalue.h"
 #include "lib/evaluationerror.h"
-#include "lib/integervalue.h"
 #include "lib/prettyprinter.h"
 #include "lib/value.h"
-
-#include "remaindernativefunctionvalue.h"
 
 using namespace std;
 

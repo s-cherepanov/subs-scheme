@@ -19,9 +19,9 @@
 
 #include <iostream>
 
-#include "bracketmatcher.h"
-#include "lexer.h"
-#include "tokenlist.h"
+#include "lib/bracketmatcher.h"
+#include "lib/lexer.h"
+#include "lib/tokenlist.h"
 
 BracketMatcher::BracketMatcher( Lexer& lexer, std::ostream& out,
     bool print_continuation )

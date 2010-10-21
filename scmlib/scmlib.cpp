@@ -19,7 +19,7 @@
 
 #include "lib/subsinterpreter.h"
 
-#include "scmlib_lists.h"
+#include "scmlib/scmlib_lists.h"
 
 using namespace std;
 

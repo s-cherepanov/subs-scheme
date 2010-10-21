@@ -20,13 +20,13 @@
 #include <iostream>
 #include <sstream>
 
-#include "bracketmatcher.h"
-#include "evaluationerror.h"
-#include "lexer.h"
-#include "prettyprinter.h"
-#include "subsinterpreter.h"
-#include "subsrepl.h"
-#include "tokenlist.h"
+#include "lib/bracketmatcher.h"
+#include "lib/evaluationerror.h"
+#include "lib/lexer.h"
+#include "lib/prettyprinter.h"
+#include "lib/subsinterpreter.h"
+#include "lib/subsrepl.h"
+#include "lib/tokenlist.h"
 
 using namespace std;
 

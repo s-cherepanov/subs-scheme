@@ -20,18 +20,17 @@
 #include <memory>
 #include <sstream>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/integervalue.h"
+#include "lib/value/basic/stringvalue.h"
 #include "lib/value/symbol/symbolvalue.h"
-#include "lib/combinationvalue.h"
-#include "lib/integervalue.h"
 #include "lib/lexer.h"
 #include "lib/parser.h"
 #include "lib/parsingerror.h"
-#include "lib/stringvalue.h"
 #include "lib/unfinishedcombinationexception.h"
 #include "lib/value.h"
-
-#include "assertmacros.h"
-#include "testparseconstants.h"
+#include "test/assertmacros.h"
+#include "test/testparseconstants.h"
 
 using namespace std;
 

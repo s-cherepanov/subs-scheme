@@ -17,12 +17,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "assertmacros.h"
-#include "lib/decimalvalue.h"
-#include "lib/integervalue.h"
+#include "lib/value/basic/decimalvalue.h"
+#include "lib/value/basic/integervalue.h"
 #include "lib/subsinterpreter.h"
-
-#include "testequal.h"
+#include "test/assertmacros.h"
+#include "test/testequal.h"
 
 using namespace std;
 

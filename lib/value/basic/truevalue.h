@@ -17,13 +17,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "nilvalue.h"
+#ifndef TRUEVALUE_H
+#define TRUEVALUE_H
 
-//virtual
-NilValue* NilValue::Clone() const
+#include "lib/value.h"
+
+class TrueValue : public Value
 {
-    return new NilValue( *this );
-}
+public:
+    virtual TrueValue* Clone() const;
+};
 
-
+#endif
 

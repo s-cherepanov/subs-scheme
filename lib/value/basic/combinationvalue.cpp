@@ -17,35 +17,32 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include <string>
+#include "lib/value/basic/combinationvalue.h"
 
-#include "stringvalue.h"
-
-StringValue::StringValue( const std::string& string )
-: value_( string )
+CombinationValue::CombinationValue()
 {
 }
 
-const std::string& StringValue::GetStringValue() const
+CombinationValue::CombinationValue( const CombinationValue& other )
 {
-    return value_;
+    for( CombinationValue::const_iterator it = other.begin();
+        it != other.end(); ++it )
+    {
+        push_back( (*it)->Clone() );
+    }
+}
+
+CombinationValue::~CombinationValue()
+{
+    for( iterator it = begin(); it != end(); ++it )
+    {
+        delete *it;
+    }
 }
 
 //virtual
-StringValue* StringValue::Clone() const
+CombinationValue* CombinationValue::Clone() const
 {
-    return new StringValue( *this );
+    return new CombinationValue( *this );
 }
-
-
-bool operator==( const StringValue& left, const StringValue& right )
-{
-    return ( left.value_ == right.value_ );
-}
-
-bool operator!=( const StringValue& left, const StringValue& right )
-{
-    return ( left.value_ != right.value_ );
-}
-
 

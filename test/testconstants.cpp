@@ -17,11 +17,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "assertmacros.h"
 #include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
-
-#include "testconstants.h"
+#include "test/assertmacros.h"
+#include "test/testconstants.h"
 
 namespace
 {

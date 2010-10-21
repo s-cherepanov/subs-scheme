@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "token.h"
+#include "lib/token.h"
 
 Token::Token( char name, Token::EType type, unsigned int column )
 : name_( 1, name )

@@ -19,11 +19,10 @@
 
 #include <string>
 
-#include "assertmacros.h"
 #include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
-
-#include "testarithmetic.h"
+#include "test/assertmacros.h"
+#include "test/testarithmetic.h"
 
 using namespace std;
 

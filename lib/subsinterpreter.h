@@ -24,7 +24,7 @@
 #include <memory>
 #include <string>
 
-#include "evaluator.h"
+#include "lib/evaluator.h"
 
 class TokenList;
 class Tracer;

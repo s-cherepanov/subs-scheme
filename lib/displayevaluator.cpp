@@ -22,13 +22,13 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "displayevaluator.h"
-#include "environment.h"
-#include "evaluator.h"
-#include "prettyprinter.h"
-#include "stringvalue.h"
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/stringvalue.h"
+#include "lib/argschecker.h"
+#include "lib/displayevaluator.h"
+#include "lib/environment.h"
+#include "lib/evaluator.h"
+#include "lib/prettyprinter.h"
 
 using namespace std;
 

@@ -21,15 +21,14 @@
 #include <sstream>
 #include <string>
 
-#include "value/symbol/customsymbolvalue.h"
-#include "value/symbol/specialsymbolvalue.h"
-
-#include "decimalvalue.h"
-#include "integervalue.h"
-#include "stringvalue.h"
-#include "token.h"
-#include "value.h"
-#include "valuefactory.h"
+#include "lib/value/symbol/customsymbolvalue.h"
+#include "lib/value/symbol/specialsymbolvalue.h"
+#include "lib/value/basic/decimalvalue.h"
+#include "lib/value/basic/integervalue.h"
+#include "lib/value/basic/stringvalue.h"
+#include "lib/value.h"
+#include "lib/token.h"
+#include "lib/valuefactory.h"
 
 using namespace std;
 

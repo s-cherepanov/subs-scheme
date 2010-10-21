@@ -24,17 +24,15 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "value/symbol/symbolvalue.h"
-
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "environment.h"
-#include "evaluationerror.h"
-#include "evaluator.h"
-#include "prettyprinter.h"
-#include "value.h"
-
-#include "compoundprocedurevalue.h"
+#include "lib/value/symbol/symbolvalue.h"
+#include "lib/argschecker.h"
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/environment.h"
+#include "lib/evaluationerror.h"
+#include "lib/evaluator.h"
+#include "lib/prettyprinter.h"
+#include "lib/value.h"
+#include "lib/value/basic/compoundprocedurevalue.h"
 
 using namespace std;
 

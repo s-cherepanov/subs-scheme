@@ -19,7 +19,7 @@
 
 #include <cassert>
 
-#include "evaldepthtracer.h"
+#include "test/evaldepthtracer.h"
 
 EvalDepthTracer::EvalDepthTracer()
 : current_depth_( 0 )

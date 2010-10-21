@@ -19,13 +19,13 @@
 
 #include <memory>
 
-#include "combinationvalue.h"
-#include "ilexer.h"
-#include "parsingerror.h"
-#include "parser.h"
-#include "token.h"
-#include "unfinishedcombinationexception.h"
-#include "valuefactory.h"
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/ilexer.h"
+#include "lib/parsingerror.h"
+#include "lib/parser.h"
+#include "lib/token.h"
+#include "lib/unfinishedcombinationexception.h"
+#include "lib/valuefactory.h"
 
 using namespace std;
 

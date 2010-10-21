@@ -17,12 +17,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "falsevalue.h"
+#include "lib/value/basic/nilvalue.h"
 
 //virtual
-FalseValue* FalseValue::Clone() const
+NilValue* NilValue::Clone() const
 {
-    return new FalseValue( *this );
+    return new NilValue( *this );
 }
 
 

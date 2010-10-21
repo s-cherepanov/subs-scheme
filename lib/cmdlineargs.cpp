@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-#include "cmdlineargs.h"
+#include "lib/cmdlineargs.h"
 
 CmdLineArgs::CmdLineArgs( int argc, char * const argv[] )
 : session_test_( false )

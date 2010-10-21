@@ -17,15 +17,28 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef NILVALUE_H
-#define NILVALUE_H
+#ifndef STRINGVALUE_H
+#define STRINGVALUE_H
 
-#include "value.h"
+#include <string>
 
-class NilValue : public Value
+#include "lib/value.h"
+
+class StringValue : public Value
 {
 public:
-    virtual NilValue* Clone() const;
+    StringValue( const std::string& symbol );
+
+    const std::string& GetStringValue() const;
+
+    virtual StringValue* Clone() const;
+
+    friend bool operator==( const StringValue& left, const StringValue& right );
+
+    friend bool operator!=( const StringValue& left, const StringValue& right );
+
+private:
+    std::string value_;
 };
 
 #endif

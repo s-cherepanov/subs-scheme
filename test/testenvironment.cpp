@@ -17,11 +17,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "assertmacros.h"
+#include "lib/value/basic/integervalue.h"
 #include "lib/environment.h"
-#include "lib/integervalue.h"
-
-#include "testenvironment.h"
+#include "test/assertmacros.h"
+#include "test/testenvironment.h"
 
 using namespace std;
 

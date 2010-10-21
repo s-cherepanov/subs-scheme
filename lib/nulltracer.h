@@ -20,7 +20,7 @@
 #ifndef NULLTRACER_H
 #define NULLTRACER_H
 
-#include "tracer.h"
+#include "lib/tracer.h"
 
 class NullTracer : public Tracer
 {

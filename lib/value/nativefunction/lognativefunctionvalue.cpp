@@ -23,15 +23,14 @@
 #include <sstream>
 #include <string>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/decimalvalue.h"
+#include "lib/value/basic/integervalue.h"
+#include "lib/value/nativefunction/lognativefunctionvalue.h"
 #include "lib/argschecker.h"
-#include "lib/combinationvalue.h"
-#include "lib/decimalvalue.h"
 #include "lib/evaluationerror.h"
-#include "lib/integervalue.h"
 #include "lib/prettyprinter.h"
 #include "lib/value.h"
-
-#include "lognativefunctionvalue.h"
 
 using namespace std;
 

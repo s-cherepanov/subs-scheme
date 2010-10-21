@@ -20,7 +20,7 @@
 #include <memory>
 #include <string>
 
-#include "zeronativefunctionvalue.h"
+#include "lib/value/nativefunction/zeronativefunctionvalue.h"
 
 using namespace std;
 

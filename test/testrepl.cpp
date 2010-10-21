@@ -19,10 +19,9 @@
 
 #include <sstream>
 
-#include "assertmacros.h"
 #include "lib/subsrepl.h"
-
-#include "testrepl.h"
+#include "test/assertmacros.h"
+#include "test/testrepl.h"
 
 using namespace std;
 

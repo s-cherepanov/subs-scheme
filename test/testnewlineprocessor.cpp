@@ -20,10 +20,9 @@
 #include <memory>
 #include <sstream>
 
-#include "assertmacros.h"
 #include "lib/newlineprocessor.h"
-
-#include "testnewlineprocessor.h"
+#include "test/assertmacros.h"
+#include "test/testnewlineprocessor.h"
 
 using namespace std;
 

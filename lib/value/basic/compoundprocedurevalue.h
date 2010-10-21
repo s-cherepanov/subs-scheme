@@ -25,7 +25,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 
-#include "value.h"
+#include "lib/value.h"
 
 class CombinationValue;
 class Environment;

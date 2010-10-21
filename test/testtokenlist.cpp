@@ -17,10 +17,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "assertmacros.h"
 #include "lib/tokenlist.h"
-
-#include "testtokenlist.h"
+#include "test/assertmacros.h"
+#include "test/testtokenlist.h"
 
 using namespace std;
 

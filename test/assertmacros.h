@@ -24,9 +24,9 @@
 #include <string>
 #include <typeinfo>
 
-#include "assertionfailed.h"
 #include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
+#include "test/assertionfailed.h"
 
 #define RUN_TEST(TESTNAME) \
     { \

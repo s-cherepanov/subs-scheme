@@ -20,16 +20,15 @@
 #include <memory>
 #include <sstream>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/falsevalue.h"
+#include "lib/value/basic/truevalue.h"
+#include "lib/value/nativefunction/notnativefunctionvalue.h"
 #include "lib/argschecker.h"
-#include "lib/combinationvalue.h"
 #include "lib/evaluationerror.h"
-#include "lib/falsevalue.h"
 #include "lib/prettyprinter.h"
-#include "lib/truevalue.h"
 #include "lib/value.h"
 #include "lib/valueutilities.h"
-
-#include "notnativefunctionvalue.h"
 
 using namespace std;
 

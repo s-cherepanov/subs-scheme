@@ -19,15 +19,14 @@
 
 #include <memory>
 
-#include "assertmacros.h"
-#include "lib/combinationvalue.h"
-#include "lib/integervalue.h"
-#include "lib/nilvalue.h"
-#include "lib/pairvalue.h"
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/integervalue.h"
+#include "lib/value/basic/nilvalue.h"
+#include "lib/value/basic/pairvalue.h"
+#include "lib/value/basic/stringvalue.h"
 #include "lib/prettyprinter.h"
-#include "lib/stringvalue.h"
-
-#include "testprettyprintconstants.h"
+#include "test/assertmacros.h"
+#include "test/testprettyprintconstants.h"
 
 using namespace std;
 

@@ -1,9 +1,9 @@
 
 #include <sstream>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "evaluationerror.h"
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/argschecker.h"
+#include "lib/evaluationerror.h"
 
 using namespace std;
 

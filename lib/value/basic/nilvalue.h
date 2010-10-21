@@ -17,25 +17,15 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef COMBINATIONVALUE_H
-#define COMBINATIONVALUE_H
+#ifndef NILVALUE_H
+#define NILVALUE_H
 
-#include <vector>
+#include "lib/value.h"
 
-#include "value.h"
-
-/**
- * A class representing a combination of Values, which are held by pointer
- * and are owned by this object.
- */
-class CombinationValue : public Value, public std::vector<Value*>
+class NilValue : public Value
 {
 public:
-    CombinationValue();
-    CombinationValue( const CombinationValue& other );
-    virtual ~CombinationValue();
-
-    virtual CombinationValue* Clone() const;
+    virtual NilValue* Clone() const;
 };
 
 #endif

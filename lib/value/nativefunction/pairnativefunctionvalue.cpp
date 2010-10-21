@@ -20,11 +20,10 @@
 #include <memory>
 #include <string>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/pairvalue.h"
+#include "lib/value/nativefunction/pairnativefunctionvalue.h"
 #include "lib/argschecker.h"
-#include "lib/combinationvalue.h"
-#include "lib/pairvalue.h"
-
-#include "pairnativefunctionvalue.h"
 
 using namespace std;
 

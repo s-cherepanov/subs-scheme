@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "customsymbolvalue.h"
+#include "lib/value/symbol/customsymbolvalue.h"
 
 CustomSymbolValue::CustomSymbolValue( const std::string& symbol )
 : symbol_( symbol )

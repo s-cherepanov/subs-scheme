@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#include "ilexer.h"
+#include "lib/ilexer.h"
 
 class NewLineProcessor;
 struct Token;

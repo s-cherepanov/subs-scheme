@@ -22,8 +22,8 @@
 
 #include <queue>
 
-#include "ilexer.h"
-#include "token.h"
+#include "lib/ilexer.h"
+#include "lib/token.h"
 
 class TokenList : public ILexer
 {

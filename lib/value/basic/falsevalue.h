@@ -17,32 +17,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include "combinationvalue.h"
+#ifndef FALSEVALUE_H
+#define FALSEVALUE_H
 
-CombinationValue::CombinationValue()
-{
-}
+#include "lib/value.h"
 
-CombinationValue::CombinationValue( const CombinationValue& other )
+class FalseValue : public Value
 {
-    for( CombinationValue::const_iterator it = other.begin();
-        it != other.end(); ++it )
-    {
-        push_back( (*it)->Clone() );
-    }
-}
+public:
+    virtual FalseValue* Clone() const;
+};
 
-CombinationValue::~CombinationValue()
-{
-    for( iterator it = begin(); it != end(); ++it )
-    {
-        delete *it;
-    }
-}
-
-//virtual
-CombinationValue* CombinationValue::Clone() const
-{
-    return new CombinationValue( *this );
-}
+#endif
 

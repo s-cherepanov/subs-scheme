@@ -21,21 +21,19 @@
 #include <string>
 #include <typeinfo>
 
-#include "value/nativefunction/nativefunctionvalue.h"
-#include "value/symbol/symbolvalue.h"
-
-#include "combinationvalue.h"
-#include "decimalvalue.h"
-#include "falsevalue.h"
-#include "integervalue.h"
-#include "nilvalue.h"
-#include "pairvalue.h"
-#include "stringvalue.h"
-#include "truevalue.h"
-#include "compoundprocedurevalue.h"
-#include "value.h"
-
-#include "prettyprinter.h"
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/decimalvalue.h"
+#include "lib/value/basic/falsevalue.h"
+#include "lib/value/basic/integervalue.h"
+#include "lib/value/basic/nilvalue.h"
+#include "lib/value/basic/pairvalue.h"
+#include "lib/value/basic/stringvalue.h"
+#include "lib/value/basic/truevalue.h"
+#include "lib/value/basic/compoundprocedurevalue.h"
+#include "lib/value/nativefunction/nativefunctionvalue.h"
+#include "lib/value/symbol/symbolvalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/value.h"
 
 using namespace std;
 

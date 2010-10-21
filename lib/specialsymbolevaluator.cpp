@@ -857,10 +857,8 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
         return eNoSpecialSymbol;
     }
 
-    const SymbolValue& symref = *sym;
-
     // If it's defined in the current environment, get out of here...
-    if( environment->FindSymbol( symref.GetStringValue() ) )
+    if( environment->FindSymbol( sym->GetStringValue() ) )
     {
         return eNoSpecialSymbol;
     }

@@ -23,14 +23,15 @@
 #include <string>
 #include <typeinfo>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "decimalvalue.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/decimalvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/stringvalue.h"
+
 #include "equalnativefunctionvalue.h"
-#include "evaluationerror.h"
-#include "integervalue.h"
-#include "prettyprinter.h"
-#include "stringvalue.h"
 
 using namespace std;
 

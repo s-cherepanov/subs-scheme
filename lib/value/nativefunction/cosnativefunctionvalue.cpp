@@ -23,23 +23,23 @@
 #include <sstream>
 #include <string>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "decimalvalue.h"
-#include "evaluationerror.h"
-#include "integervalue.h"
-#include "prettyprinter.h"
-#include "value.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/decimalvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/value.h"
 
-#include "tannativefunctionvalue.h"
+#include "cosnativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> TanNativeFunctionValue::Run(
+std::auto_ptr<Value> CosNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    ArgsChecker::CheckExactNumberOfArgs( "tan", argvalues, 1 );
+    ArgsChecker::CheckExactNumberOfArgs( "cos", argvalues, 1 );
 
     CombinationValue::const_iterator it = argvalues->begin();
     assert( it != argvalues->end() );
@@ -56,36 +56,36 @@ std::auto_ptr<Value> TanNativeFunctionValue::Run(
             *it );
         if( !operand_int )
         {
-            throw EvaluationError( "Invalid argument for tan: '"
+            throw EvaluationError( "Invalid argument for cos: '"
                     + PrettyPrinter::Print( *it )
                     + "' is not an integer or a decimal." );
         }
         value = operand_int->GetIntValue();
     }
 
-    value = tan( value );
+    value = cos( value );
 
     return auto_ptr<Value>( new DecimalValue( value ) );
 }
 
 
 //virtual
-TanNativeFunctionValue* TanNativeFunctionValue::Clone() const
+CosNativeFunctionValue* CosNativeFunctionValue::Clone() const
 {
-    return new TanNativeFunctionValue( *this );
+    return new CosNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string TanNativeFunctionValue::GetName() const
+std::string CosNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& TanNativeFunctionValue::StaticName()
+const std::string& CosNativeFunctionValue::StaticName()
 {
-    static const string static_name( "tan" );
+    static const string static_name( "cos" );
     return static_name;
 }
 

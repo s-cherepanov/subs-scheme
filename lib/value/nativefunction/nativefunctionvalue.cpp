@@ -19,15 +19,16 @@
 
 #include <cassert>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "decimalvalue.h"
-#include "evaluationerror.h"
-#include "falsevalue.h"
-#include "integervalue.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/decimalvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/falsevalue.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/truevalue.h"
+
 #include "nativefunctionvalue.h"
-#include "prettyprinter.h"
-#include "truevalue.h"
 
 //protected
 double NativeFunctionValue::GetDoubleArg( const CombinationValue* argvalues )

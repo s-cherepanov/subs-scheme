@@ -20,29 +20,29 @@
 #include <cassert>
 #include <memory>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "decimalvalue.h"
-#include "evaluationerror.h"
-#include "falsevalue.h"
-#include "integervalue.h"
-#include "prettyprinter.h"
-#include "truevalue.h"
-#include "value.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/decimalvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/falsevalue.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/truevalue.h"
+#include "lib/value.h"
 
-#include "greaterthannativefunctionvalue.h"
+#include "lessthannativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
+std::auto_ptr<Value> LessThanNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
     CombinationValue::const_iterator it = argvalues->begin();
 
     if( it == argvalues->end() )
     {
-        ArgsChecker::ThrowNotEnoughArgsException( ">", argvalues->size(), 2 );
+        ArgsChecker::ThrowNotEnoughArgsException( "<", argvalues->size(), 2 );
     }
 
     const IntegerValue* previous_int = dynamic_cast<const IntegerValue*>( *it );
@@ -53,7 +53,7 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
         previous_dec = dynamic_cast<const DecimalValue*>( *it );
         if( !previous_dec )
         {
-            throw EvaluationError( "Wrong operand type for >: a number was "
+            throw EvaluationError( "Wrong operand type for <: a number was "
                 "expected, but '" + PrettyPrinter::Print( *it )
                 + "' is not a number." );
         }
@@ -63,7 +63,7 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
 
     if( it == argvalues->end() )
     {
-        ArgsChecker::ThrowNotEnoughArgsException( ">", argvalues->size(), 2 );
+        ArgsChecker::ThrowNotEnoughArgsException( "<", argvalues->size(), 2 );
     }
 
     for( ; it != argvalues->end(); ++it )
@@ -76,20 +76,17 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
             operand_dec = dynamic_cast<const DecimalValue*>( *it );
             if( !operand_dec )
             {
-                // TODO: consistent error messages for all builtins
-                throw EvaluationError( "Wrong operand type for >: a number "
+                throw EvaluationError( "Wrong operand type for <: a number "
                     "was expected, but '" + PrettyPrinter::Print( *it )
                     + "' is not a number." );
             }
         }
 
-        // TODO: better implementation?
-        // TODO: combine implementation with <
         if( previous_int )
         {
             if( operand_int )
             {
-                if( *previous_int <= *operand_int )
+                if( *previous_int >= *operand_int )
                 {
                     return auto_ptr<Value>( new FalseValue );
                 }
@@ -98,7 +95,7 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
             }
             else
             {
-                if( *previous_int <= *operand_dec )
+                if( *previous_int >= *operand_dec )
                 {
                     return auto_ptr<Value>( new FalseValue );
                 }
@@ -110,7 +107,7 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
         {
             if( operand_int )
             {
-                if( *previous_dec <= *operand_int )
+                if( *previous_dec >= *operand_int )
                 {
                     return auto_ptr<Value>( new FalseValue );
                 }
@@ -119,7 +116,7 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
             }
             else
             {
-                if( *previous_dec <= *operand_dec )
+                if( *previous_dec >= *operand_dec )
                 {
                     return auto_ptr<Value>( new FalseValue );
                 }
@@ -134,22 +131,22 @@ std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
 
 
 //virtual
-GreaterThanNativeFunctionValue* GreaterThanNativeFunctionValue::Clone() const
+LessThanNativeFunctionValue* LessThanNativeFunctionValue::Clone() const
 {
-    return new GreaterThanNativeFunctionValue( *this );
+    return new LessThanNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string GreaterThanNativeFunctionValue::GetName() const
+std::string LessThanNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& GreaterThanNativeFunctionValue::StaticName()
+const std::string& LessThanNativeFunctionValue::StaticName()
 {
-    static const string static_name( ">" );
+    static const string static_name( "<" );
     return static_name;
 }
 

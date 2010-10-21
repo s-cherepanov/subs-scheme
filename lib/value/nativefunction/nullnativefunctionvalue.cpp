@@ -20,41 +20,42 @@
 #include <memory>
 #include <string>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "pairnativefunctionvalue.h"
-#include "pairvalue.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/nilvalue.h"
+
+#include "nullnativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> PairNativeFunctionValue::Run(
+std::auto_ptr<Value> NullNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
     ArgsChecker::CheckExactNumberOfArgs( GetName().c_str(), argvalues, 1 );
 
     const Value* value = *( argvalues->begin() );
-    return CreateBooleanValue( dynamic_cast<const PairValue*>( value ) );
+    return CreateBooleanValue( dynamic_cast<const NilValue*>( value ) );
 }
 
 
 //virtual
-PairNativeFunctionValue* PairNativeFunctionValue::Clone() const
+NullNativeFunctionValue* NullNativeFunctionValue::Clone() const
 {
-    return new PairNativeFunctionValue( *this );
+    return new NullNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string PairNativeFunctionValue::GetName() const
+std::string NullNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& PairNativeFunctionValue::StaticName()
+const std::string& NullNativeFunctionValue::StaticName()
 {
-    static const string static_name( "pair?" );
+    static const string static_name( "null?" );
     return static_name;
 }
 

@@ -23,23 +23,23 @@
 #include <sstream>
 #include <string>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "decimalvalue.h"
-#include "evaluationerror.h"
-#include "integervalue.h"
-#include "prettyprinter.h"
-#include "value.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/decimalvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/value.h"
 
-#include "sinnativefunctionvalue.h"
+#include "tannativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> SinNativeFunctionValue::Run(
+std::auto_ptr<Value> TanNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    ArgsChecker::CheckExactNumberOfArgs( "sin", argvalues, 1 );
+    ArgsChecker::CheckExactNumberOfArgs( "tan", argvalues, 1 );
 
     CombinationValue::const_iterator it = argvalues->begin();
     assert( it != argvalues->end() );
@@ -56,36 +56,36 @@ std::auto_ptr<Value> SinNativeFunctionValue::Run(
             *it );
         if( !operand_int )
         {
-            throw EvaluationError( "Invalid argument for sin: '"
+            throw EvaluationError( "Invalid argument for tan: '"
                     + PrettyPrinter::Print( *it )
                     + "' is not an integer or a decimal." );
         }
         value = operand_int->GetIntValue();
     }
 
-    value = sin( value );
+    value = tan( value );
 
     return auto_ptr<Value>( new DecimalValue( value ) );
 }
 
 
 //virtual
-SinNativeFunctionValue* SinNativeFunctionValue::Clone() const
+TanNativeFunctionValue* TanNativeFunctionValue::Clone() const
 {
-    return new SinNativeFunctionValue( *this );
+    return new TanNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string SinNativeFunctionValue::GetName() const
+std::string TanNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& SinNativeFunctionValue::StaticName()
+const std::string& TanNativeFunctionValue::StaticName()
 {
-    static const string static_name( "sin" );
+    static const string static_name( "tan" );
     return static_name;
 }
 

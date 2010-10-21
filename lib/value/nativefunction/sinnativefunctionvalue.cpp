@@ -23,23 +23,23 @@
 #include <sstream>
 #include <string>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "decimalvalue.h"
-#include "evaluationerror.h"
-#include "integervalue.h"
-#include "prettyprinter.h"
-#include "value.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/decimalvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/value.h"
 
-#include "cosnativefunctionvalue.h"
+#include "sinnativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> CosNativeFunctionValue::Run(
+std::auto_ptr<Value> SinNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    ArgsChecker::CheckExactNumberOfArgs( "cos", argvalues, 1 );
+    ArgsChecker::CheckExactNumberOfArgs( "sin", argvalues, 1 );
 
     CombinationValue::const_iterator it = argvalues->begin();
     assert( it != argvalues->end() );
@@ -56,36 +56,36 @@ std::auto_ptr<Value> CosNativeFunctionValue::Run(
             *it );
         if( !operand_int )
         {
-            throw EvaluationError( "Invalid argument for cos: '"
+            throw EvaluationError( "Invalid argument for sin: '"
                     + PrettyPrinter::Print( *it )
                     + "' is not an integer or a decimal." );
         }
         value = operand_int->GetIntValue();
     }
 
-    value = cos( value );
+    value = sin( value );
 
     return auto_ptr<Value>( new DecimalValue( value ) );
 }
 
 
 //virtual
-CosNativeFunctionValue* CosNativeFunctionValue::Clone() const
+SinNativeFunctionValue* SinNativeFunctionValue::Clone() const
 {
-    return new CosNativeFunctionValue( *this );
+    return new SinNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string CosNativeFunctionValue::GetName() const
+std::string SinNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& CosNativeFunctionValue::StaticName()
+const std::string& SinNativeFunctionValue::StaticName()
 {
-    static const string static_name( "cos" );
+    static const string static_name( "sin" );
     return static_name;
 }
 

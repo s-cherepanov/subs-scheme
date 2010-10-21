@@ -21,11 +21,12 @@
 #include <string>
 #include <typeinfo>
 
+#include "value/nativefunction/nativefunctionvalue.h"
+
 #include "combinationvalue.h"
 #include "decimalvalue.h"
 #include "falsevalue.h"
 #include "integervalue.h"
-#include "nativefunctionvalue.h"
 #include "nilvalue.h"
 #include "pairvalue.h"
 #include "stringvalue.h"

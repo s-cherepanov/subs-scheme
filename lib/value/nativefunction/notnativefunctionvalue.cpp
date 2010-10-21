@@ -18,43 +18,57 @@
 **/
 
 #include <memory>
-#include <string>
+#include <sstream>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "nilvalue.h"
-#include "nullnativefunctionvalue.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/falsevalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/truevalue.h"
+#include "lib/value.h"
+#include "lib/valueutilities.h"
+
+#include "notnativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> NullNativeFunctionValue::Run(
+std::auto_ptr<Value> NotNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    ArgsChecker::CheckExactNumberOfArgs( GetName().c_str(), argvalues, 1 );
+    ArgsChecker::CheckExactNumberOfArgs( "not", argvalues, 1 );
 
-    const Value* value = *( argvalues->begin() );
-    return CreateBooleanValue( dynamic_cast<const NilValue*>( value ) );
+    CombinationValue::const_iterator it = argvalues->begin();
+
+    if( ValueUtilities::IsFalse( *it ) )
+    {
+        return auto_ptr<Value>( new TrueValue );
+    }
+    else
+    {
+        return auto_ptr<Value>( new FalseValue );
+    }
 }
 
 
 //virtual
-NullNativeFunctionValue* NullNativeFunctionValue::Clone() const
+NotNativeFunctionValue* NotNativeFunctionValue::Clone() const
 {
-    return new NullNativeFunctionValue( *this );
+    return new NotNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string NullNativeFunctionValue::GetName() const
+std::string NotNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& NullNativeFunctionValue::StaticName()
+const std::string& NotNativeFunctionValue::StaticName()
 {
-    static const string static_name( "null?" );
+    static const string static_name( "not" );
     return static_name;
 }
 

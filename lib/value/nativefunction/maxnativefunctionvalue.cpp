@@ -20,15 +20,15 @@
 #include <cassert>
 #include <memory>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "decimalvalue.h"
-#include "evaluationerror.h"
-#include "integervalue.h"
-#include "prettyprinter.h"
-#include "value.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/decimalvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/value.h"
 
-#include "minusnativefunctionvalue.h"
+#include "maxnativefunctionvalue.h"
 
 using namespace std;
 
@@ -43,20 +43,26 @@ void run_decimal( auto_ptr<DecimalValue>& result,
         const DecimalValue* decop = dynamic_cast<DecimalValue*>( *it );
         if( decop )
         {
-            *result -= *decop;
+            if( *decop > *result )
+            {
+                *result = *decop;
+            }
         }
         else
         {
             const IntegerValue* intop = dynamic_cast<IntegerValue*>( *it );
+
             if( !intop )
             {
-                throw EvaluationError( "Invalid argument for -: '"
+                // TODO: remove need for PrettyPrinter scattered everywhere
+                throw EvaluationError( "Invalid argument for max: '"
                     + PrettyPrinter::Print( *it )
                     + "' is not an integer or a decimal." );
             }
-            else
+
+            if( *intop > *result )
             {
-                *result -= *intop;
+                *result = *intop;
             }
         }
     }
@@ -65,16 +71,17 @@ void run_decimal( auto_ptr<DecimalValue>& result,
 std::auto_ptr<Value> run_decimal_from_start(
     CombinationValue::const_iterator it, const CombinationValue* argvalues )
 {
-    const DecimalValue* decres = dynamic_cast<const DecimalValue*>( *it );
+    const DecimalValue* decop = dynamic_cast<DecimalValue*>( *it );
 
-    if( !decres )
+    if( !decop )
     {
-        throw EvaluationError( "Invalid argument for -: '"
+        throw EvaluationError( "Invalid argument for max: '"
             + PrettyPrinter::Print( *it )
             + "' is not an integer or a decimal." );
     }
 
-    auto_ptr<DecimalValue> result( new DecimalValue( *decres ) );
+    std::auto_ptr<DecimalValue> result( decop->Clone() );
+
     ++it;
 
     run_decimal( result, it, argvalues );
@@ -85,7 +92,7 @@ std::auto_ptr<Value> run_decimal_from_start(
 std::auto_ptr<Value> run_decimal_from_int( const IntegerValue* intres,
     CombinationValue::const_iterator it, const CombinationValue* argvalues )
 {
-    auto_ptr<DecimalValue> result( new DecimalValue( *intres ) );
+    std::auto_ptr<DecimalValue> result( new DecimalValue( *intres ) );
 
     run_decimal( result, it, argvalues );
 
@@ -95,45 +102,44 @@ std::auto_ptr<Value> run_decimal_from_int( const IntegerValue* intres,
 }
 
 //virtual
-std::auto_ptr<Value> MinusNativeFunctionValue::Run(
+std::auto_ptr<Value> MaxNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
     CombinationValue::const_iterator it = argvalues->begin();
 
     if( it == argvalues->end() )
     {
-        ArgsChecker::ThrowNotEnoughArgsException( "-", argvalues->size(), 1 );
+        ArgsChecker::ThrowNotEnoughArgsException( "max", argvalues->size(), 1 );
     }
 
-    int initial_value = 0;
+    const IntegerValue* operand = dynamic_cast<const IntegerValue*>( *it );
 
-    if( argvalues->size() > 1 )
+    if( !operand )
     {
-        const IntegerValue* operand = dynamic_cast<IntegerValue*>( *it );
-        if( !operand )
-        {
-            // Switch into decimal mode and return immediately
-            return run_decimal_from_start( it, argvalues );
-        }
-
-        initial_value = operand->GetIntValue();
-
-        ++it;
-        assert( it != argvalues->end() ); // We have just checked there are more
+        return run_decimal_from_start( it, argvalues );
     }
 
-    auto_ptr<IntegerValue> result( new IntegerValue( initial_value ) );
+    // We start with the first operand as the maximum
+    auto_ptr<IntegerValue> result( operand->Clone() );
 
-    for( ; it != argvalues->end(); ++it )
+    // Then for each other operand, check whether it's smaller
+    ++it;
+
+    for( ; it < argvalues->end(); ++it )
     {
-        const IntegerValue* operand = dynamic_cast<IntegerValue*>( *it );
+        operand = dynamic_cast<const IntegerValue*>( *it );
+
         if( !operand )
         {
-            // Switch into decimal mode and return immediately
+            // As soon as we find a non-integer, continue the calculation
+            // using decimals and return immediately
             return run_decimal_from_int( result.get(), it, argvalues );
         }
 
-        *result -= *operand;
+        if( *operand > *result )
+        {
+            *result = *operand;
+        }
     }
 
     return auto_ptr<Value>( result.release() );
@@ -141,22 +147,22 @@ std::auto_ptr<Value> MinusNativeFunctionValue::Run(
 
 
 //virtual
-MinusNativeFunctionValue* MinusNativeFunctionValue::Clone() const
+MaxNativeFunctionValue* MaxNativeFunctionValue::Clone() const
 {
-    return new MinusNativeFunctionValue( *this );
+    return new MaxNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string MinusNativeFunctionValue::GetName() const
+std::string MaxNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& MinusNativeFunctionValue::StaticName()
+const std::string& MaxNativeFunctionValue::StaticName()
 {
-    static const string static_name( "-" );
+    static const string static_name( "max" );
     return static_name;
 }
 

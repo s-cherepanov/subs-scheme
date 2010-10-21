@@ -20,14 +20,14 @@
 #include <cassert>
 #include <memory>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "evaluationerror.h"
-#include "falsevalue.h"
-#include "integervalue.h"
-#include "prettyprinter.h"
-#include "truevalue.h"
-#include "value.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/falsevalue.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/truevalue.h"
+#include "lib/value.h"
 
 #include "equalsnativefunctionvalue.h"
 

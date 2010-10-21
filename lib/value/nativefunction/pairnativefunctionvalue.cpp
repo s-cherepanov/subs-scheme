@@ -18,56 +18,44 @@
 **/
 
 #include <memory>
-#include <sstream>
+#include <string>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "evaluationerror.h"
-#include "falsevalue.h"
-#include "notnativefunctionvalue.h"
-#include "prettyprinter.h"
-#include "truevalue.h"
-#include "value.h"
-#include "valueutilities.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/pairvalue.h"
+
+#include "pairnativefunctionvalue.h"
 
 using namespace std;
 
 //virtual
-std::auto_ptr<Value> NotNativeFunctionValue::Run(
+std::auto_ptr<Value> PairNativeFunctionValue::Run(
     const CombinationValue* argvalues ) const
 {
-    ArgsChecker::CheckExactNumberOfArgs( "not", argvalues, 1 );
+    ArgsChecker::CheckExactNumberOfArgs( GetName().c_str(), argvalues, 1 );
 
-    CombinationValue::const_iterator it = argvalues->begin();
-
-    if( ValueUtilities::IsFalse( *it ) )
-    {
-        return auto_ptr<Value>( new TrueValue );
-    }
-    else
-    {
-        return auto_ptr<Value>( new FalseValue );
-    }
+    const Value* value = *( argvalues->begin() );
+    return CreateBooleanValue( dynamic_cast<const PairValue*>( value ) );
 }
 
 
 //virtual
-NotNativeFunctionValue* NotNativeFunctionValue::Clone() const
+PairNativeFunctionValue* PairNativeFunctionValue::Clone() const
 {
-    return new NotNativeFunctionValue( *this );
+    return new PairNativeFunctionValue( *this );
 }
 
 
 //virtual
-std::string NotNativeFunctionValue::GetName() const
+std::string PairNativeFunctionValue::GetName() const
 {
     return StaticName();
 }
 
 //static
-const std::string& NotNativeFunctionValue::StaticName()
+const std::string& PairNativeFunctionValue::StaticName()
 {
-    static const string static_name( "not" );
+    static const string static_name( "pair?" );
     return static_name;
 }
 

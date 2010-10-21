@@ -21,12 +21,12 @@
 #include <memory>
 #include <sstream>
 
-#include "argschecker.h"
-#include "combinationvalue.h"
-#include "evaluationerror.h"
-#include "integervalue.h"
-#include "prettyprinter.h"
-#include "value.h"
+#include "lib/argschecker.h"
+#include "lib/combinationvalue.h"
+#include "lib/evaluationerror.h"
+#include "lib/integervalue.h"
+#include "lib/prettyprinter.h"
+#include "lib/value.h"
 
 #include "remaindernativefunctionvalue.h"
 

@@ -22,6 +22,7 @@
 #include <typeinfo>
 
 #include "value/nativefunction/nativefunctionvalue.h"
+#include "value/symbol/symbolvalue.h"
 
 #include "combinationvalue.h"
 #include "decimalvalue.h"
@@ -30,7 +31,6 @@
 #include "nilvalue.h"
 #include "pairvalue.h"
 #include "stringvalue.h"
-#include "symbolvalue.h"
 #include "truevalue.h"
 #include "compoundprocedurevalue.h"
 #include "value.h"

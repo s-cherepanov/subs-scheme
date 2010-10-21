@@ -25,6 +25,7 @@
 
 #include "value/nativefunction/equalsnativefunctionvalue.h"
 #include "value/nativefunction/nativefunctionvalue.h"
+#include "value/symbol/symbolvalue.h"
 
 #include "builtins.h"
 #include "combinationvalue.h"
@@ -33,7 +34,6 @@
 #include "evaluator.h"
 #include "prettyprinter.h"
 #include "specialsymbolevaluator.h"
-#include "symbolvalue.h"
 #include "tracer.h"
 #include "compoundprocedurevalue.h"
 #include "value.h"

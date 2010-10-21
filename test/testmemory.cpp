@@ -21,8 +21,7 @@
 #include <sstream>
 #include <typeinfo>
 
-#include "assertmacros.h"
-#include "lib/customsymbolvalue.h"
+#include "lib/value/symbol/customsymbolvalue.h"
 #include "lib/evaluator.h"
 #include "lib/integervalue.h"
 #include "lib/lexer.h"
@@ -32,6 +31,7 @@
 #include "lib/token.h"
 #include "lib/valuefactory.h"
 
+#include "assertmacros.h"
 #include "testmemory.h"
 
 using namespace std;

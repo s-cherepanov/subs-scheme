@@ -21,10 +21,11 @@
 #include <sstream>
 #include <string>
 
-#include "customsymbolvalue.h"
+#include "value/symbol/customsymbolvalue.h"
+#include "value/symbol/specialsymbolvalue.h"
+
 #include "decimalvalue.h"
 #include "integervalue.h"
-#include "specialsymbolvalue.h"
 #include "stringvalue.h"
 #include "token.h"
 #include "value.h"

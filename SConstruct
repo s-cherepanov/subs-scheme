@@ -32,6 +32,7 @@ env.Program(
 	+ Glob( "test/*.cpp")
 	+ Glob( "lib/*.cpp")
 	+ Glob( "lib/value/nativefunction/*.cpp")
+	+ Glob( "lib/value/symbol/*.cpp")
 	+ Glob( "scmlib/*.cpp")
 	)
 
@@ -39,6 +40,7 @@ env.Program(
 	["subs.cpp"]
 	+ Glob( "lib/*.cpp")
 	+ Glob( "lib/value/nativefunction/*.cpp")
+	+ Glob( "lib/value/symbol/*.cpp")
 	+ Glob( "scmlib/*.cpp")
 	)
 

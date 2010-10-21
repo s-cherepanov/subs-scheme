@@ -23,10 +23,13 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "value/symbol/customsymbolvalue.h"
+#include "value/symbol/specialsymbolvalue.h"
+#include "value/symbol/symbolvalue.h"
+
 #include "argschecker.h"
 #include "combinationvalue.h"
 #include "compoundprocedurevalue.h"
-#include "customsymbolvalue.h"
 #include "displayevaluator.h"
 #include "environment.h"
 #include "evaluationerror.h"
@@ -35,9 +38,7 @@
 #include "nilvalue.h"
 #include "pairvalue.h"
 #include "prettyprinter.h"
-#include "symbolvalue.h"
 #include "specialsymbolevaluator.h"
-#include "specialsymbolvalue.h"
 #include "truevalue.h"
 #include "valueutilities.h"
 

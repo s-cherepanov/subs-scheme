@@ -24,10 +24,10 @@
 #include "customsymbolvalue.h"
 #include "decimalvalue.h"
 #include "integervalue.h"
+#include "specialsymbolvalue.h"
 #include "stringvalue.h"
 #include "token.h"
 #include "value.h"
-
 #include "valuefactory.h"
 
 using namespace std;
@@ -129,7 +129,17 @@ std::auto_ptr<Value> CreateValue( const Token& token )
         }
         default:
         {
-            return auto_ptr<Value>( new CustomSymbolValue( token_name ) );
+            SpecialSymbolValue::SymbolType symtype =
+                SpecialSymbolValue::String2SymbolType( token_name );
+
+            if( symtype == SpecialSymbolValue::t_CUSTOM )
+            {
+                return auto_ptr<Value>( new CustomSymbolValue( token_name ) );
+            }
+            else
+            {
+                return auto_ptr<Value>( new SpecialSymbolValue( symtype ) );
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ namespace
 {
 
 std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
-    Token token )
+    Token token, const ValueFactory& value_factory )
 {
     if( token.IsEndOfStream() )
     {
@@ -62,13 +62,14 @@ std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
                 break;
             }
 
-            ret->push_back( next_value_from_token( lexer, token ).release() );
+            ret->push_back( next_value_from_token( lexer, token,
+                value_factory ).release() );
         }
         return auto_ptr<Value>( ret.release() );
     }
     else
     {
-        return ValueFactory::CreateValue( token );
+        return value_factory.CreateValue( token );
     }
 }
 
@@ -82,6 +83,6 @@ Parser::Parser( ILexer& lexer )
 
 std::auto_ptr<Value> Parser::NextValue()
 {
-    return next_value_from_token( lexer_, lexer_.NextToken() );
+    return next_value_from_token( lexer_, lexer_.NextToken(), value_factory_ );
 }
 

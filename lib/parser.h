@@ -22,6 +22,8 @@
 
 #include <memory>
 
+#include "lib/valuefactory.h"
+
 class ILexer;
 class Value;
 
@@ -35,6 +37,7 @@ public:
 private:
 
     ILexer& lexer_;
+    ValueFactory value_factory_;
 };
 
 #endif

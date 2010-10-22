@@ -20,17 +20,23 @@
 #ifndef VALUEFACTORY_H
 #define VALUEFACTORY_H
 
+#include <map>
 #include <memory>
 #include <string>
 
 class Token;
 class Value;
 
-namespace ValueFactory
+class ValueFactory
 {
+public:
+    ValueFactory();
+    ~ValueFactory();
 
-std::auto_ptr<Value> CreateValue( const Token& token_name );
+    std::auto_ptr<Value> CreateValue( const Token& token_name ) const;
 
+private:
+    std::map< std::string, const Value* > special_symbols_;
 };
 
 #endif

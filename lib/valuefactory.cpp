@@ -109,17 +109,41 @@ ENumericType get_numeric_type( const string& str )
 }
 
 template<class T>
-bool matches_symbol( const string& token_name )
+void add_to_map( map<string, const Value* >& special_symbols )
 {
-    return ( T::StaticValue() == token_name );
+    special_symbols[ T::StaticValue() ] = new T;
 }
 
 }
 
-namespace ValueFactory
+ValueFactory::ValueFactory()
 {
+    add_to_map<AndSymbolValue>(     special_symbols_ );
+    add_to_map<CarSymbolValue>(     special_symbols_ );
+    add_to_map<CdrSymbolValue>(     special_symbols_ );
+    add_to_map<CondSymbolValue>(    special_symbols_ );
+    add_to_map<ConsSymbolValue>(    special_symbols_ );
+    add_to_map<DefineSymbolValue>(  special_symbols_ );
+    add_to_map<DisplaySymbolValue>( special_symbols_ );
+    add_to_map<ElseSymbolValue>(    special_symbols_ );
+    add_to_map<IfSymbolValue>(      special_symbols_ );
+    add_to_map<LambdaSymbolValue>(  special_symbols_ );
+    add_to_map<LetSymbolValue>(     special_symbols_ );
+    add_to_map<ListSymbolValue>(    special_symbols_ );
+    add_to_map<NewlineSymbolValue>( special_symbols_ );
+    add_to_map<OrSymbolValue>(      special_symbols_ );
+}
 
-std::auto_ptr<Value> CreateValue( const Token& token )
+ValueFactory::~ValueFactory()
+{
+    for( map<string, const Value* >::iterator it = special_symbols_.begin();
+        it != special_symbols_.end(); ++it )
+    {
+        delete it->second;
+    }
+}
+
+std::auto_ptr<Value> ValueFactory::CreateValue( const Token& token ) const
 {
     const string& token_name = token.Name();
 
@@ -149,62 +173,12 @@ std::auto_ptr<Value> CreateValue( const Token& token )
         default:
         {
             // TODO: case insensitive
-            // TODO: do this in a neater way
-            if( matches_symbol<AndSymbolValue>( token_name ) )
+            map< string, const Value* >::const_iterator itFind =
+                special_symbols_.find( token_name );
+
+            if( itFind != special_symbols_.end() )
             {
-                return auto_ptr<Value>( new AndSymbolValue );
-            }
-            else if( matches_symbol<CarSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new CarSymbolValue );
-            }
-            else if( matches_symbol<CdrSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new CdrSymbolValue );
-            }
-            else if( matches_symbol<CondSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new CondSymbolValue );
-            }
-            else if( matches_symbol<ConsSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new ConsSymbolValue );
-            }
-            else if( matches_symbol<DefineSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new DefineSymbolValue );
-            }
-            else if( matches_symbol<DisplaySymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new DisplaySymbolValue );
-            }
-            else if( matches_symbol<ElseSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new ElseSymbolValue );
-            }
-            else if( matches_symbol<IfSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new IfSymbolValue );
-            }
-            else if( matches_symbol<LambdaSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new LambdaSymbolValue );
-            }
-            else if( matches_symbol<LetSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new LetSymbolValue );
-            }
-            else if( matches_symbol<ListSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new ListSymbolValue );
-            }
-            else if( matches_symbol<NewlineSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new NewlineSymbolValue );
-            }
-            else if( matches_symbol<OrSymbolValue>( token_name ) )
-            {
-                return auto_ptr<Value>( new OrSymbolValue );
+                return auto_ptr<Value>( itFind->second->Clone() );
             }
             else
             {
@@ -213,6 +187,4 @@ std::auto_ptr<Value> CreateValue( const Token& token )
         }
     }
 }
-
-};
 

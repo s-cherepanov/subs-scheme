@@ -56,7 +56,7 @@ void create_symbolvalue()
 void valuefactory_create_plus()
 {
     Token token( "+", Token::eTypeNormal, 0 );
-    ValueFactory::CreateValue( token );
+    ValueFactory().CreateValue( token );
 }
 
 void parse_emptystring()

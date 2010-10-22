@@ -17,16 +17,26 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef SPECIALSYMBOLVALUE_H
-#define SPECIALSYMBOLVALUE_H
-
 #include <string>
 
-#include "lib/value/symbol/symbolvalue.h"
+#include "lib/value/symbol/lambdasymbolvalue.h"
 
-class SpecialSymbolValue : public SymbolValue
+//virtual
+const std::string& LambdaSymbolValue::GetStringValue() const
 {
-};
+    return StaticValue();
+}
 
-#endif
+//static
+const std::string& LambdaSymbolValue::StaticValue()
+{
+    static const std::string ret( "lambda" );
+    return ret;
+}
+
+//virtual
+LambdaSymbolValue* LambdaSymbolValue::Clone() const
+{
+    return new LambdaSymbolValue( *this );
+}
 

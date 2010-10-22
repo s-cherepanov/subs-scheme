@@ -17,15 +17,22 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef SPECIALSYMBOLVALUE_H
-#define SPECIALSYMBOLVALUE_H
+#ifndef CONDSYMBOLVALUE_H
+#define CONDSYMBOLVALUE_H
 
 #include <string>
 
-#include "lib/value/symbol/symbolvalue.h"
+#include "lib/value/symbol/specialsymbolvalue.h"
 
-class SpecialSymbolValue : public SymbolValue
+class CondSymbolValue : public SpecialSymbolValue
 {
+public:
+    virtual const std::string& GetStringValue() const;
+
+    static const std::string& StaticValue();
+
+    virtual CondSymbolValue* Clone() const;
+
 };
 
 #endif

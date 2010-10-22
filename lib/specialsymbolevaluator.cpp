@@ -23,6 +23,23 @@
 
 #include <boost/shared_ptr.hpp>
 
+// BEGIN to remove soon
+#include "lib/value/symbol/andsymbolvalue.h"
+#include "lib/value/symbol/carsymbolvalue.h"
+#include "lib/value/symbol/cdrsymbolvalue.h"
+#include "lib/value/symbol/condsymbolvalue.h"
+#include "lib/value/symbol/conssymbolvalue.h"
+#include "lib/value/symbol/definesymbolvalue.h"
+#include "lib/value/symbol/displaysymbolvalue.h"
+#include "lib/value/symbol/elsesymbolvalue.h"
+#include "lib/value/symbol/ifsymbolvalue.h"
+#include "lib/value/symbol/lambdasymbolvalue.h"
+#include "lib/value/symbol/letsymbolvalue.h"
+#include "lib/value/symbol/listsymbolvalue.h"
+#include "lib/value/symbol/newlinesymbolvalue.h"
+#include "lib/value/symbol/orsymbolvalue.h"
+// END to remove soon
+
 #include "lib/value/basic/combinationvalue.h"
 #include "lib/value/basic/compoundprocedurevalue.h"
 #include "lib/value/basic/falsevalue.h"
@@ -464,8 +481,7 @@ std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
     std::auto_ptr<CombinationValue> lambdadefn =
         std::auto_ptr<CombinationValue>( new CombinationValue );
 
-        lambdadefn->push_back( new SpecialSymbolValue(
-            SpecialSymbolValue::t_lambda ) );
+        lambdadefn->push_back( new LambdaSymbolValue );
     lambdadefn->push_back( argnames.release() );
 
     ++it;
@@ -648,7 +664,7 @@ bool is_else( const Value* value )
     const SpecialSymbolValue* sym = dynamic_cast<const SpecialSymbolValue*>(
         value );
 
-    return ( sym && sym->GetSymbolType() == SpecialSymbolValue::t_else );
+    return ( sym && dynamic_cast< const ElseSymbolValue* >( sym ) );
 }
 
 const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
@@ -868,124 +884,116 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     if( specsym )
     {
-        // TODO: this switch implies we should use a virtual method ...
-        switch( specsym->GetSymbolType() )
+        // TODO: Use a virtual method ...
+        if( dynamic_cast< const AndSymbolValue* >( specsym ) )
         {
-            case SpecialSymbolValue::t_and:
+            existing_value_ = eval_predicate<AndProperties>( evaluator_,
+                combo, environment, new_value_, outstream_ );
+            if( existing_value_ )
             {
-                existing_value_ = eval_predicate<AndProperties>( evaluator_,
-                    combo, environment, new_value_, outstream_ );
-                if( existing_value_ )
-                {
-                    assert( !new_value_.get() );
-                    return eEvaluateExistingSymbol;
-                }
-                else
-                {
-                    assert( new_value_.get() );
-                    return eReturnNewValue;
-                }
-            }
-            case SpecialSymbolValue::t_car:
-            {
-                new_value_ = eval_car( evaluator_, combo, environment,
-                    outstream_ );
-                return eReturnNewValue;
-            }
-            case SpecialSymbolValue::t_cdr:
-            {
-                new_value_ = eval_cdr( evaluator_, combo, environment,
-                    outstream_ );
-                return eReturnNewValue;
-            }
-            case SpecialSymbolValue::t_cond:
-            {
-                existing_value_ = process_cond( evaluator_, combo, environment,
-                    outstream_ );
+                assert( !new_value_.get() );
                 return eEvaluateExistingSymbol;
             }
-            case SpecialSymbolValue::t_cons:
+            else
             {
-                new_value_ = eval_cons( evaluator_, combo, environment,
-                    outstream_ );
+                assert( new_value_.get() );
                 return eReturnNewValue;
             }
-            case SpecialSymbolValue::t_define:
+        }
+        else if( dynamic_cast< const CarSymbolValue* >( specsym ) )
+        {
+            new_value_ = eval_car( evaluator_, combo, environment,
+                outstream_ );
+            return eReturnNewValue;
+        }
+        else if( dynamic_cast< const CdrSymbolValue* >( specsym ) )
+        {
+            new_value_ = eval_cdr( evaluator_, combo, environment,
+                outstream_ );
+            return eReturnNewValue;
+        }
+        else if( dynamic_cast< const CondSymbolValue* >( specsym ) )
+        {
+            existing_value_ = process_cond( evaluator_, combo, environment,
+                outstream_ );
+            return eEvaluateExistingSymbol;
+        }
+        else if( dynamic_cast< const ConsSymbolValue* >( specsym ) )
+        {
+            new_value_ = eval_cons( evaluator_, combo, environment,
+                outstream_ );
+            return eReturnNewValue;
+        }
+        else if( dynamic_cast< const DefineSymbolValue* >( specsym ) )
+        {
+            new_value_ = eval_define( evaluator_, combo, environment,
+                outstream_ );
+            return eReturnNewValue;
+        }
+        else if( dynamic_cast< const DisplaySymbolValue* >( specsym ) )
+        {
+            DisplayEvaluator::WriteDisplay( evaluator_, combo, environment,
+                outstream_ );
+            existing_value_ = NULL;
+            return eEvaluateExistingSymbol;
+        }
+        else if( dynamic_cast< const ElseSymbolValue* >( specsym ) )
+        {
+            // We ignore else in this context - it will be treated
+            // as a normal symbol.  "else" only occurs inside a "cond".
+        }
+        else if( dynamic_cast< const IfSymbolValue* >( specsym ) )
+        {
+            existing_value_ = process_if( evaluator_, combo, environment,
+                outstream_ );
+            return eEvaluateExistingSymbol;
+        }
+        else if( dynamic_cast< const LambdaSymbolValue* >( specsym ) )
+        {
+            new_value_ = eval_lambda( combo, environment );
+            return eReturnNewValue;
+        }
+        else if( dynamic_cast< const LetSymbolValue* >( specsym ) )
+        {
+            if( is_tail_call )
             {
-                new_value_ = eval_define( evaluator_, combo, environment,
-                    outstream_ );
-                return eReturnNewValue;
-            }
-            case SpecialSymbolValue::t_display:
-            {
-                DisplayEvaluator::WriteDisplay( evaluator_, combo, environment,
-                    outstream_ );
-                existing_value_ = NULL;
+                existing_value_ = process_let_tail_call( evaluator_, combo,
+                    environment, outstream_ );
                 return eEvaluateExistingSymbol;
             }
-            case SpecialSymbolValue::t_else:
+            else
             {
-                // We ignore else in this context - it will be treated
-                // as a normal symbol.  "else" only occurs inside a "cond".
-                break;
-            }
-            case SpecialSymbolValue::t_if:
-            {
-                existing_value_ = process_if( evaluator_, combo, environment,
-                    outstream_ );
-                return eEvaluateExistingSymbol;
-            }
-            case SpecialSymbolValue::t_lambda:
-            {
-                new_value_ = eval_lambda( combo, environment );
+                new_value_ = eval_let_not_tail_call( evaluator_, combo,
+                    environment, outstream_ );
                 return eReturnNewValue;
             }
-            case SpecialSymbolValue::t_let:
-            {
-                if( is_tail_call )
-                {
-                    existing_value_ = process_let_tail_call( evaluator_, combo,
-                        environment, outstream_ );
-                    return eEvaluateExistingSymbol;
-                }
-                else
-                {
-                    new_value_ = eval_let_not_tail_call( evaluator_, combo,
-                        environment, outstream_ );
-                    return eReturnNewValue;
-                }
-            }
-            case SpecialSymbolValue::t_list:
-            {
-                new_value_ = eval_list( evaluator_, combo, environment,
-                    outstream_ );
-                return eReturnNewValue;
-            }
-            case SpecialSymbolValue::t_newline:
-            {
-                DisplayEvaluator::WriteNewline( combo, outstream_ );
-                existing_value_ = NULL;
-                return eEvaluateExistingSymbol;
-            }
-            case SpecialSymbolValue::t_or:
-            {
-                existing_value_ = eval_predicate<OrProperties>( evaluator_,
-                    combo, environment, new_value_, outstream_ );
+        }
+        else if( dynamic_cast< const ListSymbolValue* >( specsym ) )
+        {
+            new_value_ = eval_list( evaluator_, combo, environment,
+                outstream_ );
+            return eReturnNewValue;
+        }
+        else if( dynamic_cast< const NewlineSymbolValue* >( specsym ) )
+        {
+            DisplayEvaluator::WriteNewline( combo, outstream_ );
+            existing_value_ = NULL;
+            return eEvaluateExistingSymbol;
+        }
+        else if( dynamic_cast< const OrSymbolValue* >( specsym ) )
+        {
+            existing_value_ = eval_predicate<OrProperties>( evaluator_,
+                combo, environment, new_value_, outstream_ );
 
-                if( existing_value_ )
-                {
-                    assert( !new_value_.get() );
-                    return eEvaluateExistingSymbol;
-                }
-                else
-                {
-                    assert( new_value_.get() );
-                    return eReturnNewValue;
-                }
-            }
-            default:
+            if( existing_value_ )
             {
-                assert( "!!! Unknown special symbol type !!!" == 0 );
+                assert( !new_value_.get() );
+                return eEvaluateExistingSymbol;
+            }
+            else
+            {
+                assert( new_value_.get() );
+                return eReturnNewValue;
             }
         }
     }

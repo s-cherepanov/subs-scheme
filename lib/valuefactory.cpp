@@ -21,8 +21,21 @@
 #include <sstream>
 #include <string>
 
+#include "lib/value/symbol/andsymbolvalue.h"
+#include "lib/value/symbol/carsymbolvalue.h"
+#include "lib/value/symbol/cdrsymbolvalue.h"
+#include "lib/value/symbol/condsymbolvalue.h"
+#include "lib/value/symbol/conssymbolvalue.h"
 #include "lib/value/symbol/customsymbolvalue.h"
-#include "lib/value/symbol/specialsymbolvalue.h"
+#include "lib/value/symbol/definesymbolvalue.h"
+#include "lib/value/symbol/displaysymbolvalue.h"
+#include "lib/value/symbol/elsesymbolvalue.h"
+#include "lib/value/symbol/ifsymbolvalue.h"
+#include "lib/value/symbol/lambdasymbolvalue.h"
+#include "lib/value/symbol/letsymbolvalue.h"
+#include "lib/value/symbol/listsymbolvalue.h"
+#include "lib/value/symbol/newlinesymbolvalue.h"
+#include "lib/value/symbol/orsymbolvalue.h"
 #include "lib/value/basic/decimalvalue.h"
 #include "lib/value/basic/integervalue.h"
 #include "lib/value/basic/stringvalue.h"
@@ -95,6 +108,12 @@ ENumericType get_numeric_type( const string& str )
     }
 }
 
+template<class T>
+bool matches_symbol( const string& token_name )
+{
+    return ( T::StaticValue() == token_name );
+}
+
 }
 
 namespace ValueFactory
@@ -129,16 +148,67 @@ std::auto_ptr<Value> CreateValue( const Token& token )
         }
         default:
         {
-            SpecialSymbolValue::SymbolType symtype =
-                SpecialSymbolValue::String2SymbolType( token_name );
-
-            if( symtype == SpecialSymbolValue::t_CUSTOM )
+            // TODO: case insensitive
+            // TODO: do this in a neater way
+            if( matches_symbol<AndSymbolValue>( token_name ) )
             {
-                return auto_ptr<Value>( new CustomSymbolValue( token_name ) );
+                return auto_ptr<Value>( new AndSymbolValue );
+            }
+            else if( matches_symbol<CarSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new CarSymbolValue );
+            }
+            else if( matches_symbol<CdrSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new CdrSymbolValue );
+            }
+            else if( matches_symbol<CondSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new CondSymbolValue );
+            }
+            else if( matches_symbol<ConsSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new ConsSymbolValue );
+            }
+            else if( matches_symbol<DefineSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new DefineSymbolValue );
+            }
+            else if( matches_symbol<DisplaySymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new DisplaySymbolValue );
+            }
+            else if( matches_symbol<ElseSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new ElseSymbolValue );
+            }
+            else if( matches_symbol<IfSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new IfSymbolValue );
+            }
+            else if( matches_symbol<LambdaSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new LambdaSymbolValue );
+            }
+            else if( matches_symbol<LetSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new LetSymbolValue );
+            }
+            else if( matches_symbol<ListSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new ListSymbolValue );
+            }
+            else if( matches_symbol<NewlineSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new NewlineSymbolValue );
+            }
+            else if( matches_symbol<OrSymbolValue>( token_name ) )
+            {
+                return auto_ptr<Value>( new OrSymbolValue );
             }
             else
             {
-                return auto_ptr<Value>( new SpecialSymbolValue( symtype ) );
+                return auto_ptr<Value>( new CustomSymbolValue( token_name ) );
             }
         }
     }

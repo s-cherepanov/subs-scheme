@@ -17,16 +17,26 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef SPECIALSYMBOLVALUE_H
-#define SPECIALSYMBOLVALUE_H
-
 #include <string>
 
-#include "lib/value/symbol/symbolvalue.h"
+#include "lib/value/symbol/definesymbolvalue.h"
 
-class SpecialSymbolValue : public SymbolValue
+//virtual
+const std::string& DefineSymbolValue::GetStringValue() const
 {
-};
+    return StaticValue();
+}
 
-#endif
+//static
+const std::string& DefineSymbolValue::StaticValue()
+{
+    static const std::string ret( "define" );
+    return ret;
+}
+
+//virtual
+DefineSymbolValue* DefineSymbolValue::Clone() const
+{
+    return new DefineSymbolValue( *this );
+}
 

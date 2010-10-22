@@ -26,7 +26,7 @@
 #include "lib/value/basic/decimalvalue.h"
 #include "lib/value/basic/integervalue.h"
 #include "lib/value/basic/stringvalue.h"
-#include "lib/value.h"
+#include "lib/value/value.h"
 #include "lib/token.h"
 #include "lib/valuefactory.h"
 

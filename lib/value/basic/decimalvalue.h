@@ -22,7 +22,7 @@
 
 #include <memory>
 
-#include "lib/value.h"
+#include "lib/value/value.h"
 
 class IntegerValue;
 

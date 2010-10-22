@@ -33,7 +33,7 @@
 #include "lib/value/nativefunction/nativefunctionvalue.h"
 #include "lib/value/symbol/symbolvalue.h"
 #include "lib/prettyprinter.h"
-#include "lib/value.h"
+#include "lib/value/value.h"
 
 using namespace std;
 

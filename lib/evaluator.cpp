@@ -35,7 +35,7 @@
 #include "lib/prettyprinter.h"
 #include "lib/specialsymbolevaluator.h"
 #include "lib/tracer.h"
-#include "lib/value.h"
+#include "lib/value/value.h"
 
 
 using namespace std;

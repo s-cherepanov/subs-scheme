@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#include "lib/value.h"
+#include "lib/value/value.h"
 
 /**
  * A class representing a combination of Values, which are held by pointer

@@ -22,7 +22,7 @@
 
 #include "lib/value/basic/compoundprocedurevalue.h"
 #include "lib/environment.h"
-#include "lib/value.h"
+#include "lib/value/value.h"
 
 using namespace std;
 

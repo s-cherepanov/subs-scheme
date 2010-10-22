@@ -23,7 +23,7 @@
 #include <memory>
 #include <string>
 
-#include "lib/value.h"
+#include "lib/value/value.h"
 
 class CombinationValue;
 

@@ -24,11 +24,11 @@
 #include "lib/value/basic/integervalue.h"
 #include "lib/value/basic/stringvalue.h"
 #include "lib/value/symbol/symbolvalue.h"
+#include "lib/value/value.h"
 #include "lib/lexer.h"
 #include "lib/parser.h"
 #include "lib/parsingerror.h"
 #include "lib/unfinishedcombinationexception.h"
-#include "lib/value.h"
 #include "test/assertmacros.h"
 #include "test/testparseconstants.h"
 

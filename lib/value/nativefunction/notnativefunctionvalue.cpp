@@ -24,10 +24,10 @@
 #include "lib/value/basic/falsevalue.h"
 #include "lib/value/basic/truevalue.h"
 #include "lib/value/nativefunction/notnativefunctionvalue.h"
+#include "lib/value/value.h"
 #include "lib/argschecker.h"
 #include "lib/evaluationerror.h"
 #include "lib/prettyprinter.h"
-#include "lib/value.h"
 #include "lib/valueutilities.h"
 
 using namespace std;

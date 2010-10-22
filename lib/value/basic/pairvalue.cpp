@@ -19,8 +19,8 @@
 
 #include <memory>
 
-#include "lib/value.h"
 #include "lib/value/basic/pairvalue.h"
+#include "lib/value/value.h"
 
 PairValue::PairValue( std::auto_ptr<Value> first, std::auto_ptr<Value> second )
 : first_(  first )

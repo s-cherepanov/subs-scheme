@@ -24,9 +24,9 @@
 #include "lib/value/basic/decimalvalue.h"
 #include "lib/value/basic/integervalue.h"
 #include "lib/value/nativefunction/plusnativefunctionvalue.h"
+#include "lib/value/value.h"
 #include "lib/evaluationerror.h"
 #include "lib/prettyprinter.h"
-#include "lib/value.h"
 
 using namespace std;
 

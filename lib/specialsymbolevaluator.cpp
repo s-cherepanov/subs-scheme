@@ -23,7 +23,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-// BEGIN to remove soon
+// REMOVE start
 #include "lib/value/symbol/andsymbolvalue.h"
 #include "lib/value/symbol/carsymbolvalue.h"
 #include "lib/value/symbol/cdrsymbolvalue.h"
@@ -38,7 +38,7 @@
 #include "lib/value/symbol/listsymbolvalue.h"
 #include "lib/value/symbol/newlinesymbolvalue.h"
 #include "lib/value/symbol/orsymbolvalue.h"
-// END to remove soon
+// REMOVE end
 
 #include "lib/value/basic/combinationvalue.h"
 #include "lib/value/basic/compoundprocedurevalue.h"
@@ -47,6 +47,8 @@
 #include "lib/value/basic/pairvalue.h"
 #include "lib/value/basic/truevalue.h"
 #include "lib/value/symbol/customsymbolvalue.h"
+#include "lib/value/symbol/elsesymbolvalue.h"
+#include "lib/value/symbol/lambdasymbolvalue.h"
 #include "lib/value/symbol/specialsymbolvalue.h"
 #include "lib/value/symbol/symbolvalue.h"
 #include "lib/argschecker.h"
@@ -887,18 +889,10 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
         // TODO: Use a virtual method ...
         if( dynamic_cast< const AndSymbolValue* >( specsym ) )
         {
-            existing_value_ = eval_predicate<AndProperties>( evaluator_,
-                combo, environment, new_value_, outstream_ );
-            if( existing_value_ )
-            {
-                assert( !new_value_.get() );
-                return eEvaluateExistingSymbol;
-            }
-            else
-            {
-                assert( new_value_.get() );
-                return eReturnNewValue;
-            }
+            // TODO: remove cast
+            return dynamic_cast< const AndSymbolValue* >( specsym )->Apply(
+                evaluator_, combo, environment, new_value_,
+                existing_value_, outstream_ );
         }
         else if( dynamic_cast< const CarSymbolValue* >( specsym ) )
         {

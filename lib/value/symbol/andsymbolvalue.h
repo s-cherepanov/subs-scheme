@@ -20,9 +20,18 @@
 #ifndef ANDSYMBOLVALUE_H
 #define ANDSYMBOLVALUE_H
 
+#include <iosfwd>
+#include <memory>
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 #include "lib/value/symbol/specialsymbolvalue.h"
+#include "lib/value/value.h"
+#include "lib/specialsymbolevaluator.h"
+
+class CombinationValue;
+class Environment;
+class Evaluator;
 
 class AndSymbolValue : public SpecialSymbolValue
 {
@@ -33,6 +42,11 @@ public:
 
     virtual AndSymbolValue* Clone() const;
 
+    SpecialSymbolEvaluator::ESymbolType Apply(
+        Evaluator* ev, const CombinationValue* combo,
+        boost::shared_ptr<Environment>& environment,
+        std::auto_ptr<Value>& new_value_, const Value*& existing_value_,
+        std::ostream& outstream ) const;
 };
 
 #endif

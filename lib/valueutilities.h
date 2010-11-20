@@ -20,7 +20,9 @@
 #ifndef VALUEUTILITIES_H
 #define VALUEUTILITIES_H
 
-class FalseValue;
+
+#include "lib/value/basic/falsevalue.h"
+
 class Value;
 
 class ValueUtilities

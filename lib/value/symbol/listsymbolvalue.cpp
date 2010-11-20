@@ -17,9 +17,41 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <iosfwd>
+#include <memory>
 #include <string>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/nilvalue.h"
+#include "lib/value/basic/pairvalue.h"
 #include "lib/value/symbol/listsymbolvalue.h"
+#include "lib/value/value.h"
+#include "lib/environment.h"
+#include "lib/evaluator.h"
+#include "lib/specialsymbolevaluator.h"
+
+namespace
+{
+
+std::auto_ptr<Value> eval_list_elems( CombinationValue::const_iterator it,
+    Evaluator* ev, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
+{
+    if( it == combo->end() )
+    {
+        return std::auto_ptr<Value>( new NilValue );
+    }
+
+    const Value* value = *it;
+
+    ++it;
+
+    return std::auto_ptr<Value>( new PairValue(
+        ev->EvalInContext( value, environment, outstream, false ),
+        eval_list_elems( it, ev, combo, environment, outstream ) ) );
+}
+
+}
 
 //virtual
 const std::string& ListSymbolValue::GetStringValue() const
@@ -39,4 +71,26 @@ ListSymbolValue* ListSymbolValue::Clone() const
 {
     return new ListSymbolValue( *this );
 }
+
+//virtual
+SpecialSymbolEvaluator::ESymbolType ListSymbolValue::Apply(
+    Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value,
+    std::ostream& outstream, bool is_tail_call ) const
+{
+    // TODO: Consider implementing a ListValue that allocates no Pair objects.
+    //       This could also significantly improve performance of map & filter
+
+    CombinationValue::const_iterator it = combo->begin();
+
+    assert( it != combo->end() ); // "list" (ignore)
+
+    ++it;
+
+    new_value = eval_list_elems( it, evaluator, combo, environment, outstream );
+
+    return SpecialSymbolEvaluator::eReturnNewValue;
+}
+
 

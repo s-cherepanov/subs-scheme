@@ -17,9 +17,19 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <iostream>
+#include <memory>
 #include <string>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/stringvalue.h"
 #include "lib/value/symbol/displaysymbolvalue.h"
+#include "lib/value/value.h"
+#include "lib/argschecker.h"
+#include "lib/environment.h"
+#include "lib/evaluator.h"
+#include "lib/prettyprinter.h"
+#include "lib/specialsymbolevaluator.h"
 
 //virtual
 const std::string& DisplaySymbolValue::GetStringValue() const
@@ -39,5 +49,36 @@ const std::string& DisplaySymbolValue::StaticValue()
 DisplaySymbolValue* DisplaySymbolValue::Clone() const
 {
     return new DisplaySymbolValue( *this );
+}
+
+//virtual
+SpecialSymbolEvaluator::ESymbolType DisplaySymbolValue::Apply(
+    Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value,
+    std::ostream& outstream, bool is_tail_call ) const
+{
+    if( combo->size() != 2 )
+    {
+        ArgsChecker::ThrowWrongNumArgsException( "display", combo->size() - 1,
+            1 );
+    }
+
+    std::auto_ptr<Value> value = evaluator->EvalInContext(
+        (*combo)[1], environment, outstream, true );
+
+    const StringValue* stringvalue = dynamic_cast< const StringValue* >(
+        value.get() );
+    if( stringvalue )
+    {
+        outstream << stringvalue->GetStringValue();
+    }
+    else
+    {
+        outstream << PrettyPrinter::Print( value.get() );
+    }
+
+    existing_value = NULL;
+    return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
 }
 

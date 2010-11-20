@@ -17,9 +17,19 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <iosfwd>
+#include <memory>
 #include <string>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/pairvalue.h"
 #include "lib/value/symbol/conssymbolvalue.h"
+#include "lib/value/value.h"
+#include "lib/argschecker.h"
+#include "lib/environment.h"
+#include "lib/evaluationerror.h"
+#include "lib/evaluator.h"
+#include "lib/specialsymbolevaluator.h"
 
 //virtual
 const std::string& ConsSymbolValue::GetStringValue() const
@@ -38,5 +48,34 @@ const std::string& ConsSymbolValue::StaticValue()
 ConsSymbolValue* ConsSymbolValue::Clone() const
 {
     return new ConsSymbolValue( *this );
+}
+
+//virtual
+SpecialSymbolEvaluator::ESymbolType ConsSymbolValue::Apply(
+    Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value,
+    std::ostream& outstream, bool is_tail_call ) const
+{
+    if( combo->size() != 3 )
+    {
+        ArgsChecker::ThrowWrongNumArgsException( "cons", combo->size() - 1, 2 );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // First of 3 - "cons" (ignore)
+
+    ++it;
+    assert( it != combo->end() ); // Second of 3 - first in pair
+    const Value* first = *it;
+
+    ++it;
+    assert( it != combo->end() ); // Third of 3 - second in pair
+
+    new_value = std::auto_ptr<Value>( new PairValue(
+        evaluator->EvalInContext( first, environment, outstream, false ),
+        evaluator->EvalInContext( *it,   environment, outstream, false ) ) );
+
+    return SpecialSymbolEvaluator::eReturnNewValue;
 }
 

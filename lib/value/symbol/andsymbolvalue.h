@@ -42,11 +42,11 @@ public:
 
     virtual AndSymbolValue* Clone() const;
 
-    SpecialSymbolEvaluator::ESymbolType Apply(
-        Evaluator* ev, const CombinationValue* combo,
+    virtual SpecialSymbolEvaluator::ESymbolType Apply(
+        Evaluator* evaluator, const CombinationValue* combo,
         boost::shared_ptr<Environment>& environment,
-        std::auto_ptr<Value>& new_value_, const Value*& existing_value_,
-        std::ostream& outstream ) const;
+        std::auto_ptr<Value>& new_value, const Value*& existing_value,
+        std::ostream& outstream, bool is_tail_call ) const;
 };
 
 #endif

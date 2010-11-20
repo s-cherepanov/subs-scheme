@@ -20,6 +20,7 @@
 #include <string>
 
 #include "lib/value/symbol/lambdasymbolvalue.h"
+#include "lib/value/symbol/lambdautilities.h"
 
 //virtual
 const std::string& LambdaSymbolValue::GetStringValue() const
@@ -38,5 +39,17 @@ const std::string& LambdaSymbolValue::StaticValue()
 LambdaSymbolValue* LambdaSymbolValue::Clone() const
 {
     return new LambdaSymbolValue( *this );
+}
+
+//virtual
+SpecialSymbolEvaluator::ESymbolType LambdaSymbolValue::Apply(
+    Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value,
+    std::ostream& outstream, bool is_tail_call ) const
+{
+    new_value = LambdaUtilities::eval_lambda( combo, environment );
+
+    return SpecialSymbolEvaluator::eReturnNewValue;
 }
 

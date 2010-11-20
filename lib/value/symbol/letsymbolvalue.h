@@ -20,9 +20,14 @@
 #ifndef LETSYMBOLVALUE_H
 #define LETSYMBOLVALUE_H
 
+#include <iosfwd>
+#include <memory>
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 #include "lib/value/symbol/specialsymbolvalue.h"
+#include "lib/value/value.h"
+#include "lib/specialsymbolevaluator.h"
 
 class LetSymbolValue : public SpecialSymbolValue
 {
@@ -33,6 +38,11 @@ public:
 
     virtual LetSymbolValue* Clone() const;
 
+    virtual SpecialSymbolEvaluator::ESymbolType Apply(
+        Evaluator* evaluator, const CombinationValue* combo,
+        boost::shared_ptr<Environment>& environment,
+        std::auto_ptr<Value>& new_value, const Value*& existing_value,
+        std::ostream& outstream, bool is_tail_call ) const;
 };
 
 #endif

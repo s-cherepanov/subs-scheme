@@ -17,24 +17,21 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef DISPLAYEVALUATOR_H
-#define DISPLAYEVALUATOR_H
+#ifndef LAMBDAUTILITIES_H
+#define LAMBDAUTILITIES_H
 
-#include <iosfwd>
-
+#include <memory>
 #include <boost/shared_ptr.hpp>
 
 class CombinationValue;
 class Environment;
-class Evaluator;
+class Value;
 
-namespace DisplayEvaluator
+namespace LambdaUtilities
 {
 
-void WriteNewline( const CombinationValue* combo, std::ostream& outstream );
-
-void WriteDisplay( Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment, std::ostream& outstream );
+std::auto_ptr<Value> eval_lambda( const CombinationValue* combo,
+    const boost::shared_ptr<Environment>& environment );
 
 }
 

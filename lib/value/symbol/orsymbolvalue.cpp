@@ -17,9 +17,39 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <iosfwd>
+#include <memory>
 #include <string>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/falsevalue.h"
+#include "lib/value/basic/truevalue.h"
 #include "lib/value/symbol/orsymbolvalue.h"
+#include "lib/value/symbol/predicateutilities.h"
+#include "lib/value/value.h"
+#include "lib/environment.h"
+#include "lib/evaluator.h"
+#include "lib/specialsymbolevaluator.h"
+#include "lib/valueutilities.h"
+
+namespace
+{
+
+class OrProperties
+{
+public:
+    static bool EarlyExit( const Value* value )
+    {
+        return ValueUtilities::IsTrue( value );
+    }
+
+    static std::auto_ptr<Value> NoArgumentsReturnValue()
+    {
+        return std::auto_ptr<Value>( new FalseValue );
+    }
+};
+
+}
 
 //virtual
 const std::string& OrSymbolValue::GetStringValue() const
@@ -40,3 +70,24 @@ OrSymbolValue* OrSymbolValue::Clone() const
     return new OrSymbolValue( *this );
 }
 
+//virtual
+SpecialSymbolEvaluator::ESymbolType OrSymbolValue::Apply(
+    Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value,
+    std::ostream& outstream, bool is_tail_call ) const
+{
+    existing_value = PredicateUtilities::eval_predicate<OrProperties>(
+        evaluator, combo, environment, new_value, outstream );
+
+    if( existing_value )
+    {
+        assert( !new_value.get() );
+        return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
+    }
+    else
+    {
+        assert( new_value.get() );
+        return SpecialSymbolEvaluator::eReturnNewValue;
+    }
+}

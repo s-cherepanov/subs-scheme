@@ -17,9 +17,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <iosfwd>
+#include <memory>
 #include <string>
 
 #include "lib/value/symbol/elsesymbolvalue.h"
+#include "lib/specialsymbolevaluator.h"
 
 //virtual
 const std::string& ElseSymbolValue::GetStringValue() const
@@ -38,5 +41,18 @@ const std::string& ElseSymbolValue::StaticValue()
 ElseSymbolValue* ElseSymbolValue::Clone() const
 {
     return new ElseSymbolValue( *this );
+}
+
+//virtual
+SpecialSymbolEvaluator::ESymbolType ElseSymbolValue::Apply(
+    Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value,
+    std::ostream& outstream, bool is_tail_call ) const
+{
+    // We ignore else and treat it as a normal symbol, except when it
+    // occurs inside a "cond" (in which case we won't get here).
+
+    return SpecialSymbolEvaluator::eNoSpecialSymbol;
 }
 

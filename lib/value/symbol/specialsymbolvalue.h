@@ -20,12 +20,27 @@
 #ifndef SPECIALSYMBOLVALUE_H
 #define SPECIALSYMBOLVALUE_H
 
-#include <string>
+#include <iosfwd>
+#include <memory>
+#include <boost/shared_ptr.hpp>
 
 #include "lib/value/symbol/symbolvalue.h"
+#include "lib/value/value.h"
+#include "lib/specialsymbolevaluator.h"
 
+/**
+ * A "keyword" such as define or cond.  Knows how to interpret itself
+ * using its Apply method.
+ */
 class SpecialSymbolValue : public SymbolValue
 {
+public:
+
+    virtual SpecialSymbolEvaluator::ESymbolType Apply(
+        Evaluator* evaluator, const CombinationValue* combo,
+        boost::shared_ptr<Environment>& environment,
+        std::auto_ptr<Value>& new_value, const Value*& existing_value,
+        std::ostream& outstream, bool is_tail_call ) const = 0;
 };
 
 #endif

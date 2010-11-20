@@ -17,9 +17,18 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <iosfwd>
+#include <memory>
 #include <string>
 
+#include "lib/value/basic/combinationvalue.h"
 #include "lib/value/symbol/ifsymbolvalue.h"
+#include "lib/value/value.h"
+#include "lib/environment.h"
+#include "lib/evaluationerror.h"
+#include "lib/evaluator.h"
+#include "lib/specialsymbolevaluator.h"
+#include "lib/valueutilities.h"
 
 //virtual
 const std::string& IfSymbolValue::GetStringValue() const
@@ -39,5 +48,54 @@ const std::string& IfSymbolValue::StaticValue()
 IfSymbolValue* IfSymbolValue::Clone() const
 {
     return new IfSymbolValue( *this );
+}
+
+//virtual
+SpecialSymbolEvaluator::ESymbolType IfSymbolValue::Apply(
+    Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value,
+    std::ostream& outstream, bool is_tail_call ) const
+{
+    if( combo->size() != 4 )
+    {
+        if( combo->size() < 4 )
+        {
+            // TODO: use ArgsChecker
+            throw EvaluationError(
+                "Not enough operands to if: there should be 3 (predicate, "
+                "true-value, else-value)." );
+        }
+        else
+        {
+            // TODO: use ArgsChecker
+            throw EvaluationError(
+                "Too many operands to if: there should be 3 (predicate, "
+                "true-value, else-value)." );
+        }
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // "if" - there are 4 items
+
+    ++it;
+    assert( it != combo->end() ); // predicate - there are 4 items
+    const Value* predicate = *it;
+
+    ++it; // Move to "true" value
+    assert( it != combo->end() );
+
+    std::auto_ptr<Value> evald_pred = evaluator->EvalInContext( predicate,
+        environment, outstream, false );
+
+    if( ValueUtilities::IsFalse( evald_pred.get() ) )
+    {
+        ++it; // Move to "false" value
+        assert( it != combo->end() );
+    }
+
+    existing_value = *it;
+
+    return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
 }
 

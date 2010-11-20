@@ -25,6 +25,7 @@
 #include "lib/value/basic/falsevalue.h"
 #include "lib/value/basic/truevalue.h"
 #include "lib/value/symbol/andsymbolvalue.h"
+#include "lib/value/symbol/predicateutilities.h"
 #include "lib/value/value.h"
 #include "lib/environment.h"
 #include "lib/evaluator.h"
@@ -34,7 +35,6 @@
 namespace
 {
 
-// REMOVE: copied from specialsymbolevaluator
 class AndProperties
 {
 public:
@@ -48,49 +48,6 @@ public:
         return std::auto_ptr<Value>( new TrueValue );
     }
 };
-
-
-/**
- * Evaluate 'and' or 'or'.  If we can tail-call optimise, we return a
- * pointer to the existing value that can be evaluated.  Otherwise,
- * set new_value_ to the newly-allocated value to return.
- */
-template<class PredicateProperties>
-const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value_, std::ostream& outstream )
-{
-    CombinationValue::const_iterator itlast = combo->end();
-    assert( itlast != combo->begin() );
-    --itlast;
-
-    if( itlast == combo->begin() )
-    {
-        // There were no arguments - we must return the correct answer
-        new_value_ = PredicateProperties::NoArgumentsReturnValue();
-        return NULL;
-    }
-    
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() );
-    ++it;
-
-    for( ; it != itlast; ++it )
-    {
-        std::auto_ptr<Value> value = ev->EvalInContext( *it, environment,
-            outstream, false );
-        if( PredicateProperties::EarlyExit( value.get() ) )
-        {
-            // One of the arguments allow us to exit early - set the answer
-            new_value_ = value;
-            return NULL;
-        }
-    }
-
-    // None of the early arguments caused us to exit - return the last (it may
-    // be either true or false).
-    return *itlast;
-}
 
 }
 
@@ -113,14 +70,15 @@ AndSymbolValue* AndSymbolValue::Clone() const
     return new AndSymbolValue( *this );
 }
 
+//virtual
 SpecialSymbolEvaluator::ESymbolType AndSymbolValue::Apply(
     Evaluator* evaluator, const CombinationValue* combo,
     boost::shared_ptr<Environment>& environment,
     std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream ) const
+    std::ostream& outstream, bool is_tail_call ) const
 {
-    existing_value = eval_predicate<AndProperties>( evaluator,
-        combo, environment, new_value, outstream );
+    existing_value = PredicateUtilities::eval_predicate<AndProperties>(
+        evaluator, combo, environment, new_value, outstream );
 
     if( existing_value )
     {

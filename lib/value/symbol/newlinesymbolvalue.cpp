@@ -17,9 +17,18 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <iostream>
+#include <memory>
 #include <string>
 
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/stringvalue.h"
 #include "lib/value/symbol/newlinesymbolvalue.h"
+#include "lib/value/value.h"
+#include "lib/argschecker.h"
+#include "lib/environment.h"
+#include "lib/evaluator.h"
+#include "lib/specialsymbolevaluator.h"
 
 //virtual
 const std::string& NewlineSymbolValue::GetStringValue() const
@@ -38,5 +47,24 @@ const std::string& NewlineSymbolValue::StaticValue()
 NewlineSymbolValue* NewlineSymbolValue::Clone() const
 {
     return new NewlineSymbolValue( *this );
+}
+
+//virtual
+SpecialSymbolEvaluator::ESymbolType NewlineSymbolValue::Apply(
+    Evaluator* evaluator, const CombinationValue* combo,
+    boost::shared_ptr<Environment>& environment,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value,
+    std::ostream& outstream, bool is_tail_call ) const
+{
+    if( combo->size() > 1 )
+    {
+        ArgsChecker::ThrowWrongNumArgsException( "newline", combo->size() - 1,
+            0 );
+    }
+
+    outstream << std::endl;
+
+    existing_value = NULL;
+    return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
 }
 

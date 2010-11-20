@@ -28,6 +28,7 @@
 #include "lib/prettyprinter.h"
 #include "lib/subsinterpreter.h"
 #include "lib/tokenlist.h"
+#include "lib/value/value.h"
 #include "scmlib/scmlib.h"
 
 using namespace std;

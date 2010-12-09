@@ -17,8 +17,8 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef CARSYMBOLVALUE_H
-#define CARSYMBOLVALUE_H
+#ifndef CADRSYMBOLVALUE_H
+#define CADRSYMBOLVALUE_H
 
 #include <iosfwd>
 #include <memory>
@@ -29,20 +29,43 @@
 #include "lib/value/value.h"
 #include "lib/specialsymbolevaluator.h"
 
-class CarSymbolValue : public SpecialSymbolValue
+class CadrSymbolValue : public SpecialSymbolValue
 {
+private:
+    /**
+     * Private: external code uses CreateFromString() to construct
+     */
+    CadrSymbolValue( const std::string& token_name );
+
 public:
     virtual const std::string& GetStringValue() const;
 
     static const std::string& StaticValue();
 
-    virtual CarSymbolValue* Clone() const;
+    virtual CadrSymbolValue* Clone() const;
 
     virtual SpecialSymbolEvaluator::ESymbolType Apply(
         Evaluator* evaluator, const CombinationValue* combo,
         boost::shared_ptr<Environment>& environment,
         std::auto_ptr<Value>& new_value, const Value*& existing_value,
         std::ostream& outstream, bool is_tail_call ) const;
+
+    /**
+     * If the supplied string starts with 'c' and ends with 'r' and
+     * contains 1, 2, 3 or 4 characters in between which are all either
+     * 'a' or 'd', return a new CadrSymbolValue representing this, wrapped
+     * in an auto_ptr to Value.
+     *
+     * Otherwise, return NULL.
+     */
+     static std::auto_ptr<Value> CreateFromString(
+         const std::string& token_name );
+
+private:
+
+    static const unsigned int MAX_AD_LIST_SIZE = 4;
+    char ad_list_[MAX_AD_LIST_SIZE];
+    std::string token_name_;
 };
 
 #endif

@@ -22,8 +22,7 @@
 #include <string>
 
 #include "lib/value/symbol/andsymbolvalue.h"
-#include "lib/value/symbol/carsymbolvalue.h"
-#include "lib/value/symbol/cdrsymbolvalue.h"
+#include "lib/value/symbol/cadrsymbolvalue.h"
 #include "lib/value/symbol/condsymbolvalue.h"
 #include "lib/value/symbol/conssymbolvalue.h"
 #include "lib/value/symbol/customsymbolvalue.h"
@@ -119,8 +118,6 @@ void add_to_map( map<string, const Value* >& special_symbols )
 ValueFactory::ValueFactory()
 {
     add_to_map<AndSymbolValue>(     special_symbols_ );
-    add_to_map<CarSymbolValue>(     special_symbols_ );
-    add_to_map<CdrSymbolValue>(     special_symbols_ );
     add_to_map<CondSymbolValue>(    special_symbols_ );
     add_to_map<ConsSymbolValue>(    special_symbols_ );
     add_to_map<DefineSymbolValue>(  special_symbols_ );
@@ -172,6 +169,15 @@ std::auto_ptr<Value> ValueFactory::CreateValue( const Token& token ) const
         }
         default:
         {
+            // Check for car, cdr, cadr etc.
+            auto_ptr<Value> cadr = CadrSymbolValue::CreateFromString(
+                token_name );
+            if( cadr.get() )
+            {
+                return cadr;
+            }
+
+            // Otherwise, look up in list of fixed symbols
             // TODO: case insensitive
             map< string, const Value* >::const_iterator itFind =
                 special_symbols_.find( token_name );

@@ -64,7 +64,6 @@ public:
 private:
 
     static const unsigned int MAX_AD_LIST_SIZE = 4;
-    char ad_list_[MAX_AD_LIST_SIZE];
     std::string token_name_;
 };
 

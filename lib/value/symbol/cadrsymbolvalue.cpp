@@ -38,27 +38,12 @@ using namespace std;
 namespace
 {
 
-SpecialSymbolEvaluator::ESymbolType apply_car_or_cdr(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call, char a_or_d,
-    const std::string& token_name )
+void apply_car_or_cdr(
+    Evaluator* evaluator, boost::shared_ptr<Environment>& environment,
+    std::ostream& outstream, const Value* arg, char a_or_d,
+    const std::string& token_name, std::auto_ptr<Value>& new_value )
 {
-
-    if( combo->size() != 2 )
-    {
-        ArgsChecker::ThrowWrongNumArgsException( token_name.c_str(),
-            combo->size() - 1, 1 );
-    }
-
-    CombinationValue::const_iterator it = combo->begin();
-    assert( it != combo->end() ); // "car" or "cdr" - there are 2 items
-
-    ++it;
-    assert( it != combo->end() ); // the pair to extract from
-
-    std::auto_ptr<Value> evald_arg = evaluator->EvalInContext( *it,
+    std::auto_ptr<Value> evald_arg = evaluator->EvalInContext( arg,
         environment, outstream, false );
 
     PairValue* pair = dynamic_cast<PairValue*>( evald_arg.get() );
@@ -83,9 +68,35 @@ SpecialSymbolEvaluator::ESymbolType apply_car_or_cdr(
 
     new_value = evaluator->EvalInContext( selected, environment,
         outstream, false );
-
-    return SpecialSymbolEvaluator::eReturnNewValue;
 }
+
+void apply_all( Evaluator* evaluator,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream,
+    const Value* arg, const string& token_name,
+    std::auto_ptr<Value>& new_value )
+{
+    string::const_reverse_iterator it = token_name.rbegin();
+    assert( it != token_name.rend() );
+    ++it; // Skip the 'r' at the end
+    assert( it != token_name.rend() );
+
+    char ch = *it;
+    assert( ch != 'c' ); // There must be at least one a or d
+    const Value* intermediate_arg = arg;
+
+    do
+    {
+        apply_car_or_cdr( evaluator, environment, outstream,
+            intermediate_arg, ch, token_name, new_value );
+
+        intermediate_arg = new_value.get();
+        ++it;
+        assert( it != token_name.rend() ); // Since there will always be a c
+                                           // at the beginning
+        ch = *it;
+    } while( ch != 'c' );
+}
+
 
 }
 
@@ -93,7 +104,6 @@ SpecialSymbolEvaluator::ESymbolType apply_car_or_cdr(
 CadrSymbolValue::CadrSymbolValue( const std::string& token_name )
 : token_name_( token_name )
 {
-    memset( ad_list_, 0, sizeof( ad_list_ ) / sizeof( char ) );
 }
 
 //virtual
@@ -115,9 +125,23 @@ SpecialSymbolEvaluator::ESymbolType CadrSymbolValue::Apply(
     std::auto_ptr<Value>& new_value, const Value*& existing_value,
     std::ostream& outstream, bool is_tail_call ) const
 {
-    return apply_car_or_cdr( evaluator, combo, environment, new_value,
-            existing_value, outstream, is_tail_call, ad_list_[0], token_name_ );
+    if( combo->size() != 2 )
+    {
+        ArgsChecker::ThrowWrongNumArgsException( token_name_.c_str(),
+            combo->size() - 1, 1 );
+    }
+
+    CombinationValue::const_iterator it = combo->begin();
+    assert( it != combo->end() ); // "car" or "cdr" - there are 2 items
+
+    ++it;
+    assert( it != combo->end() ); // the pair to extract from
+
+    apply_all( evaluator, environment, outstream, *it, token_name_, new_value );
+
+    return SpecialSymbolEvaluator::eReturnNewValue;
 }
+
 
 //static
 std::auto_ptr<Value> CadrSymbolValue::CreateFromString(
@@ -142,6 +166,8 @@ std::auto_ptr<Value> CadrSymbolValue::CreateFromString(
     string::const_iterator itend = token_name.end() - 1;
 
     ++it;
+    assert( it != token_name.end() ); // Since we've seen c and r already,
+                                      // the token must be >= 2 chars.
 
     // Just "cr"
     if( it == itend )
@@ -155,17 +181,13 @@ std::auto_ptr<Value> CadrSymbolValue::CreateFromString(
     for( ; it != itend; ++it, ++counter )
     {
         // Too long
-        if( counter > MAX_AD_LIST_SIZE )
+        if( counter >= MAX_AD_LIST_SIZE )
         {
             return auto_ptr<Value>( NULL );
         }
 
         char ch = *it;
-        if( ch == 'a' || ch == 'd' )
-        {
-            ret.ad_list_[counter] = ch;
-        }
-        else
+        if( ch != 'a' && ch != 'd' )
         {
             // Contains a symbol not 'a' or 'd'
             return auto_ptr<Value>( NULL );

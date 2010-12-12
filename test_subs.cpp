@@ -23,6 +23,7 @@
 #include "test/assertionfailed.h"
 #include "test/testarithmetic.h"
 #include "test/testbracketmatcher.h"
+#include "test/testcadr.h"
 #include "test/testcomparators.h"
 #include "test/testcond.h"
 #include "test/testcons.h"
@@ -80,6 +81,7 @@ int main()
         TestLists(                ).Run();
         TestQuestionFunctions(    ).Run();
         TestEqual(                ).Run();
+        TestCadr(                 ).Run();
     }
     catch( AssertionFailed& e )
     {

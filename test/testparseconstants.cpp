@@ -27,8 +27,8 @@
 #include "lib/value/value.h"
 #include "lib/lexer.h"
 #include "lib/parser.h"
-#include "lib/parsingerror.h"
 #include "lib/unfinishedcombinationexception.h"
+#include "lib/unmatchedclosebracketexception.h"
 #include "test/assertmacros.h"
 #include "test/testparseconstants.h"
 
@@ -155,7 +155,7 @@ void too_many_close_brackets_throws()
         parser.NextValue();
         parser.NextValue();
     }
-    catch( ParsingError& )
+    catch( UnmatchedCloseBracketException& )
     {
         exception_caught = true;
     }

@@ -38,7 +38,7 @@ namespace
 {
 
 void interpret_values( Parser& parser, Evaluator& evaluator,
-    ostream& outstream, bool print_newline )
+    ostream& outstream, bool print_values, bool print_newline )
 {
     auto_ptr<Value> value = parser.NextValue();
     while( value.get() )
@@ -46,7 +46,7 @@ void interpret_values( Parser& parser, Evaluator& evaluator,
         string output = PrettyPrinter::Print( evaluator.Eval( value.get(),
             outstream ).get() );
 
-        if( !output.empty() )
+        if( print_values && !output.empty() )
         {
             outstream << output;
             if( print_newline )
@@ -76,7 +76,7 @@ std::string SubsInterpreter::Interpret( const std::string& codestring )
     Lexer lexer( in );
     Parser parser( lexer );
 
-    interpret_values( parser, evaluator_, out, false );
+    interpret_values( parser, evaluator_, out, true, false );
 
     return out.str();
 }
@@ -85,7 +85,7 @@ void SubsInterpreter::InterpretTokens( TokenList& tokens )
 {
     Parser parser( tokens );
 
-    interpret_values( parser, evaluator_, outstream_, true );
+    interpret_values( parser, evaluator_, outstream_, true, true );
 }
 
 void SubsInterpreter::InterpretStream( std::istream& instream )
@@ -93,7 +93,7 @@ void SubsInterpreter::InterpretStream( std::istream& instream )
     Lexer lexer( instream );
     Parser parser( lexer );
 
-    interpret_values( parser, evaluator_, outstream_, true );
+    interpret_values( parser, evaluator_, outstream_, false, true );
 
     // Any errors result in exceptions being thrown inside interpret_values
 }

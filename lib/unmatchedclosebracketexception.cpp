@@ -17,12 +17,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef PARSINGERROR_H
-#define PARSINGERROR_H
+#include "unmatchedclosebracketexception.h"
 
-class ParsingError
+//virtual
+const char* UnmatchedCloseBracketException::what() const throw()
 {
-};
-
-#endif
+    return "Parsing error: unmatched closing bracket";
+}
 

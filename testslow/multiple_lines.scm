@@ -1,5 +1,7 @@
 
-(+ 2 3)
+(display (+ 2 3))
 
-(- 2 3)
+(newline)
+
+(display (- 2 3))
 

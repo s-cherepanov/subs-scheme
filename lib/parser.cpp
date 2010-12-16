@@ -21,10 +21,10 @@
 
 #include "lib/value/basic/combinationvalue.h"
 #include "lib/ilexer.h"
-#include "lib/parsingerror.h"
 #include "lib/parser.h"
 #include "lib/token.h"
 #include "lib/unfinishedcombinationexception.h"
+#include "lib/unmatchedclosebracketexception.h"
 #include "lib/valuefactory.h"
 
 using namespace std;
@@ -42,7 +42,7 @@ std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
 
     if( token.Name() == ")" )
     {
-        throw ParsingError(); // TODO: line number etc.
+        throw UnmatchedCloseBracketException(); // TODO: line number etc.
     }
 
     if( token.Name() == "(" )

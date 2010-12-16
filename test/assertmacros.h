@@ -20,6 +20,7 @@
 #ifndef ASSERTMACROS_H
 #define ASSERTMACROS_H
 
+#include <exception>
 #include <iostream>
 #include <string>
 #include <typeinfo>
@@ -38,7 +39,7 @@
         { \
             throw; \
         } \
-        catch( EvaluationError& e ) \
+        catch( std::exception& e ) \
         { \
             std::cerr << "Error running test '" #TESTNAME "' in suite '" SUITENAME "':" << std::endl; \
             throw; \
@@ -77,20 +78,20 @@
         try
 
 #define TEST_ASSERT_THROWS_END(EXPECTED) \
-        catch( EvaluationError& e ) \
+        catch( std::exception& e ) \
         { \
             exception_thrown = true; \
-            TEST_ASSERT_CAN_FIND(e.ToString(),EXPECTED); \
+            TEST_ASSERT_CAN_FIND(e.what(),EXPECTED); \
         } \
         TEST_ASSERT_TRUE( exception_thrown ); \
     }
 
 #define TEST_ASSERT_THROWS_END2(EXPECTED1,EXPECTED2) \
-        catch( EvaluationError& e ) \
+        catch( std::exception& e ) \
         { \
             exception_thrown = true; \
-            TEST_ASSERT_CAN_FIND(e.ToString(),EXPECTED1); \
-            TEST_ASSERT_CAN_FIND(e.ToString(),EXPECTED2); \
+            TEST_ASSERT_CAN_FIND(e.what(),EXPECTED1); \
+            TEST_ASSERT_CAN_FIND(e.what(),EXPECTED2); \
         } \
         TEST_ASSERT_TRUE( exception_thrown ); \
     }

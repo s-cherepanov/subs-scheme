@@ -20,17 +20,17 @@
 #ifndef EVALUATION_ERROR_H
 #define EVALUATION_ERROR_H
 
-#include <string>
+#include <stdexcept>
 
-class EvaluationError
+// TODO: make one class per type of error, and inherit from std::exception
+class EvaluationError : public virtual std::runtime_error
 {
 public:
-    EvaluationError( std::string msg );
+    EvaluationError( std::string what_arg )
+    : std::runtime_error( what_arg )
+    {
+    }
 
-    const std::string& ToString();
-
-private:
-    std::string msg_;
 };
 
 #endif

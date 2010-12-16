@@ -86,6 +86,8 @@ assert_equal `./subs testslow/too_many_close_brackets.scm 2> /dev/null` ""
 assert_equal "`./subs testslow/too_many_close_brackets.scm 2>&1 /dev/null`" \
     "Parsing error: unmatched closing bracket"
 
-    
+assert_equal "`./subs testslow/too_many_arguments.scm 2>&1 /dev/null`" \
+    "Too many operands to cons: there were 3 but there should be 2."
+
 # Exit with a success code: prevent error value leaking from above
 exit 0

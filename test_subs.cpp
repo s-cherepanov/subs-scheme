@@ -89,12 +89,6 @@ int main()
         cout << "Some tests failed." << endl;
         return 1;
     }
-    catch( EvaluationError& e )
-    {
-        cerr << e.ToString() << endl;
-        cout << "Some tests failed." << endl;
-        return 1;
-    }
     catch( exception& e )
     {
         cerr << e.what() << endl;

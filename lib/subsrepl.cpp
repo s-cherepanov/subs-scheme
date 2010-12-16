@@ -17,6 +17,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <exception>
 #include <iostream>
 #include <sstream>
 
@@ -86,12 +87,11 @@ int SubsRepl::Run( std::istream& instream, std::ostream& errstream )
             lexer.SkipWhitespaceToNewline();
         }
     }
-    catch( EvaluationError& e )
+    catch( exception& e )
     {
-        errstream << "Error: " << e.ToString() << endl;
+        errstream << "Error: " << e.what() << endl;
         return 1;
     }
-    // TODO: catch parse errors too - all under one base class?
 
     return 0;
 }

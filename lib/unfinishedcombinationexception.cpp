@@ -17,16 +17,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef UNFINISHEDCOMBINATIONEXCEPTION_H
-#define UNFINISHEDCOMBINATIONEXCEPTION_H
+#include "unfinishedcombinationexception.h"
 
-#include <exception>
-
-class UnfinishedCombinationException : public virtual std::exception
+//virtual
+const char* UnfinishedCombinationException::what() const throw()
 {
-public:
-    virtual const char* what() const throw();
-};
-
-#endif
+    return "Parsing error: unfinished combination";
+}
 

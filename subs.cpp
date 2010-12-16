@@ -30,6 +30,40 @@
 using namespace std;
 
 
+int run_script( const vector<string>& nonoptions )
+{
+    SubsInterpreter interpreter( cout );
+    int ret = 0;
+    for( vector<string>::const_iterator it = nonoptions.begin();
+        it != nonoptions.end(); ++it )
+    {
+        if( *it == "-" )
+        {
+            interpreter.InterpretStream( cin );
+        }
+        else
+        {
+            ifstream instream( it->c_str() );
+            if( instream.good() )
+            {
+                interpreter.InterpretStream( instream );
+            }
+            else
+            {
+                cerr << "subs: Error: unable to open file '"
+                    << *it << "'." << endl;
+                ret = 1;
+            }
+        }
+    
+        if( ret != 0 )
+        {
+            break;
+        }
+    }
+    return ret;
+}
+
 
 int main( int argc, char * const argv[] )
 {
@@ -47,36 +81,15 @@ int main( int argc, char * const argv[] )
     }
     else
     {
-        SubsInterpreter interpreter( cout );
-        int ret = 0;
-        for( vector<string>::const_iterator it = nonoptions.begin();
-            it != nonoptions.end(); ++it )
+        try
         {
-            if( *it == "-" )
-            {
-                interpreter.InterpretStream( cin );
-            }
-            else
-            {
-                ifstream instream( it->c_str() );
-                if( instream.good() )
-                {
-                    interpreter.InterpretStream( instream );
-                }
-                else
-                {
-                    cerr << "subs: Error: unable to open file '"
-                        << *it << "'." << endl;
-                    ret = 1;
-                }
-            }
-
-            if( ret != 0 )
-            {
-                break;
-            }
+            return run_script( nonoptions );
         }
-        return ret;
+        catch( const exception& e )
+        {
+            cerr << e.what() << endl;
+            return 2;
+        }
     }
 }
 

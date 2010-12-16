@@ -77,7 +77,11 @@ assert_equal `./subs testslow/multiline_combination.scm` "26"
 # TODO: running a file with too many open brackets fails
 # TODO: running a file with too many close brackets fails
 
+# Too many open brackets writes nothing to stdout, but an error stderr
+assert_equal `./subs testslow/too_many_open_brackets.scm 2> /dev/null` ""
 
+assert_equal "`./subs testslow/too_many_open_brackets.scm 2>&1 /dev/null`" \
+    "Parsing error: unfinished combination"
 
 # Exit with a success code: prevent error value leaking from above
 exit 0

@@ -52,6 +52,7 @@ public:
      * Add a symbol to this environment.  This object takes ownership
      * of the provided Value object and will delete when it is no
      * longer needed.
+     * TODO: use an auto_ptr to express this!
      */
     void InsertSymbol( const std::string& name, Value* value );
 

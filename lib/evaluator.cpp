@@ -183,7 +183,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
             default:
             {
                 // Otherwise this was not a special symbol, so continue
-                // to dealing with a compouund procedure.
+                // to dealing with a compound procedure.
                 break;
             }
         }

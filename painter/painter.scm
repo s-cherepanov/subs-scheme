@@ -3,16 +3,14 @@
 
 ; TODO: these will be provided with subs at some point
 
-;(define (begin a b)
-;    a
-;    b)
+(define (fakebegin a b)
+    b)
 
 (define (for-each func items)
     (if (null? items)
         nil
-        (cons (func (car items))
+        (fakebegin (func (car items))
                (for-each func (cdr items)))))
-; TODO: use begin.  Don't know why it currently crashes interpreter
 
 (define (make-vect x y)
     (cons x y))

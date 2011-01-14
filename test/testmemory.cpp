@@ -70,18 +70,6 @@ void parse_emptystring()
 }
 
 
-
-void evaluate_null_value()
-{
-    ostringstream ss;
-    std::auto_ptr<Value> evald = Evaluator().Eval( NULL, ss );
-
-    TEST_ASSERT_NULL( evald.get() );
-    TEST_ASSERT_EQUAL( ss.str(), "" );
-}
-
-
-
 void pair_create_clone_delete()
 {
     std::auto_ptr<PairValue> pair;
@@ -125,7 +113,6 @@ void TestMemory::Run() const
     RUN_TEST(create_symbolvalue);
     RUN_TEST(valuefactory_create_plus);
     RUN_TEST(parse_emptystring);
-    RUN_TEST(evaluate_null_value);
     RUN_TEST(pair_create_clone_delete);
 }
 

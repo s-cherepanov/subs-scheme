@@ -39,8 +39,8 @@ public:
 
     /**
      * Evaluate the expression supplied, and return the value of its result.
-     * For constant expressions, we return the value with which we were
-     * supplied.
+     * For constant expressions, we return a copy of the value with which we
+     * were supplied.
      */
     std::auto_ptr<Value> Eval( const Value* value, std::ostream& outstream );
 

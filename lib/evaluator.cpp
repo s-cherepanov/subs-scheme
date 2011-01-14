@@ -97,16 +97,7 @@ Evaluator::Evaluator()
 std::auto_ptr<Value> Evaluator::Eval( const Value* value,
     std::ostream& outstream )
 {
-    // When the user entered the empty string, we have a NULL value.
-    // In this case, we simply return NULL here.
-    if( value )
-    {
-        return EvalInContext( value, global_environment_, outstream, true );
-    }
-    else
-    {
-        return auto_ptr<Value>( NULL );
-    }
+    return EvalInContext( value, global_environment_, outstream, true );
 }
 
 

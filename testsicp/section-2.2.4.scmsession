@@ -1,0 +1,264 @@
+> (load "painter/painter.scm")
+
+> ; Exercise 2.49a - outline of the frame
+
+> (define outliner
+.     (segments->painter
+.         (list
+.             (make-segment (make-vect 0 0) (make-vect 1 0))
+.             (make-segment (make-vect 1 0) (make-vect 1 1))
+.             (make-segment (make-vect 1 1) (make-vect 0 1))
+.             (make-segment (make-vect 0 1) (make-vect 0 0)))))
+outliner
+
+> (svg-document outliner)
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0 100 100 100' style='stroke:#000000;'/>
+  <path d='M 100 100 100 0' style='stroke:#000000;'/>
+  <path d='M 100 0 0 0' style='stroke:#000000;'/>
+  <path d='M 0 0 0 100' style='stroke:#000000;'/>
+</svg>
+
+
+> (svg-document (shrink-to-upper-right outliner))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 50.0 50.0 100.0 50.0' style='stroke:#000000;'/>
+  <path d='M 100.0 50.0 100.0 0.0' style='stroke:#000000;'/>
+  <path d='M 100.0 0.0 50.0 0.0' style='stroke:#000000;'/>
+  <path d='M 50.0 0.0 50.0 50.0' style='stroke:#000000;'/>
+</svg>
+
+
+> (define letter-a
+.     (segments->painter
+.         (list
+.             (make-segment (make-vect 0    0)   (make-vect 0.5  1))
+.             (make-segment (make-vect 0.5  1)   (make-vect 1    0))
+.             (make-segment (make-vect 0.25 0.5) (make-vect 0.75 0.5)))))
+letter-a
+
+> (svg-document letter-a)
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0 100 50.0 0.0' style='stroke:#000000;'/>
+  <path d='M 50.0 0.0 100 100' style='stroke:#000000;'/>
+  <path d='M 25.0 50.0 75.0 50.0' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (flip-vert letter-a))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0.0 0.0 50.0 100.0' style='stroke:#000000;'/>
+  <path d='M 50.0 100.0 100.0 0.0' style='stroke:#000000;'/>
+  <path d='M 25.0 50.0 75.0 50.0' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (rotate90 letter-a))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 100.0 100.0 0.0 50.0' style='stroke:#000000;'/>
+  <path d='M 0.0 50.0 100.0 0.0' style='stroke:#000000;'/>
+  <path d='M 50.0 75.0 50.0 25.0' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (squash-inwards outliner))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0.0 100.0 65.0 65.0' style='stroke:#000000;'/>
+  <path d='M 65.0 65.0 100.0 0.0' style='stroke:#000000;'/>
+  <path d='M 100.0 0.0 35.0 35.0' style='stroke:#000000;'/>
+  <path d='M 35.0 35.0 0.0 100.0' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (beside letter-a outliner))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0.0 100.0 25.0 0.0' style='stroke:#000000;'/>
+  <path d='M 25.0 0.0 50.0 100.0' style='stroke:#000000;'/>
+  <path d='M 12.5 50.0 37.5 50.0' style='stroke:#000000;'/>
+  <path d='M 50.0 100.0 100.0 100.0' style='stroke:#000000;'/>
+  <path d='M 100.0 100.0 100.0 0.0' style='stroke:#000000;'/>
+  <path d='M 100.0 0.0 50.0 0.0' style='stroke:#000000;'/>
+  <path d='M 50.0 0.0 50.0 100.0' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (below letter-a letter-a))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0.0 100.0 50.0 50.0' style='stroke:#000000;'/>
+  <path d='M 50.0 50.0 100.0 100.0' style='stroke:#000000;'/>
+  <path d='M 25.0 75.0 75.0 75.0' style='stroke:#000000;'/>
+  <path d='M 0.0 50.0 50.0 0.0' style='stroke:#000000;'/>
+  <path d='M 50.0 0.0 100.0 50.0' style='stroke:#000000;'/>
+  <path d='M 25.0 25.0 75.0 25.0' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (right-split letter-a 2))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0.0 100.0 25.0 0.0' style='stroke:#000000;'/>
+  <path d='M 25.0 0.0 50.0 100.0' style='stroke:#000000;'/>
+  <path d='M 12.5 50.0 37.5 50.0' style='stroke:#000000;'/>
+  <path d='M 50.0 100.0 62.5 50.0' style='stroke:#000000;'/>
+  <path d='M 62.5 50.0 75.0 100.0' style='stroke:#000000;'/>
+  <path d='M 56.25 75.0 68.75 75.0' style='stroke:#000000;'/>
+  <path d='M 75.0 100.0 87.5 75.0' style='stroke:#000000;'/>
+  <path d='M 87.5 75.0 100.0 100.0' style='stroke:#000000;'/>
+  <path d='M 81.25 87.5 93.75 87.5' style='stroke:#000000;'/>
+  <path d='M 75.0 75.0 87.5 50.0' style='stroke:#000000;'/>
+  <path d='M 87.5 50.0 100.0 75.0' style='stroke:#000000;'/>
+  <path d='M 81.25 62.5 93.75 62.5' style='stroke:#000000;'/>
+  <path d='M 50.0 50.0 62.5 0.0' style='stroke:#000000;'/>
+  <path d='M 62.5 0.0 75.0 50.0' style='stroke:#000000;'/>
+  <path d='M 56.25 25.0 68.75 25.0' style='stroke:#000000;'/>
+  <path d='M 75.0 50.0 87.5 25.0' style='stroke:#000000;'/>
+  <path d='M 87.5 25.0 100.0 50.0' style='stroke:#000000;'/>
+  <path d='M 81.25 37.5 93.75 37.5' style='stroke:#000000;'/>
+  <path d='M 75.0 25.0 87.5 0.0' style='stroke:#000000;'/>
+  <path d='M 87.5 0.0 100.0 25.0' style='stroke:#000000;'/>
+  <path d='M 81.25 12.5 93.75 12.5' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (up-split letter-a 1))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0.0 100.0 50.0 50.0' style='stroke:#000000;'/>
+  <path d='M 50.0 50.0 100.0 100.0' style='stroke:#000000;'/>
+  <path d='M 25.0 75.0 75.0 75.0' style='stroke:#000000;'/>
+  <path d='M 0.0 50.0 25.0 0.0' style='stroke:#000000;'/>
+  <path d='M 25.0 0.0 50.0 50.0' style='stroke:#000000;'/>
+  <path d='M 12.5 25.0 37.5 25.0' style='stroke:#000000;'/>
+  <path d='M 50.0 50.0 75.0 0.0' style='stroke:#000000;'/>
+  <path d='M 75.0 0.0 100.0 50.0' style='stroke:#000000;'/>
+  <path d='M 62.5 25.0 87.5 25.0' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (corner-split letter-a 2))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 0.0 100.0 25.0 50.0' style='stroke:#000000;'/>
+  <path d='M 25.0 50.0 50.0 100.0' style='stroke:#000000;'/>
+  <path d='M 12.5 75.0 37.5 75.0' style='stroke:#000000;'/>
+  <path d='M 0.0 50.0 12.5 25.0' style='stroke:#000000;'/>
+  <path d='M 12.5 25.0 25.0 50.0' style='stroke:#000000;'/>
+  <path d='M 6.25 37.5 18.75 37.5' style='stroke:#000000;'/>
+  <path d='M 0.0 25.0 6.25 0.0' style='stroke:#000000;'/>
+  <path d='M 6.25 0.0 12.5 25.0' style='stroke:#000000;'/>
+  <path d='M 3.125 12.5 9.375 12.5' style='stroke:#000000;'/>
+  <path d='M 12.5 25.0 18.75 0.0' style='stroke:#000000;'/>
+  <path d='M 18.75 0.0 25.0 25.0' style='stroke:#000000;'/>
+  <path d='M 15.625 12.5 21.875 12.5' style='stroke:#000000;'/>
+  <path d='M 25.0 50.0 37.5 25.0' style='stroke:#000000;'/>
+  <path d='M 37.5 25.0 50.0 50.0' style='stroke:#000000;'/>
+  <path d='M 31.25 37.5 43.75 37.5' style='stroke:#000000;'/>
+  <path d='M 25.0 25.0 31.25 0.0' style='stroke:#000000;'/>
+  <path d='M 31.25 0.0 37.5 25.0' style='stroke:#000000;'/>
+  <path d='M 28.125 12.5 34.375 12.5' style='stroke:#000000;'/>
+  <path d='M 37.5 25.0 43.75 0.0' style='stroke:#000000;'/>
+  <path d='M 43.75 0.0 50.0 25.0' style='stroke:#000000;'/>
+  <path d='M 40.625 12.5 46.875 12.5' style='stroke:#000000;'/>
+  <path d='M 50.0 100.0 62.5 75.0' style='stroke:#000000;'/>
+  <path d='M 62.5 75.0 75.0 100.0' style='stroke:#000000;'/>
+  <path d='M 56.25 87.5 68.75 87.5' style='stroke:#000000;'/>
+  <path d='M 75.0 100.0 87.5 87.5' style='stroke:#000000;'/>
+  <path d='M 87.5 87.5 100.0 100.0' style='stroke:#000000;'/>
+  <path d='M 81.25 93.75 93.75 93.75' style='stroke:#000000;'/>
+  <path d='M 75.0 87.5 87.5 75.0' style='stroke:#000000;'/>
+  <path d='M 87.5 75.0 100.0 87.5' style='stroke:#000000;'/>
+  <path d='M 81.25 81.25 93.75 81.25' style='stroke:#000000;'/>
+  <path d='M 50.0 75.0 62.5 50.0' style='stroke:#000000;'/>
+  <path d='M 62.5 50.0 75.0 75.0' style='stroke:#000000;'/>
+  <path d='M 56.25 62.5 68.75 62.5' style='stroke:#000000;'/>
+  <path d='M 75.0 75.0 87.5 62.5' style='stroke:#000000;'/>
+  <path d='M 87.5 62.5 100.0 75.0' style='stroke:#000000;'/>
+  <path d='M 81.25 68.75 93.75 68.75' style='stroke:#000000;'/>
+  <path d='M 75.0 62.5 87.5 50.0' style='stroke:#000000;'/>
+  <path d='M 87.5 50.0 100.0 62.5' style='stroke:#000000;'/>
+  <path d='M 81.25 56.25 93.75 56.25' style='stroke:#000000;'/>
+  <path d='M 50.0 50.0 62.5 25.0' style='stroke:#000000;'/>
+  <path d='M 62.5 25.0 75.0 50.0' style='stroke:#000000;'/>
+  <path d='M 56.25 37.5 68.75 37.5' style='stroke:#000000;'/>
+  <path d='M 50.0 25.0 56.25 0.0' style='stroke:#000000;'/>
+  <path d='M 56.25 0.0 62.5 25.0' style='stroke:#000000;'/>
+  <path d='M 53.125 12.5 59.375 12.5' style='stroke:#000000;'/>
+  <path d='M 62.5 25.0 68.75 0.0' style='stroke:#000000;'/>
+  <path d='M 68.75 0.0 75.0 25.0' style='stroke:#000000;'/>
+  <path d='M 65.625 12.5 71.875 12.5' style='stroke:#000000;'/>
+  <path d='M 75.0 50.0 87.5 37.5' style='stroke:#000000;'/>
+  <path d='M 87.5 37.5 100.0 50.0' style='stroke:#000000;'/>
+  <path d='M 81.25 43.75 93.75 43.75' style='stroke:#000000;'/>
+  <path d='M 75.0 37.5 87.5 25.0' style='stroke:#000000;'/>
+  <path d='M 87.5 25.0 100.0 37.5' style='stroke:#000000;'/>
+  <path d='M 81.25 31.25 93.75 31.25' style='stroke:#000000;'/>
+  <path d='M 75.0 25.0 87.5 0.0' style='stroke:#000000;'/>
+  <path d='M 87.5 0.0 100.0 25.0' style='stroke:#000000;'/>
+  <path d='M 81.25 12.5 93.75 12.5' style='stroke:#000000;'/>
+</svg>
+
+> (svg-document (square-limit letter-a 1))
+<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>
+  <path d='M 50.0 50.0 37.5 75.0' style='stroke:#000000;'/>
+  <path d='M 37.5 75.0 25.0 50.0' style='stroke:#000000;'/>
+  <path d='M 43.75 62.5 31.25 62.5' style='stroke:#000000;'/>
+  <path d='M 50.0 75.0 43.75 100.0' style='stroke:#000000;'/>
+  <path d='M 43.75 100.0 37.5 75.0' style='stroke:#000000;'/>
+  <path d='M 46.875 87.5 40.625 87.5' style='stroke:#000000;'/>
+  <path d='M 37.5 75.0 31.25 100.0' style='stroke:#000000;'/>
+  <path d='M 31.25 100.0 25.0 75.0' style='stroke:#000000;'/>
+  <path d='M 34.375 87.5 28.125 87.5' style='stroke:#000000;'/>
+  <path d='M 25.0 50.0 12.5 62.5' style='stroke:#000000;'/>
+  <path d='M 12.5 62.5 0.0 50.0' style='stroke:#000000;'/>
+  <path d='M 18.75 56.25 6.25 56.25' style='stroke:#000000;'/>
+  <path d='M 25.0 62.5 12.5 75.0' style='stroke:#000000;'/>
+  <path d='M 12.5 75.0 0.0 62.5' style='stroke:#000000;'/>
+  <path d='M 18.75 68.75 6.25 68.75' style='stroke:#000000;'/>
+  <path d='M 25.0 75.0 12.5 100.0' style='stroke:#000000;'/>
+  <path d='M 12.5 100.0 0.0 75.0' style='stroke:#000000;'/>
+  <path d='M 18.75 87.5 6.25 87.5' style='stroke:#000000;'/>
+  <path d='M 50.0 50.0 62.5 75.0' style='stroke:#000000;'/>
+  <path d='M 62.5 75.0 75.0 50.0' style='stroke:#000000;'/>
+  <path d='M 56.25 62.5 68.75 62.5' style='stroke:#000000;'/>
+  <path d='M 50.0 75.0 56.25 100.0' style='stroke:#000000;'/>
+  <path d='M 56.25 100.0 62.5 75.0' style='stroke:#000000;'/>
+  <path d='M 53.125 87.5 59.375 87.5' style='stroke:#000000;'/>
+  <path d='M 62.5 75.0 68.75 100.0' style='stroke:#000000;'/>
+  <path d='M 68.75 100.0 75.0 75.0' style='stroke:#000000;'/>
+  <path d='M 65.625 87.5 71.875 87.5' style='stroke:#000000;'/>
+  <path d='M 75.0 50.0 87.5 62.5' style='stroke:#000000;'/>
+  <path d='M 87.5 62.5 100.0 50.0' style='stroke:#000000;'/>
+  <path d='M 81.25 56.25 93.75 56.25' style='stroke:#000000;'/>
+  <path d='M 75.0 62.5 87.5 75.0' style='stroke:#000000;'/>
+  <path d='M 87.5 75.0 100.0 62.5' style='stroke:#000000;'/>
+  <path d='M 81.25 68.75 93.75 68.75' style='stroke:#000000;'/>
+  <path d='M 75.0 75.0 87.5 100.0' style='stroke:#000000;'/>
+  <path d='M 87.5 100.0 100.0 75.0' style='stroke:#000000;'/>
+  <path d='M 81.25 87.5 93.75 87.5' style='stroke:#000000;'/>
+  <path d='M 50.0 50.0 37.5 25.0' style='stroke:#000000;'/>
+  <path d='M 37.5 25.0 25.0 50.0' style='stroke:#000000;'/>
+  <path d='M 43.75 37.5 31.25 37.5' style='stroke:#000000;'/>
+  <path d='M 50.0 25.0 43.75 0.0' style='stroke:#000000;'/>
+  <path d='M 43.75 0.0 37.5 25.0' style='stroke:#000000;'/>
+  <path d='M 46.875 12.5 40.625 12.5' style='stroke:#000000;'/>
+  <path d='M 37.5 25.0 31.25 0.0' style='stroke:#000000;'/>
+  <path d='M 31.25 0.0 25.0 25.0' style='stroke:#000000;'/>
+  <path d='M 34.375 12.5 28.125 12.5' style='stroke:#000000;'/>
+  <path d='M 25.0 50.0 12.5 37.5' style='stroke:#000000;'/>
+  <path d='M 12.5 37.5 0.0 50.0' style='stroke:#000000;'/>
+  <path d='M 18.75 43.75 6.25 43.75' style='stroke:#000000;'/>
+  <path d='M 25.0 37.5 12.5 25.0' style='stroke:#000000;'/>
+  <path d='M 12.5 25.0 0.0 37.5' style='stroke:#000000;'/>
+  <path d='M 18.75 31.25 6.25 31.25' style='stroke:#000000;'/>
+  <path d='M 25.0 25.0 12.5 0.0' style='stroke:#000000;'/>
+  <path d='M 12.5 0.0 0.0 25.0' style='stroke:#000000;'/>
+  <path d='M 18.75 12.5 6.25 12.5' style='stroke:#000000;'/>
+  <path d='M 50.0 50.0 62.5 25.0' style='stroke:#000000;'/>
+  <path d='M 62.5 25.0 75.0 50.0' style='stroke:#000000;'/>
+  <path d='M 56.25 37.5 68.75 37.5' style='stroke:#000000;'/>
+  <path d='M 50.0 25.0 56.25 0.0' style='stroke:#000000;'/>
+  <path d='M 56.25 0.0 62.5 25.0' style='stroke:#000000;'/>
+  <path d='M 53.125 12.5 59.375 12.5' style='stroke:#000000;'/>
+  <path d='M 62.5 25.0 68.75 0.0' style='stroke:#000000;'/>
+  <path d='M 68.75 0.0 75.0 25.0' style='stroke:#000000;'/>
+  <path d='M 65.625 12.5 71.875 12.5' style='stroke:#000000;'/>
+  <path d='M 75.0 50.0 87.5 37.5' style='stroke:#000000;'/>
+  <path d='M 87.5 37.5 100.0 50.0' style='stroke:#000000;'/>
+  <path d='M 81.25 43.75 93.75 43.75' style='stroke:#000000;'/>
+  <path d='M 75.0 37.5 87.5 25.0' style='stroke:#000000;'/>
+  <path d='M 87.5 25.0 100.0 37.5' style='stroke:#000000;'/>
+  <path d='M 81.25 31.25 93.75 31.25' style='stroke:#000000;'/>
+  <path d='M 75.0 25.0 87.5 0.0' style='stroke:#000000;'/>
+  <path d='M 87.5 0.0 100.0 25.0' style='stroke:#000000;'/>
+  <path d='M 81.25 12.5 93.75 12.5' style='stroke:#000000;'/>
+</svg>
+

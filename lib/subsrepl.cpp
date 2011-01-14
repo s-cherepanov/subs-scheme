@@ -71,9 +71,9 @@ int SubsRepl::Run( std::istream& instream, std::ostream& errstream )
     Lexer lexer( instream );
     BracketMatcher matcher( lexer, outstream_, print_continuation_ );
 
-    try
+    while( !matcher.eof() )
     {
-        while( !matcher.eof() )
+        try
         {
             if( print_prompt_ )
             {
@@ -86,11 +86,10 @@ int SubsRepl::Run( std::istream& instream, std::ostream& errstream )
 
             lexer.SkipWhitespaceToNewline();
         }
-    }
-    catch( exception& e )
-    {
-        errstream << "Error: " << e.what() << endl;
-        return 1;
+        catch( exception& e )
+        {
+            errstream << "Error: " << e.what() << endl;
+        }
     }
 
     return 0;

@@ -74,9 +74,8 @@ void bare_undefined_symbol_reports_error()
     ostringstream out;
     ostringstream err;
 
-    int retval = SubsRepl( out, SubsRepl::eNoResponse ).Run( in, err );
+    SubsRepl( out, SubsRepl::eNoResponse ).Run( in, err );
 
-    TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
 }
 
@@ -87,9 +86,8 @@ void undefined_symbol_operator_reports_error()
     ostringstream out;
     ostringstream err;
 
-    int retval = SubsRepl( out, SubsRepl::eNoResponse ).Run( in, err );
+    SubsRepl( out, SubsRepl::eNoResponse ).Run( in, err );
 
-    TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
 }
 
@@ -100,12 +98,25 @@ void undefined_symbol_operand_reports_error()
     ostringstream out;
     ostringstream err;
 
-    int retval = SubsRepl( out, SubsRepl::eNoResponse ).Run( in, err );
+    SubsRepl( out, SubsRepl::eNoResponse ).Run( in, err );
 
-    TEST_ASSERT_NOT_EQUAL( retval, 0 );
     TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
 }
 
+
+
+void continues_after_error()
+{
+    istringstream in( "(+ foo 6)\n(* 6 7)" );
+    ostringstream out;
+    ostringstream err;
+
+    SubsRepl( out, SubsRepl::eNoResponse ).Run( in, err );
+
+    TEST_ASSERT_CAN_FIND( err.str(), "Undefined symbol 'foo'" );
+    TEST_ASSERT_CAN_FIND( out.str(), "42" );
+    // TODO: check for spurious dots - should not be printed after error
+}
 
 void unclosed_combination_indents()
 {
@@ -167,6 +178,7 @@ void TestRepl::Run() const
     RUN_TEST(bare_undefined_symbol_reports_error);
     RUN_TEST(undefined_symbol_operator_reports_error);
     RUN_TEST(undefined_symbol_operand_reports_error);
+    RUN_TEST(continues_after_error);
     RUN_TEST(unclosed_combination_indents);
     RUN_TEST(define_can_be_used_later);
     RUN_TEST(response_comes_even_when_stream_is_not_closed);

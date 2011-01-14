@@ -115,8 +115,16 @@ CompoundProcedureValue::ExtendEnvironmentWithArgs(
                 + "' in the definition of procedure '" + name_
                 + "' is not a symbol." );
         }
+
+        const Value* argval = *itargvalue;
+        std::auto_ptr<Value> clonedval;
+        if( argval )
+        {
+            clonedval.reset( argval->Clone() );
+        }
+
         ret_environment->InsertSymbol( argsym->GetStringValue(),
-            (*itargvalue)->Clone() );
+            clonedval.release() );
     }
 
     if( itargvalue != argvalues->end() )

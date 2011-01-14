@@ -319,6 +319,18 @@ void use_later_after_being_put_into_other_env()
 }
 
 
+void pass_display_return_to_proc()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define (fred a) 1)" );
+
+    // We should not crash when passing the return value of display
+    // into the procedure fred.
+    interpreter.Interpret( "(fred (display 1))" );
+}
+
+
 
 
 }
@@ -344,6 +356,7 @@ void TestDefineProcedure::Run() const
     RUN_TEST(good_enough_bug);
     RUN_TEST(use_args_passed_to_parent_inside);
     RUN_TEST(use_later_after_being_put_into_other_env);
+    RUN_TEST(pass_display_return_to_proc);
 }
 
 

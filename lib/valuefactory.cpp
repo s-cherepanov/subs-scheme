@@ -33,6 +33,7 @@
 #include "lib/value/symbol/lambdasymbolvalue.h"
 #include "lib/value/symbol/letsymbolvalue.h"
 #include "lib/value/symbol/listsymbolvalue.h"
+#include "lib/value/symbol/loadsymbolvalue.h"
 #include "lib/value/symbol/newlinesymbolvalue.h"
 #include "lib/value/symbol/orsymbolvalue.h"
 #include "lib/value/basic/decimalvalue.h"
@@ -127,6 +128,7 @@ ValueFactory::ValueFactory()
     add_to_map<LambdaSymbolValue>(  special_symbols_ );
     add_to_map<LetSymbolValue>(     special_symbols_ );
     add_to_map<ListSymbolValue>(    special_symbols_ );
+    add_to_map<LoadSymbolValue>(    special_symbols_ );
     add_to_map<NewlineSymbolValue>( special_symbols_ );
     add_to_map<OrSymbolValue>(      special_symbols_ );
 }

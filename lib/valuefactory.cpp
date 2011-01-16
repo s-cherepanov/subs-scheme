@@ -22,6 +22,7 @@
 #include <string>
 
 #include "lib/value/symbol/andsymbolvalue.h"
+#include "lib/value/symbol/beginsymbolvalue.h"
 #include "lib/value/symbol/cadrsymbolvalue.h"
 #include "lib/value/symbol/condsymbolvalue.h"
 #include "lib/value/symbol/conssymbolvalue.h"
@@ -119,6 +120,7 @@ void add_to_map( map<string, const Value* >& special_symbols )
 ValueFactory::ValueFactory()
 {
     add_to_map<AndSymbolValue>(     special_symbols_ );
+    add_to_map<BeginSymbolValue>(   special_symbols_ );
     add_to_map<CondSymbolValue>(    special_symbols_ );
     add_to_map<ConsSymbolValue>(    special_symbols_ );
     add_to_map<DefineSymbolValue>(  special_symbols_ );

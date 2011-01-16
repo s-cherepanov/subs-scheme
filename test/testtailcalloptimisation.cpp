@@ -200,6 +200,59 @@ void count_with_let_optimised()
 }
 
 
+void count_with_begin_optimised()
+{
+    SubsInterpreter interpreter;
+
+    EvalDepthTracer tracer;
+    interpreter.SetTracer( &tracer );
+
+    interpreter.Interpret(
+        "(define (count n)"
+        "        (if (= n 1)"
+        "            1"
+        "            (begin"
+        "                   1"
+        "                   count (- n 1))))"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(count 1)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(count 2)" ), "1" );
+
+    interpreter.Interpret( "(count 10)" );
+
+    // Even though Lisp recursed to 10 levels, the C++ stack never got beyond 3
+    TEST_ASSERT_EQUAL( tracer.GetMaxEvalDepth(), 3 );
+}
+
+
+
+void count_with_begin_single_arg_optimised()
+{
+    SubsInterpreter interpreter;
+
+    EvalDepthTracer tracer;
+    interpreter.SetTracer( &tracer );
+
+    interpreter.Interpret(
+        "(define (count n)"
+        "        (if (= n 1)"
+        "            1"
+        "            (begin"
+        "                   count (- n 1))))"
+        );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(count 1)" ), "1" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(count 2)" ), "1" );
+
+    interpreter.Interpret( "(count 10)" );
+
+    // Even though Lisp recursed to 10 levels, the C++ stack never got beyond 3
+    TEST_ASSERT_EQUAL( tracer.GetMaxEvalDepth(), 3 );
+}
+
+
+
 }
 
 #define SUITENAME "TestTailCallOptimisation"
@@ -213,6 +266,8 @@ void TestTailCallOptimisation::Run() const
     RUN_TEST(or_count_optimised);
     RUN_TEST(bad_or_count_cant_be_optimised);
     RUN_TEST(count_with_let_optimised);
+    RUN_TEST(count_with_begin_optimised);
+    RUN_TEST(count_with_begin_single_arg_optimised);
 }
 
 

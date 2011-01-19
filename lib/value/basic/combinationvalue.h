@@ -32,6 +32,7 @@ class CombinationValue : public Value, public std::vector<Value*>
 {
 public:
     CombinationValue();
+    CombinationValue( std::vector<Value*>::size_type size );
     CombinationValue( const CombinationValue& other );
     virtual ~CombinationValue();
 

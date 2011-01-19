@@ -23,8 +23,15 @@ CombinationValue::CombinationValue()
 {
 }
 
+CombinationValue::CombinationValue( std::vector<Value*>::size_type size )
+: std::vector<Value*>( size )
+{
+}
+
 CombinationValue::CombinationValue( const CombinationValue& other )
 {
+    reserve( other.size() );
+
     for( CombinationValue::const_iterator it = other.begin();
         it != other.end(); ++it )
     {

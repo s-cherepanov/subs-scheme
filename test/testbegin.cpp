@@ -17,8 +17,6 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#include <sstream>
-
 #include "lib/evaluationerror.h"
 #include "lib/subsinterpreter.h"
 #include "test/assertmacros.h"
@@ -29,8 +27,7 @@ namespace
 
 void runs_all_commands()
 {
-    std::ostringstream out;
-    SubsInterpreter interpreter( out );
+    SubsInterpreter interpreter;
     interpreter.Interpret(
         "(define (fn)"
         "        (begin"

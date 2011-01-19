@@ -29,6 +29,7 @@
 #include "lib/value/symbol/newlinesymbolvalue.h"
 #include "lib/value/value.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluator.h"
 
 namespace PredicateUtilities
@@ -40,9 +41,8 @@ namespace PredicateUtilities
  * set new_value to the newly-allocated value to return.
  */
 template<class PredicateProperties>
-const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, std::ostream& outstream )
+const Value* eval_predicate( EvaluationContext& ev,
+    const CombinationValue* combo, std::auto_ptr<Value>& new_value )
 {
     CombinationValue::const_iterator itlast = combo->end();
     assert( itlast != combo->begin() );
@@ -61,8 +61,8 @@ const Value* eval_predicate( Evaluator* ev, const CombinationValue* combo,
 
     for( ; it != itlast; ++it )
     {
-        std::auto_ptr<Value> value = ev->EvalInContext( *it, environment,
-            outstream, false );
+        std::auto_ptr<Value> value = ev.evaluator_->EvalInContext( *it,
+            ev.environment_, ev.outstream_, false );
         if( PredicateProperties::EarlyExit( value.get() ) )
         {
             // One of the arguments allow us to exit early - set the answer

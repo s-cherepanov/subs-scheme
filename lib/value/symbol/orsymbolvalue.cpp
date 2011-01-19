@@ -77,7 +77,7 @@ SpecialSymbolEvaluator::ESymbolType OrSymbolValue::Apply(
     std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     existing_value = PredicateUtilities::eval_predicate<OrProperties>(
-        ev.evaluator_, combo, ev.environment_, new_value, ev.outstream_ );
+        ev, combo, new_value );
 
     if( existing_value )
     {

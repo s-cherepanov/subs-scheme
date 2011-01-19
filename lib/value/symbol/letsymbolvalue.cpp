@@ -95,9 +95,9 @@ private:
  * Don't insert them into the environment yet since we
  * don't want the definitions to interfere with each other.
  */
-void evaluate_symbol_values( const CombinationValue* pairs, Evaluator* ev,
-    const CombinationValue* combo, boost::shared_ptr<Environment>& environment,
-    std::ostream& outstream, SymbolValuePairArray& retsymvalpairs )
+void evaluate_symbol_values( const CombinationValue* pairs,
+    EvaluationContext& ev, const CombinationValue* combo,
+    SymbolValuePairArray& retsymvalpairs )
 {
     size_t count = 0;
     for( CombinationValue::const_iterator itp = pairs->begin();
@@ -143,7 +143,8 @@ void evaluate_symbol_values( const CombinationValue* pairs, Evaluator* ev,
         }
 
         retsymvalpairs.Insert( count, name->GetStringValue(),
-            ev->EvalInContext( value, environment, outstream, false ) );
+            ev.evaluator_->EvalInContext( value, ev.environment_,
+                ev.outstream_, false ) );
     }
 }
 
@@ -153,9 +154,8 @@ void evaluate_symbol_values( const CombinationValue* pairs, Evaluator* ev,
  * of the let variables, since this environment is disposable anyway,
  * so the leaking out of the defined values has no effect.
  */
-const Value* process_let_tail_call( Evaluator* ev,
-    const CombinationValue* combo, boost::shared_ptr<Environment>& environment,
-    std::ostream& outstream )
+const Value* process_let_tail_call( EvaluationContext& ev,
+    const CombinationValue* combo )
 {
     if( combo->size() < 3 )
     {
@@ -182,14 +182,13 @@ const Value* process_let_tail_call( Evaluator* ev,
     }
 
     SymbolValuePairArray symvalpairs( pairs->size() );
-    evaluate_symbol_values( pairs, ev, combo, environment, outstream,
-        symvalpairs );
+    evaluate_symbol_values( pairs, ev, combo, symvalpairs );
 
     // Now that we have evaluated all the values we can insert them
     // into the environment.
     for( size_t idx = 0; idx != symvalpairs.size(); ++idx )
     {
-        DefineUtilities::insert_value_into_environment( environment,
+        DefineUtilities::insert_value_into_environment( ev.environment_,
             symvalpairs.GetSymbol( idx ), symvalpairs.GetValue( idx ) );
     }
 
@@ -210,7 +209,8 @@ const Value* process_let_tail_call( Evaluator* ev,
     {
         // eval_in_context returns an auto_ptr, so
         // each returned value will be deleted.
-        ev->EvalInContext( *it, environment, outstream, false );
+        ev.evaluator_->EvalInContext( *it, ev.environment_, ev.outstream_,
+            false );
     }
 
     return *it;
@@ -221,9 +221,8 @@ const Value* process_let_tail_call( Evaluator* ev,
  * we must wrap it in a lambda so the values are not remembered when
  * we exit the let.
  */
-std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
-    const CombinationValue* combo, boost::shared_ptr<Environment>& environment,
-    std::ostream& outstream )
+std::auto_ptr<Value> eval_let_not_tail_call( EvaluationContext& ev,
+    const CombinationValue* combo )
 {
     if( combo->size() < 3 )
     {
@@ -250,6 +249,7 @@ std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
     }
 
     // Construct a new lambda function and the args to pass to it
+    // TODO: lambdacall could be on the stack?
     std::auto_ptr<CombinationValue> lambdacall =
         std::auto_ptr<CombinationValue>( new CombinationValue );
 
@@ -303,11 +303,12 @@ std::auto_ptr<Value> eval_let_not_tail_call( Evaluator* ev,
     }
 
     std::auto_ptr<Value> lambda = LambdaUtilities::eval_lambda(
-        lambdadefn.get(), environment );
+        lambdadefn.get(), ev.environment_ );
 
     *(lambdacall->begin()) = lambda.release();
 
-    return ev->EvalInContext( lambdacall.get(), environment, outstream, false );
+    return ev.evaluator_->EvalInContext( lambdacall.get(), ev.environment_,
+        ev.outstream_, false );
 }
 
 }
@@ -338,15 +339,13 @@ SpecialSymbolEvaluator::ESymbolType LetSymbolValue::Apply(
 {
     if( ev.is_tail_call_ )
     {
-        existing_value = process_let_tail_call( ev.evaluator_, combo,
-            ev.environment_, ev.outstream_ );
+        existing_value = process_let_tail_call( ev, combo );
 
         return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
     }
     else
     {
-        new_value = eval_let_not_tail_call( ev.evaluator_, combo,
-            ev.environment_, ev.outstream_ );
+        new_value = eval_let_not_tail_call( ev, combo );
 
         return SpecialSymbolEvaluator::eReturnNewValue;
     }

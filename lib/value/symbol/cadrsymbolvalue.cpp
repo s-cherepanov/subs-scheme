@@ -40,12 +40,11 @@ namespace
 {
 
 void apply_car_or_cdr(
-    Evaluator* evaluator, boost::shared_ptr<Environment>& environment,
-    std::ostream& outstream, const Value* arg, char a_or_d,
+    EvaluationContext& ev, const Value* arg, char a_or_d,
     const std::string& token_name, std::auto_ptr<Value>& new_value )
 {
-    std::auto_ptr<Value> evald_arg = evaluator->EvalInContext( arg,
-        environment, outstream, false );
+    std::auto_ptr<Value> evald_arg = ev.evaluator_->EvalInContext( arg,
+        ev.environment_, ev.outstream_, false );
 
     PairValue* pair = dynamic_cast<PairValue*>( evald_arg.get() );
 
@@ -67,14 +66,12 @@ void apply_car_or_cdr(
         selected = pair->GetSecond();
     }
 
-    new_value = evaluator->EvalInContext( selected, environment,
-        outstream, false );
+    new_value = ev.evaluator_->EvalInContext( selected, ev.environment_,
+        ev.outstream_, false );
 }
 
-void apply_all( Evaluator* evaluator,
-    boost::shared_ptr<Environment>& environment, std::ostream& outstream,
-    const Value* arg, const string& token_name,
-    std::auto_ptr<Value>& new_value )
+void apply_all( EvaluationContext& ev, const Value* arg,
+    const string& token_name, std::auto_ptr<Value>& new_value )
 {
     string::const_reverse_iterator it = token_name.rbegin();
     assert( it != token_name.rend() );
@@ -87,8 +84,7 @@ void apply_all( Evaluator* evaluator,
 
     do
     {
-        apply_car_or_cdr( evaluator, environment, outstream,
-            intermediate_arg, ch, token_name, new_value );
+        apply_car_or_cdr( ev, intermediate_arg, ch, token_name, new_value );
 
         intermediate_arg = new_value.get();
         ++it;
@@ -136,8 +132,7 @@ SpecialSymbolEvaluator::ESymbolType CadrSymbolValue::Apply(
     ++it;
     assert( it != combo->end() ); // the pair to extract from
 
-    apply_all( ev.evaluator_, ev.environment_, ev.outstream_, *it, token_name_,
-        new_value );
+    apply_all( ev, *it, token_name_, new_value );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

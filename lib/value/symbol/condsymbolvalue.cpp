@@ -89,8 +89,8 @@ bool is_else( const Value* value )
 }
 
 
-const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
+const Value* process_cond( EvaluationContext& ev,
+    const CombinationValue* combo )
 {
     // Look for pairs of predicate and value
     // or "else" and value, which must be last.
@@ -128,8 +128,8 @@ const Value* process_cond( Evaluator* ev, const CombinationValue* combo,
         }
         else
         {
-            std::auto_ptr<Value> evald_test = ev->EvalInContext( test,
-                environment, outstream, false );
+            std::auto_ptr<Value> evald_test = ev.evaluator_->EvalInContext(
+                test, ev.environment_, ev.outstream_, false );
 
             if( ValueUtilities::IsTrue( evald_test.get() ) )
             {
@@ -169,8 +169,7 @@ SpecialSymbolEvaluator::ESymbolType CondSymbolValue::Apply(
     EvaluationContext& ev, const CombinationValue* combo,
     std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    existing_value = process_cond( ev.evaluator_, combo, ev.environment_,
-        ev.outstream_ );
+    existing_value = process_cond( ev, combo );
 
     return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
 }

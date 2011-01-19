@@ -111,6 +111,8 @@ SpecialSymbolEvaluator::ESymbolType LoadSymbolValue::Apply(
     EvaluationContext& ev, const CombinationValue* combo,
     std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
+    // TODO: make this a native procedure?  Check others?
+
     if( combo->size() != 2 )
     {
         ArgsChecker::ThrowWrongNumArgsException( "load", combo->size() - 1, 1 );

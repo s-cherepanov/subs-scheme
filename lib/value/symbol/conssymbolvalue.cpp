@@ -56,6 +56,8 @@ SpecialSymbolEvaluator::ESymbolType ConsSymbolValue::Apply(
     EvaluationContext& ev, const CombinationValue* combo,
     std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
+    // TODO: why not a native function?
+
     if( combo->size() != 3 )
     {
         ArgsChecker::ThrowWrongNumArgsException( "cons", combo->size() - 1, 2 );

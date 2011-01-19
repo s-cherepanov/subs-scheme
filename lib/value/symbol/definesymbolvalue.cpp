@@ -38,23 +38,20 @@ using namespace std;
 namespace
 {
 
-std::auto_ptr<Value> eval_define_symbol( Evaluator* ev,
-    boost::shared_ptr<Environment>& environment,
-    const SymbolValue* to_define, const Value* definition,
-    std::ostream& outstream )
+std::auto_ptr<Value> eval_define_symbol( EvaluationContext& ev,
+    const SymbolValue* to_define, const Value* definition )
 {
-    auto_ptr<Value> value = ev->EvalInContext( definition, environment,
-        outstream, false );
+    auto_ptr<Value> value = ev.evaluator_->EvalInContext( definition,
+        ev.environment_, ev.outstream_, false );
 
-    DefineUtilities::insert_value_into_environment( environment,
+    DefineUtilities::insert_value_into_environment( ev.environment_,
         to_define->GetStringValue(), value );
 
     return auto_ptr<Value>( to_define->Clone() );
 }
 
-std::auto_ptr<Value> eval_define( Evaluator* evaluator,
-    const CombinationValue* combo, boost::shared_ptr<Environment>& environment,
-    std::ostream& outstream )
+std::auto_ptr<Value> eval_define( EvaluationContext& ev,
+    const CombinationValue* combo )
 {
     if( combo->size() < 3 )
     {
@@ -96,10 +93,9 @@ std::auto_ptr<Value> eval_define( Evaluator* evaluator,
 
         ++itarg; // Move on from the procedure name to the arguments
 
-        return eval_define_symbol( evaluator, environment, sym,
+        return eval_define_symbol( ev, sym,
             DefineUtilities::define_procedure( itarg, comb_to_define->end(), it,
-                combo->end(), environment, sym->GetStringValue() ).get(),
-                outstream );
+                combo->end(), ev.environment_, sym->GetStringValue() ).get() );
     }
     else
     {
@@ -117,8 +113,7 @@ std::auto_ptr<Value> eval_define( Evaluator* evaluator,
                     to_define ) + "' is neither." );
         }
 
-        return eval_define_symbol( evaluator, environment, sym, *it,
-            outstream );
+        return eval_define_symbol( ev, sym, *it );
     }
 }
 
@@ -149,8 +144,7 @@ SpecialSymbolEvaluator::ESymbolType DefineSymbolValue::Apply(
     EvaluationContext& ev, const CombinationValue* combo,
     std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    new_value = eval_define( ev.evaluator_, combo, ev.environment_,
-        ev.outstream_ );
+    new_value = eval_define( ev, combo );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

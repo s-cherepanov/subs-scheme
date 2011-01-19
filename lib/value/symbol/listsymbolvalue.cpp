@@ -35,8 +35,7 @@ namespace
 {
 
 std::auto_ptr<Value> eval_list_elems( CombinationValue::const_iterator it,
-    Evaluator* ev, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment, std::ostream& outstream )
+    EvaluationContext& ev, const CombinationValue* combo )
 {
     if( it == combo->end() )
     {
@@ -48,8 +47,8 @@ std::auto_ptr<Value> eval_list_elems( CombinationValue::const_iterator it,
     ++it;
 
     return std::auto_ptr<Value>( new PairValue(
-        ev->EvalInContext( value, environment, outstream, false ),
-        eval_list_elems( it, ev, combo, environment, outstream ) ) );
+        ev.evaluator_->EvalInContext( value, ev.environment_, ev.outstream_,
+            false ), eval_list_elems( it, ev, combo ) ) );
 }
 
 }
@@ -87,8 +86,7 @@ SpecialSymbolEvaluator::ESymbolType ListSymbolValue::Apply(
 
     ++it;
 
-    new_value = eval_list_elems( it, ev.evaluator_, combo, ev.environment_,
-        ev.outstream_ );
+    new_value = eval_list_elems( it, ev, combo );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

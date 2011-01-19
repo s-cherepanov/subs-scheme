@@ -76,8 +76,8 @@ SpecialSymbolEvaluator::ESymbolType AndSymbolValue::Apply(
     EvaluationContext& ev, const CombinationValue* combo,
     std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    existing_value = PredicateUtilities::eval_predicate<AndProperties>(
-        ev.evaluator_, combo, ev.environment_, new_value, ev.outstream_ );
+    existing_value = PredicateUtilities::eval_predicate<AndProperties>( ev,
+        combo, new_value );
 
     if( existing_value )
     {

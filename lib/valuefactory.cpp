@@ -34,7 +34,6 @@
 #include "lib/value/symbol/lambdasymbolvalue.h"
 #include "lib/value/symbol/letsymbolvalue.h"
 #include "lib/value/symbol/listsymbolvalue.h"
-#include "lib/value/symbol/loadsymbolvalue.h"
 #include "lib/value/symbol/newlinesymbolvalue.h"
 #include "lib/value/symbol/orsymbolvalue.h"
 #include "lib/value/basic/decimalvalue.h"

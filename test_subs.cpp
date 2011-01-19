@@ -34,6 +34,7 @@
 #include "test/testdisplay.h"
 #include "test/testenvironment.h"
 #include "test/testequal.h"
+#include "test/testforeach.h"
 #include "test/testif.h"
 #include "test/testlambda.h"
 #include "test/testlet.h"
@@ -84,6 +85,7 @@ int main()
         TestEqual(                ).Run();
         TestCadr(                 ).Run();
         TestBegin(                ).Run();
+        TestForEach(              ).Run();
     }
     catch( AssertionFailed& e )
     {

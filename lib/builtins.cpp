@@ -26,6 +26,7 @@
 #include "lib/value/nativefunction/equalsnativefunctionvalue.h"
 #include "lib/value/nativefunction/evennativefunctionvalue.h"
 #include "lib/value/nativefunction/expnativefunctionvalue.h"
+#include "lib/value/nativefunction/foreachnativefunctionvalue.h"
 #include "lib/value/nativefunction/greaterthannativefunctionvalue.h"
 #include "lib/value/nativefunction/lessthannativefunctionvalue.h"
 #include "lib/value/nativefunction/loadnativefunctionvalue.h"
@@ -111,6 +112,9 @@ void Init( Environment& environment )
 
     // Scheme evaluation
     InsertProcedure<LoadNativeFunctionValue>(     environment );
+
+    // List operations
+    InsertProcedure<ForEachNativeFunctionValue>(  environment );
 }
 
 }

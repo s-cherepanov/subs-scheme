@@ -26,7 +26,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> PositiveNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     double value = GetDoubleArg( argvalues );
     return CreateBooleanValue( value > 0 );

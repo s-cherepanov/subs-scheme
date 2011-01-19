@@ -29,7 +29,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> PairNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     ArgsChecker::CheckExactNumberOfArgs( GetName().c_str(), argvalues, 1 );
 

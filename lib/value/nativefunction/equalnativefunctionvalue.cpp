@@ -82,7 +82,7 @@ bool are_equal( const Value* arg0, const Value* arg1 )
 
 //virtual
 std::auto_ptr<Value> EqualNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     ArgsChecker::CheckExactNumberOfArgs( GetName().c_str(), argvalues, 2 );
 

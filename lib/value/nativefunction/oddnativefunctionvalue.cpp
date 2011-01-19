@@ -36,7 +36,7 @@ bool is_odd( int i )
 
 //virtual
 std::auto_ptr<Value> OddNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     return CreateBooleanValue( is_odd( GetConvertibleToIntArg( argvalues ) ) );
 }

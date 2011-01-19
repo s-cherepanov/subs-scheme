@@ -26,7 +26,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> ZeroNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     // TODO: == on a double is evil
     double value = GetDoubleArg( argvalues );

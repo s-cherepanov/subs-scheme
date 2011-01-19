@@ -36,7 +36,7 @@ bool is_even( int i )
 
 //virtual
 std::auto_ptr<Value> EvenNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     return CreateBooleanValue( is_even( GetConvertibleToIntArg( argvalues ) ) );
 }

@@ -36,7 +36,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> CosNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     ArgsChecker::CheckExactNumberOfArgs( "cos", argvalues, 1 );
 

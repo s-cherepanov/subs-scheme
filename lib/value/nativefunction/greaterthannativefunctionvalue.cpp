@@ -35,7 +35,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> GreaterThanNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     CombinationValue::const_iterator it = argvalues->begin();
 

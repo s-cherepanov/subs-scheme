@@ -33,7 +33,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> RemainderNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     ArgsChecker::CheckExactNumberOfArgs( "remainder", argvalues, 2 );
 

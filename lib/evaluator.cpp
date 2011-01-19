@@ -199,12 +199,12 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         }
 
         // If it's a built-in procedure, simply run it
-        const NativeFunctionValue* bip = dynamic_cast<const NativeFunctionValue*>(
-            evaldoptr.get() );
+        const NativeFunctionValue* bip = dynamic_cast<
+            const NativeFunctionValue*>( evaldoptr.get() );
 
         if( bip )
         {
-            return bip->Run( argvalues.get() );
+            return bip->Run( ctx, argvalues.get() );
         }
 
         // Otherwise, it must be a compound procedure

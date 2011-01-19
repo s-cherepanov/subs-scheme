@@ -35,7 +35,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> EqualsNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     // TODO: values other than integers
 

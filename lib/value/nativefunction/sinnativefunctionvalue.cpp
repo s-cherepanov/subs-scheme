@@ -36,7 +36,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> SinNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     ArgsChecker::CheckExactNumberOfArgs( "sin", argvalues, 1 );
 

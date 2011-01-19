@@ -102,7 +102,7 @@ std::auto_ptr<Value> run_decimal_from_int( const IntegerValue* intres,
 
 //virtual
 std::auto_ptr<Value> MinNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     CombinationValue::const_iterator it = argvalues->begin();
 

@@ -36,7 +36,7 @@ using namespace std;
 
 //virtual
 std::auto_ptr<Value> ExpNativeFunctionValue::Run(
-    const CombinationValue* argvalues ) const
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
     ArgsChecker::CheckExactNumberOfArgs( "exp", argvalues, 1 );
 

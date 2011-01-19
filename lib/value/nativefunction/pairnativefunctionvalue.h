@@ -26,12 +26,14 @@
 #include "lib/value/nativefunction/nativefunctionvalue.h"
 
 class CombinationValue;
+class EvaluationContext;
 class Value;
 
 class PairNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    virtual std::auto_ptr<Value> Run( const CombinationValue* argvalues ) const;
+    virtual std::auto_ptr<Value> Run( EvaluationContext& ev,
+        const CombinationValue* argvalues ) const;
 
     virtual PairNativeFunctionValue* Clone() const;
 

@@ -1,4 +1,6 @@
 
+; --- Painter code ---
+
 (define (make-vect x y)
     (cons x y))
 
@@ -19,31 +21,6 @@
 (define (scale-vect s v)
     (make-vect (* s (xcor-vect v))
                  (* s (ycor-vect v))))
-
-; --- SVG specifics ---
-
-(define (svg-start)
-    (display "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>")
-    (newline))
-
-(define (svg-draw-line v1 v2)
-    (display "  <path d='M ")
-    (display (* 100 (xcor-vect v1)))
-    (display " ")
-    (display (* 100 (- 1 (ycor-vect v1))))
-    (display " ")
-    (display (* 100 (xcor-vect v2)))
-    (display " ")
-    (display (* 100 (- 1 (ycor-vect v2))))
-    (display "' style='stroke:#000000;'/>")
-    (newline))
-
-(define (svg-end)
-    (display "</svg>")
-    (newline)
-    )
-
-; --- Painter code ---
 
 (define (make-segment vector1 vector2)
     (cons vector1 vector2))
@@ -185,7 +162,29 @@
              (let ((half (beside (flip-horiz quarter) quarter)))
                   (below (flip-vert half) half))))
 
-; --- More SVG code ---
+
+; --- SVG specifics ---
+
+(define (svg-start)
+    (display "<svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' width='100' height='100'>")
+    (newline))
+
+(define (svg-draw-line v1 v2)
+    (display "  <path d='M ")
+    (display (* 100 (xcor-vect v1)))
+    (display " ")
+    (display (* 100 (- 1 (ycor-vect v1))))
+    (display " ")
+    (display (* 100 (xcor-vect v2)))
+    (display " ")
+    (display (* 100 (- 1 (ycor-vect v2))))
+    (display "' style='stroke:#000000;'/>")
+    (newline))
+
+(define (svg-end)
+    (display "</svg>")
+    (newline)
+    )
 
 (define (svg-document painter)
     (svg-start)

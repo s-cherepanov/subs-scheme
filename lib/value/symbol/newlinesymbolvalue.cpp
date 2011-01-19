@@ -22,12 +22,9 @@
 #include <string>
 
 #include "lib/value/basic/combinationvalue.h"
-#include "lib/value/basic/stringvalue.h"
 #include "lib/value/symbol/newlinesymbolvalue.h"
-#include "lib/value/value.h"
 #include "lib/argschecker.h"
-#include "lib/environment.h"
-#include "lib/evaluator.h"
+#include "lib/evaluationcontext.h"
 #include "lib/specialsymbolevaluator.h"
 
 //virtual
@@ -51,10 +48,8 @@ NewlineSymbolValue* NewlineSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType NewlineSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     if( combo->size() > 1 )
     {
@@ -62,7 +57,7 @@ SpecialSymbolEvaluator::ESymbolType NewlineSymbolValue::Apply(
             0 );
     }
 
-    outstream << std::endl;
+    ev.outstream_ << std::endl;
 
     existing_value = NULL;
     return SpecialSymbolEvaluator::eEvaluateExistingSymbol;

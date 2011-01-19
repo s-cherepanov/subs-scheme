@@ -28,6 +28,7 @@
 #include "lib/value/value.h"
 #include "lib/environment.h"
 #include "lib/evaluationerror.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluator.h"
 #include "lib/prettyprinter.h"
 #include "lib/specialsymbolevaluator.h"
@@ -165,12 +166,11 @@ CondSymbolValue* CondSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType CondSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    existing_value = process_cond( evaluator, combo, environment, outstream );
+    existing_value = process_cond( ev.evaluator_, combo, ev.environment_,
+        ev.outstream_ );
 
     return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
 }

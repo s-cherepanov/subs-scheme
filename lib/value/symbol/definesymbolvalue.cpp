@@ -27,6 +27,7 @@
 #include "lib/value/value.h"
 #include "lib/argschecker.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluationerror.h"
 #include "lib/evaluator.h"
 #include "lib/prettyprinter.h"
@@ -145,12 +146,11 @@ DefineSymbolValue* DefineSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType DefineSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    new_value = eval_define( evaluator, combo, environment, outstream );
+    new_value = eval_define( ev.evaluator_, combo, ev.environment_,
+        ev.outstream_ );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

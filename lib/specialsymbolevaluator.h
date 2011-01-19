@@ -26,8 +26,7 @@
 #include <boost/shared_ptr.hpp>
 
 class CombinationValue;
-class Environment;
-class Evaluator;
+class EvaluationContext;
 class SymbolValue;
 class Value;
 
@@ -42,20 +41,18 @@ public:
         , eEvaluateExistingSymbol
     };
 
-    SpecialSymbolEvaluator( Evaluator* evaluator, std::ostream& outstream );
+    SpecialSymbolEvaluator( EvaluationContext& ev );
 
     bool IsSpecialSymbol( const SymbolValue& sym ) const;
 
     ESymbolType ProcessSpecialSymbol( const Value* optr,
-        const CombinationValue* combo,
-        boost::shared_ptr<Environment>& environment, bool is_tail_call );
+        const CombinationValue* combo );
 
     std::auto_ptr<Value> NewValue();
     const Value* ExistingValue();
 
 private:
-    Evaluator* evaluator_;
-    std::ostream& outstream_;
+    EvaluationContext& ev_;
     std::auto_ptr<Value> new_value_;
     const Value* existing_value_;
 };

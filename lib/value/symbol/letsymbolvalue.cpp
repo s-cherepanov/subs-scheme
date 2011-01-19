@@ -28,6 +28,7 @@
 #include "lib/value/symbol/letsymbolvalue.h"
 #include "lib/value/value.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluationerror.h"
 #include "lib/evaluator.h"
 #include "lib/prettyprinter.h"
@@ -332,22 +333,20 @@ LetSymbolValue* LetSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType LetSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    if( is_tail_call )
+    if( ev.is_tail_call_ )
     {
-        existing_value = process_let_tail_call( evaluator, combo,
-            environment, outstream );
+        existing_value = process_let_tail_call( ev.evaluator_, combo,
+            ev.environment_, ev.outstream_ );
 
         return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
     }
     else
     {
-        new_value = eval_let_not_tail_call( evaluator, combo,
-            environment, outstream );
+        new_value = eval_let_not_tail_call( ev.evaluator_, combo,
+            ev.environment_, ev.outstream_ );
 
         return SpecialSymbolEvaluator::eReturnNewValue;
     }

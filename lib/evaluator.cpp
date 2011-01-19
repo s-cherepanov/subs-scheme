@@ -30,6 +30,7 @@
 #include "lib/value/symbol/symbolvalue.h"
 #include "lib/builtins.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluationerror.h"
 #include "lib/evaluator.h"
 #include "lib/prettyprinter.h"
@@ -116,7 +117,8 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
     while( true )
     {
 
-        SpecialSymbolEvaluator special_symbol_evaluator( this, outstream );
+        EvaluationContext ev( this, run_env, outstream, is_tail_call );
+        SpecialSymbolEvaluator special_symbol_evaluator( ev );
 
         // If value is a symbol, we look it up and return the result
         const SymbolValue* plainsym = dynamic_cast<const SymbolValue*>(
@@ -154,7 +156,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
             outstream, false );
 
         switch( special_symbol_evaluator.ProcessSpecialSymbol( evaldoptr.get(),
-            combo, run_env, is_tail_call ) )
+            combo ) )
         {
             case SpecialSymbolEvaluator::eReturnNewValue:
             {

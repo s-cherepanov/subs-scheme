@@ -17,32 +17,33 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef LAMBDASYMBOLVALUE_H
-#define LAMBDASYMBOLVALUE_H
+#ifndef EVALUATION_CONTEXT_H
+#define EVALUATION_CONTEXT_H
 
-#include <memory>
-#include <string>
+#include <iosfwd>
 
-#include "lib/value/symbol/specialsymbolvalue.h"
-#include "lib/value/value.h"
-#include "lib/specialsymbolevaluator.h"
+#include <boost/shared_ptr.hpp>
 
-class CombinationValue;
-class EvaluationContext;
+class Evaluator;
+class Environment;
 
-class LambdaSymbolValue : public SpecialSymbolValue
+class EvaluationContext
 {
 public:
-    virtual const std::string& GetStringValue() const;
+    EvaluationContext( Evaluator* evaluator,
+        boost::shared_ptr<Environment>& environment, std::ostream& outstream,
+        bool is_tail_call )
+    : evaluator_( evaluator )
+    , environment_( environment )
+    , outstream_( outstream )
+    , is_tail_call_( is_tail_call )
+    {
+    }
 
-    static const std::string& StaticValue();
-
-    virtual LambdaSymbolValue* Clone() const;
-
-    virtual SpecialSymbolEvaluator::ESymbolType Apply(
-        EvaluationContext& ev, const CombinationValue* combo,
-        std::auto_ptr<Value>& new_value, const Value*& existing_value ) const;
+    Evaluator* evaluator_;
+    boost::shared_ptr<Environment>& environment_;
+    std::ostream& outstream_;
+    bool is_tail_call_;
 };
 
 #endif
-

@@ -28,6 +28,7 @@
 #include "lib/value/value.h"
 #include "lib/argschecker.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluationerror.h"
 #include "lib/evaluator.h"
 #include "lib/prettyprinter.h"
@@ -120,10 +121,8 @@ CadrSymbolValue* CadrSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType CadrSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     if( combo->size() != 2 )
     {
@@ -137,7 +136,8 @@ SpecialSymbolEvaluator::ESymbolType CadrSymbolValue::Apply(
     ++it;
     assert( it != combo->end() ); // the pair to extract from
 
-    apply_all( evaluator, environment, outstream, *it, token_name_, new_value );
+    apply_all( ev.evaluator_, ev.environment_, ev.outstream_, *it, token_name_,
+        new_value );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

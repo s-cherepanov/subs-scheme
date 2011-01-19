@@ -27,6 +27,7 @@
 #include "lib/value/value.h"
 #include "lib/argschecker.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluator.h"
 #include "lib/prettyprinter.h"
 #include "lib/specialsymbolevaluator.h"
@@ -53,10 +54,8 @@ DisplaySymbolValue* DisplaySymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType DisplaySymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     if( combo->size() != 2 )
     {
@@ -64,18 +63,18 @@ SpecialSymbolEvaluator::ESymbolType DisplaySymbolValue::Apply(
             1 );
     }
 
-    std::auto_ptr<Value> value = evaluator->EvalInContext(
-        (*combo)[1], environment, outstream, true );
+    std::auto_ptr<Value> value = ev.evaluator_->EvalInContext(
+        (*combo)[1], ev.environment_, ev.outstream_, false );
 
     const StringValue* stringvalue = dynamic_cast< const StringValue* >(
         value.get() );
     if( stringvalue )
     {
-        outstream << stringvalue->GetStringValue();
+        ev.outstream_ << stringvalue->GetStringValue();
     }
     else
     {
-        outstream << PrettyPrinter::Print( value.get() );
+        ev.outstream_ << PrettyPrinter::Print( value.get() );
     }
 
     existing_value = NULL;

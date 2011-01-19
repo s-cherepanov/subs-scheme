@@ -27,6 +27,7 @@
 #include "lib/value/value.h"
 #include "lib/argschecker.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluationerror.h"
 #include "lib/evaluator.h"
 #include "lib/specialsymbolevaluator.h"
@@ -52,10 +53,8 @@ ConsSymbolValue* ConsSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType ConsSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     if( combo->size() != 3 )
     {
@@ -73,8 +72,10 @@ SpecialSymbolEvaluator::ESymbolType ConsSymbolValue::Apply(
     assert( it != combo->end() ); // Third of 3 - second in pair
 
     new_value = std::auto_ptr<Value>( new PairValue(
-        evaluator->EvalInContext( first, environment, outstream, false ),
-        evaluator->EvalInContext( *it,   environment, outstream, false ) ) );
+        ev.evaluator_->EvalInContext( first, ev.environment_, ev.outstream_,
+            false ),
+        ev.evaluator_->EvalInContext( *it,   ev.environment_, ev.outstream_,
+            false ) ) );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

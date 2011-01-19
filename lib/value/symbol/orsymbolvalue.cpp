@@ -28,6 +28,7 @@
 #include "lib/value/symbol/predicateutilities.h"
 #include "lib/value/value.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluator.h"
 #include "lib/specialsymbolevaluator.h"
 #include "lib/valueutilities.h"
@@ -72,13 +73,11 @@ OrSymbolValue* OrSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType OrSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     existing_value = PredicateUtilities::eval_predicate<OrProperties>(
-        evaluator, combo, environment, new_value, outstream );
+        ev.evaluator_, combo, ev.environment_, new_value, ev.outstream_ );
 
     if( existing_value )
     {

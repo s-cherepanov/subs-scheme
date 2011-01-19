@@ -21,6 +21,7 @@
 
 #include "lib/value/symbol/lambdasymbolvalue.h"
 #include "lib/value/symbol/lambdautilities.h"
+#include "lib/evaluationcontext.h"
 
 //virtual
 const std::string& LambdaSymbolValue::GetStringValue() const
@@ -43,12 +44,10 @@ LambdaSymbolValue* LambdaSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType LambdaSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    new_value = LambdaUtilities::eval_lambda( combo, environment );
+    new_value = LambdaUtilities::eval_lambda( combo, ev.environment_ );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

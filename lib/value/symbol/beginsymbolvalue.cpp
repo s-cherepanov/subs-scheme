@@ -25,6 +25,7 @@
 #include "lib/value/symbol/beginsymbolvalue.h"
 #include "lib/value/value.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluator.h"
 #include "lib/specialsymbolevaluator.h"
 
@@ -50,10 +51,8 @@ BeginSymbolValue* BeginSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType BeginSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     CombinationValue::const_iterator it = combo->begin();
     CombinationValue::const_iterator itend = combo->end();
@@ -73,7 +72,8 @@ SpecialSymbolEvaluator::ESymbolType BeginSymbolValue::Apply(
 
     for( ; it != itend; ++it )
     {
-        evaluator->EvalInContext( *it, environment, outstream, false );
+        ev.evaluator_->EvalInContext( *it, ev.environment_, ev.outstream_,
+            false );
     }
 
     existing_value = *it;

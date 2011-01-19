@@ -28,6 +28,7 @@
 #include "lib/value/value.h"
 #include "lib/argschecker.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluationerror.h"
 #include "lib/evaluator.h"
 #include "lib/lexer.h"
@@ -107,10 +108,8 @@ LoadSymbolValue* LoadSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType LoadSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     if( combo->size() != 2 )
     {
@@ -125,8 +124,8 @@ SpecialSymbolEvaluator::ESymbolType LoadSymbolValue::Apply(
 
     assert( it != combo->end() ); // the filename
 
-    std::auto_ptr<Value> evald_value = evaluator->EvalInContext( *it,
-         environment, outstream, false );
+    std::auto_ptr<Value> evald_value = ev.evaluator_->EvalInContext( *it,
+         ev.environment_, ev.outstream_, false );
 
     const Value* value = evald_value.get();
     const StringValue* stringvalue = dynamic_cast<const StringValue*>( value );
@@ -137,8 +136,8 @@ SpecialSymbolEvaluator::ESymbolType LoadSymbolValue::Apply(
             "- '" + PrettyPrinter::Print( value ) + "' is not a string." );
     }
 
-    load_file( stringvalue->GetStringValue(), evaluator, environment,
-        outstream );
+    load_file( stringvalue->GetStringValue(), ev.evaluator_, ev.environment_,
+        ev.outstream_ );
 
     existing_value = NULL;
     return SpecialSymbolEvaluator::eEvaluateExistingSymbol;

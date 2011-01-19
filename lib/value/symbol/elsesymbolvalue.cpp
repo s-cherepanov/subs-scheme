@@ -45,10 +45,8 @@ ElseSymbolValue* ElseSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType ElseSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     // We ignore else and treat it as a normal symbol, except when it
     // occurs inside a "cond" (in which case we won't get here).

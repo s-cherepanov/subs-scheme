@@ -24,16 +24,15 @@
 #include "lib/value/symbol/specialsymbolvalue.h"
 #include "lib/value/symbol/symbolvalue.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/specialsymbolevaluator.h"
 
 class Evaluator;
 
 using namespace std;
 
-SpecialSymbolEvaluator::SpecialSymbolEvaluator( Evaluator* evaluator,
-    std::ostream& outstream )
-: evaluator_( evaluator )
-, outstream_( outstream )
+SpecialSymbolEvaluator::SpecialSymbolEvaluator( EvaluationContext& ev )
+: ev_( ev )
 //new_value_
 , existing_value_( NULL )
 {
@@ -46,9 +45,7 @@ bool SpecialSymbolEvaluator::IsSpecialSymbol( const SymbolValue& sym ) const
 
 SpecialSymbolEvaluator::ESymbolType
 SpecialSymbolEvaluator::ProcessSpecialSymbol(
-    const Value* optr, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    bool is_tail_call )
+    const Value* optr, const CombinationValue* combo )
 {
     const SymbolValue* sym = dynamic_cast<const SymbolValue*>( optr );
 
@@ -60,7 +57,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     // If it's defined in the current environment, this overrides any
     // special symbols, so we bail out.
-    if( environment->FindSymbol( sym->GetStringValue() ) )
+    if( ev_.environment_->FindSymbol( sym->GetStringValue() ) )
     {
         return eNoSpecialSymbol;
     }
@@ -71,8 +68,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     if( specsym )
     {
-        return specsym->Apply( evaluator_, combo, environment, new_value_,
-            existing_value_, outstream_, is_tail_call );
+        return specsym->Apply( ev_, combo, new_value_, existing_value_ );
     }
 
     // Otherwise it's just a normal symbol - continue.

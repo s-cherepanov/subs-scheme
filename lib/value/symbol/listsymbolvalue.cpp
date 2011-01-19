@@ -27,6 +27,7 @@
 #include "lib/value/symbol/listsymbolvalue.h"
 #include "lib/value/value.h"
 #include "lib/environment.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluator.h"
 #include "lib/specialsymbolevaluator.h"
 
@@ -74,10 +75,8 @@ ListSymbolValue* ListSymbolValue::Clone() const
 
 //virtual
 SpecialSymbolEvaluator::ESymbolType ListSymbolValue::Apply(
-    Evaluator* evaluator, const CombinationValue* combo,
-    boost::shared_ptr<Environment>& environment,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value,
-    std::ostream& outstream, bool is_tail_call ) const
+    EvaluationContext& ev, const CombinationValue* combo,
+    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
     // TODO: Consider implementing a ListValue that allocates no Pair objects.
     //       This could also significantly improve performance of map & filter
@@ -88,7 +87,8 @@ SpecialSymbolEvaluator::ESymbolType ListSymbolValue::Apply(
 
     ++it;
 
-    new_value = eval_list_elems( it, evaluator, combo, environment, outstream );
+    new_value = eval_list_elems( it, ev.evaluator_, combo, ev.environment_,
+        ev.outstream_ );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

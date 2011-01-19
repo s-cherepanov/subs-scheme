@@ -117,8 +117,8 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
     while( true )
     {
 
-        EvaluationContext ev( *this, run_env, outstream, is_tail_call );
-        SpecialSymbolEvaluator special_symbol_evaluator( ev );
+        EvaluationContext ctx( *this, run_env, outstream, is_tail_call );
+        SpecialSymbolEvaluator special_symbol_evaluator( ctx );
 
         // If value is a symbol, we look it up and return the result
         const SymbolValue* plainsym = dynamic_cast<const SymbolValue*>(
@@ -152,7 +152,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         CombinationValue::const_iterator cmbit = combo->begin();
 
         // Evaluate the operator
-        auto_ptr<Value> evaldoptr = ev.SubEval( *cmbit );
+        auto_ptr<Value> evaldoptr = ctx.SubEval( *cmbit );
 
         switch( special_symbol_evaluator.ProcessSpecialSymbol( evaldoptr.get(),
             combo ) )
@@ -195,7 +195,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         auto_ptr<CombinationValue> argvalues( new CombinationValue );
         for( ; cmbit != combo->end(); ++cmbit )
         {
-            argvalues->push_back( ev.SubEval( *cmbit ).release() );
+            argvalues->push_back( ctx.SubEval( *cmbit ).release() );
         }
 
         // If it's a built-in procedure, simply run it
@@ -233,7 +233,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         {
             // eval_in_context returns an auto_ptr, so
             // each returned value will be deleted.
-            ev.SubEval( *itbody );
+            ctx.SubEval( *itbody );
         }
 
         // TODO: Tail recursion modulo cons

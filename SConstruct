@@ -58,12 +58,14 @@ testslow_cmd = env.Command( ".testslow.passed",
 env.Alias( "testslow", testslow_cmd )
 
 testsicp_cmd = env.Command( ".testsicp.passed",
-	["subs","test_subs_sicp"] + Glob( "testsicp/*.scmsession" ),
+	["subs","test_subs_sicp","painter/painter.scm"]
+		+ Glob( "testsicp/*.scmsession" ),
 	"./test_subs_sicp && echo 'Passed' > .testsicp.passed" )
 env.Alias( "testsicp", testsicp_cmd )
 
 testsicp_failing_cmd = env.Command( ".testsicp_failing.passed",
-	["subs","test_subs_sicp"] + Glob( "testsicp/*.scmsession" )
+	["subs","test_subs_sicp","painter/painter.scm"]
+		+ Glob( "testsicp/*.scmsession" )
 		+ Glob( "testsicp/*.scmsession.fails" ),
 	"./test_subs_sicp_failing && echo 'Passed' > .testsicp_failing.passed" )
 env.Alias( "testsicp_failing", testsicp_failing_cmd )

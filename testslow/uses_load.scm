@@ -1,5 +1,7 @@
 
-(load "testslow/loaded.scm")
+(define filename "testslow/loaded.scm")
+
+(load filename)
 
 (display the-value)
 

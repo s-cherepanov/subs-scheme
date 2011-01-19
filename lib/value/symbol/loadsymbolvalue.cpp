@@ -125,8 +125,11 @@ SpecialSymbolEvaluator::ESymbolType LoadSymbolValue::Apply(
 
     assert( it != combo->end() ); // the filename
 
-    const Value* value = *it;
-    const StringValue* stringvalue = dynamic_cast<const StringValue*>( *it );
+    std::auto_ptr<Value> evald_value = evaluator->EvalInContext( *it,
+         environment, outstream, false );
+
+    const Value* value = evald_value.get();
+    const StringValue* stringvalue = dynamic_cast<const StringValue*>( value );
 
     if( !stringvalue )
     {

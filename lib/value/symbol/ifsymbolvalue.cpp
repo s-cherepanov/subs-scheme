@@ -84,8 +84,7 @@ SpecialSymbolEvaluator::ESymbolType IfSymbolValue::Apply(
     ++it; // Move to "true" value
     assert( it != combo->end() );
 
-    std::auto_ptr<Value> evald_pred = ev.evaluator_->EvalInContext( predicate,
-        ev.environment_, ev.outstream_, false );
+    std::auto_ptr<Value> evald_pred = ev.SubEval( predicate );
 
     if( ValueUtilities::IsFalse( evald_pred.get() ) )
     {

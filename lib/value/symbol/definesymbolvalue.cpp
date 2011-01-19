@@ -41,10 +41,9 @@ namespace
 std::auto_ptr<Value> eval_define_symbol( EvaluationContext& ev,
     const SymbolValue* to_define, const Value* definition )
 {
-    auto_ptr<Value> value = ev.evaluator_->EvalInContext( definition,
-        ev.environment_, ev.outstream_, false );
+    auto_ptr<Value> value = ev.SubEval( definition );
 
-    DefineUtilities::insert_value_into_environment( ev.environment_,
+    DefineUtilities::insert_value_into_environment( ev.GetEnvironment(),
         to_define->GetStringValue(), value );
 
     return auto_ptr<Value>( to_define->Clone() );
@@ -95,7 +94,8 @@ std::auto_ptr<Value> eval_define( EvaluationContext& ev,
 
         return eval_define_symbol( ev, sym,
             DefineUtilities::define_procedure( itarg, comb_to_define->end(), it,
-                combo->end(), ev.environment_, sym->GetStringValue() ).get() );
+                combo->end(), ev.GetEnvironment(),
+                sym->GetStringValue() ).get() );
     }
     else
     {

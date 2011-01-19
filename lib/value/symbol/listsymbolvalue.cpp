@@ -47,8 +47,7 @@ std::auto_ptr<Value> eval_list_elems( CombinationValue::const_iterator it,
     ++it;
 
     return std::auto_ptr<Value>( new PairValue(
-        ev.evaluator_->EvalInContext( value, ev.environment_, ev.outstream_,
-            false ), eval_list_elems( it, ev, combo ) ) );
+        ev.SubEval( value ), eval_list_elems( it, ev, combo ) ) );
 }
 
 }

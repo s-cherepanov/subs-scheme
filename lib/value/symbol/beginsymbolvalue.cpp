@@ -72,8 +72,7 @@ SpecialSymbolEvaluator::ESymbolType BeginSymbolValue::Apply(
 
     for( ; it != itend; ++it )
     {
-        ev.evaluator_->EvalInContext( *it, ev.environment_, ev.outstream_,
-            false );
+        ev.SubEval( *it );
     }
 
     existing_value = *it;

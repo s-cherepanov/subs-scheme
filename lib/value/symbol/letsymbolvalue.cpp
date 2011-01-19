@@ -143,8 +143,7 @@ void evaluate_symbol_values( const CombinationValue* pairs,
         }
 
         retsymvalpairs.Insert( count, name->GetStringValue(),
-            ev.evaluator_->EvalInContext( value, ev.environment_,
-                ev.outstream_, false ) );
+            ev.SubEval( value ) );
     }
 }
 
@@ -188,7 +187,7 @@ const Value* process_let_tail_call( EvaluationContext& ev,
     // into the environment.
     for( size_t idx = 0; idx != symvalpairs.size(); ++idx )
     {
-        DefineUtilities::insert_value_into_environment( ev.environment_,
+        DefineUtilities::insert_value_into_environment( ev.GetEnvironment(),
             symvalpairs.GetSymbol( idx ), symvalpairs.GetValue( idx ) );
     }
 
@@ -209,8 +208,7 @@ const Value* process_let_tail_call( EvaluationContext& ev,
     {
         // eval_in_context returns an auto_ptr, so
         // each returned value will be deleted.
-        ev.evaluator_->EvalInContext( *it, ev.environment_, ev.outstream_,
-            false );
+        ev.SubEval( *it );
     }
 
     return *it;
@@ -303,12 +301,11 @@ std::auto_ptr<Value> eval_let_not_tail_call( EvaluationContext& ev,
     }
 
     std::auto_ptr<Value> lambda = LambdaUtilities::eval_lambda(
-        lambdadefn.get(), ev.environment_ );
+        lambdadefn.get(), ev.GetEnvironment() );
 
     *(lambdacall->begin()) = lambda.release();
 
-    return ev.evaluator_->EvalInContext( lambdacall.get(), ev.environment_,
-        ev.outstream_, false );
+    return ev.SubEval( lambdacall.get() );
 }
 
 }
@@ -337,7 +334,7 @@ SpecialSymbolEvaluator::ESymbolType LetSymbolValue::Apply(
     EvaluationContext& ev, const CombinationValue* combo,
     std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    if( ev.is_tail_call_ )
+    if( ev.GetIsTailCall() )
     {
         existing_value = process_let_tail_call( ev, combo );
 

@@ -63,18 +63,17 @@ SpecialSymbolEvaluator::ESymbolType DisplaySymbolValue::Apply(
             1 );
     }
 
-    std::auto_ptr<Value> value = ev.evaluator_->EvalInContext(
-        (*combo)[1], ev.environment_, ev.outstream_, false );
+    std::auto_ptr<Value> value = ev.SubEval( (*combo)[1] );
 
     const StringValue* stringvalue = dynamic_cast< const StringValue* >(
         value.get() );
     if( stringvalue )
     {
-        ev.outstream_ << stringvalue->GetStringValue();
+        ev.GetOutStream() << stringvalue->GetStringValue();
     }
     else
     {
-        ev.outstream_ << PrettyPrinter::Print( value.get() );
+        ev.GetOutStream() << PrettyPrinter::Print( value.get() );
     }
 
     existing_value = NULL;

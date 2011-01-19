@@ -43,8 +43,7 @@ void apply_car_or_cdr(
     EvaluationContext& ev, const Value* arg, char a_or_d,
     const std::string& token_name, std::auto_ptr<Value>& new_value )
 {
-    std::auto_ptr<Value> evald_arg = ev.evaluator_->EvalInContext( arg,
-        ev.environment_, ev.outstream_, false );
+    std::auto_ptr<Value> evald_arg = ev.SubEval( arg );
 
     PairValue* pair = dynamic_cast<PairValue*>( evald_arg.get() );
 
@@ -66,8 +65,7 @@ void apply_car_or_cdr(
         selected = pair->GetSecond();
     }
 
-    new_value = ev.evaluator_->EvalInContext( selected, ev.environment_,
-        ev.outstream_, false );
+    new_value = ev.SubEval( selected );
 }
 
 void apply_all( EvaluationContext& ev, const Value* arg,

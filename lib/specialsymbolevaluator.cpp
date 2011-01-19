@@ -57,7 +57,7 @@ SpecialSymbolEvaluator::ProcessSpecialSymbol(
 
     // If it's defined in the current environment, this overrides any
     // special symbols, so we bail out.
-    if( ev_.environment_->FindSymbol( sym->GetStringValue() ) )
+    if( ev_.GetEnvironment()->FindSymbol( sym->GetStringValue() ) )
     {
         return eNoSpecialSymbol;
     }

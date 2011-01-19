@@ -61,8 +61,7 @@ const Value* eval_predicate( EvaluationContext& ev,
 
     for( ; it != itlast; ++it )
     {
-        std::auto_ptr<Value> value = ev.evaluator_->EvalInContext( *it,
-            ev.environment_, ev.outstream_, false );
+        std::auto_ptr<Value> value = ev.SubEval( *it );
         if( PredicateProperties::EarlyExit( value.get() ) )
         {
             // One of the arguments allow us to exit early - set the answer

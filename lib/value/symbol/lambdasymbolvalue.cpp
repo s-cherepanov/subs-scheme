@@ -47,7 +47,7 @@ SpecialSymbolEvaluator::ESymbolType LambdaSymbolValue::Apply(
     EvaluationContext& ev, const CombinationValue* combo,
     std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
 {
-    new_value = LambdaUtilities::eval_lambda( combo, ev.environment_ );
+    new_value = LambdaUtilities::eval_lambda( combo, ev.GetEnvironment() );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

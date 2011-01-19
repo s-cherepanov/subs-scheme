@@ -43,8 +43,7 @@ using namespace std;
 namespace
 {
 
-void interpret_stream( istream& instream, Evaluator* evaluator,
-    boost::shared_ptr<Environment>& environment, ostream& outstream )
+void interpret_stream( istream& instream, EvaluationContext& ev )
 {
     // TODO: share code with SubsInterpreter?
 
@@ -54,22 +53,21 @@ void interpret_stream( istream& instream, Evaluator* evaluator,
     auto_ptr<Value> value = parser.NextValue();
     while( value.get() )
     {
-        string output = PrettyPrinter::Print( evaluator->EvalInContext(
-            value.get(), environment, outstream, true ).get() );
+        string output = PrettyPrinter::Print( ev.SubEval( value.get()
+            ).get() );
 
         value = parser.NextValue();
     }
 }
 
-void load_file( const string& filename, Evaluator* evaluator,
-    boost::shared_ptr<Environment>& environment, ostream& outstream )
+void load_file( const string& filename, EvaluationContext& ev )
 {
     ifstream instream( filename.c_str() );
     if( instream.good() )
     {
         try
         {
-            interpret_stream( instream, evaluator, environment, outstream );
+            interpret_stream( instream, ev );
         }
         catch( const exception& e )
         {
@@ -126,8 +124,7 @@ SpecialSymbolEvaluator::ESymbolType LoadSymbolValue::Apply(
 
     assert( it != combo->end() ); // the filename
 
-    std::auto_ptr<Value> evald_value = ev.evaluator_->EvalInContext( *it,
-         ev.environment_, ev.outstream_, false );
+    std::auto_ptr<Value> evald_value = ev.SubEval( *it );
 
     const Value* value = evald_value.get();
     const StringValue* stringvalue = dynamic_cast<const StringValue*>( value );
@@ -138,8 +135,7 @@ SpecialSymbolEvaluator::ESymbolType LoadSymbolValue::Apply(
             "- '" + PrettyPrinter::Print( value ) + "' is not a string." );
     }
 
-    load_file( stringvalue->GetStringValue(), ev.evaluator_, ev.environment_,
-        ev.outstream_ );
+    load_file( stringvalue->GetStringValue(), ev );
 
     existing_value = NULL;
     return SpecialSymbolEvaluator::eEvaluateExistingSymbol;

@@ -57,7 +57,7 @@ SpecialSymbolEvaluator::ESymbolType NewlineSymbolValue::Apply(
             0 );
     }
 
-    ev.outstream_ << std::endl;
+    ev.GetOutStream() << std::endl;
 
     existing_value = NULL;
     return SpecialSymbolEvaluator::eEvaluateExistingSymbol;

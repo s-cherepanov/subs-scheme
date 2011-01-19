@@ -17,39 +17,29 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef EVALUATION_CONTEXT_H
-#define EVALUATION_CONTEXT_H
-
 #include <iosfwd>
 #include <memory>
 
 #include <boost/shared_ptr.hpp>
 
+#include "lib/evaluationcontext.h"
+#include "lib/evaluator.h"
 #include "lib/value/value.h"
 
 class Evaluator;
 class Environment;
 
-class EvaluationContext
+EvaluationContext::EvaluationContext( Evaluator* evaluator,
+    boost::shared_ptr<Environment>& environment, std::ostream& outstream,
+    bool is_tail_call )
+: evaluator_( evaluator )
+, environment_( environment )
+, outstream_( outstream )
+, is_tail_call_( is_tail_call )
 {
-public:
-    EvaluationContext( Evaluator* evaluator,
-        boost::shared_ptr<Environment>& environment, std::ostream& outstream,
-        bool is_tail_call );
+}
 
-    std::auto_ptr<Value> SubEval( const Value* value );
-
-    boost::shared_ptr<Environment>& GetEnvironment() { return environment_; }
-
-    std::ostream& GetOutStream() { return outstream_; }
-
-    bool GetIsTailCall() { return is_tail_call_; }
-
-private:
-    Evaluator* evaluator_;
-    boost::shared_ptr<Environment>& environment_;
-    std::ostream& outstream_;
-    bool is_tail_call_;
-};
-
-#endif
+std::auto_ptr<Value> EvaluationContext::SubEval( const Value* value )
+{
+    return evaluator_->EvalInContext( value, environment_, outstream_, false );
+}

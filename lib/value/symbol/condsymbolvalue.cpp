@@ -128,8 +128,7 @@ const Value* process_cond( EvaluationContext& ev,
         }
         else
         {
-            std::auto_ptr<Value> evald_test = ev.evaluator_->EvalInContext(
-                test, ev.environment_, ev.outstream_, false );
+            std::auto_ptr<Value> evald_test = ev.SubEval( test );
 
             if( ValueUtilities::IsTrue( evald_test.get() ) )
             {

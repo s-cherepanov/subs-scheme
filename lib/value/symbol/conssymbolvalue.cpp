@@ -74,10 +74,8 @@ SpecialSymbolEvaluator::ESymbolType ConsSymbolValue::Apply(
     assert( it != combo->end() ); // Third of 3 - second in pair
 
     new_value = std::auto_ptr<Value>( new PairValue(
-        ev.evaluator_->EvalInContext( first, ev.environment_, ev.outstream_,
-            false ),
-        ev.evaluator_->EvalInContext( *it,   ev.environment_, ev.outstream_,
-            false ) ) );
+        ev.SubEval( first ),
+        ev.SubEval( *it ) ) );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

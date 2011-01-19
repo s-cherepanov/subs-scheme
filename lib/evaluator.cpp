@@ -152,8 +152,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         CombinationValue::const_iterator cmbit = combo->begin();
 
         // Evaluate the operator
-        auto_ptr<Value> evaldoptr = EvalInContext( *cmbit, run_env,
-            outstream, false );
+        auto_ptr<Value> evaldoptr = ev.SubEval( *cmbit );
 
         switch( special_symbol_evaluator.ProcessSpecialSymbol( evaldoptr.get(),
             combo ) )
@@ -196,8 +195,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         auto_ptr<CombinationValue> argvalues( new CombinationValue );
         for( ; cmbit != combo->end(); ++cmbit )
         {
-            argvalues->push_back( EvalInContext( *cmbit, run_env, outstream,
-                false ).release() );
+            argvalues->push_back( ev.SubEval( *cmbit ).release() );
         }
 
         // If it's a built-in procedure, simply run it
@@ -235,7 +233,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         {
             // eval_in_context returns an auto_ptr, so
             // each returned value will be deleted.
-            EvalInContext( *itbody, run_env, outstream, false );
+            ev.SubEval( *itbody );
         }
 
         // TODO: Tail recursion modulo cons

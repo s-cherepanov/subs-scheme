@@ -247,12 +247,10 @@ std::auto_ptr<Value> eval_let_not_tail_call( EvaluationContext& ev,
     }
 
     // Construct a new lambda function and the args to pass to it
-    // TODO: lambdacall could be on the stack?
-    std::auto_ptr<CombinationValue> lambdacall =
-        std::auto_ptr<CombinationValue>( new CombinationValue );
+    CombinationValue lambdacall;
 
-    lambdacall->push_back( NULL ); // Create a slot where the (lambda ...)
-                                   // will go.
+    lambdacall.push_back( NULL ); // Create a slot where the (lambda ...)
+                                  // will go.
 
     std::auto_ptr<CombinationValue> argnames = std::auto_ptr<CombinationValue>(
         new CombinationValue );
@@ -285,7 +283,7 @@ std::auto_ptr<Value> eval_let_not_tail_call( EvaluationContext& ev,
         argnames->push_back( (*itinpair)->Clone() );
         ++itinpair;
         assert( itinpair != pair->end() ); // Second of 2
-        lambdacall->push_back( (*itinpair)->Clone() );
+        lambdacall.push_back( (*itinpair)->Clone() );
     }
 
     std::auto_ptr<CombinationValue> lambdadefn =
@@ -303,9 +301,9 @@ std::auto_ptr<Value> eval_let_not_tail_call( EvaluationContext& ev,
     std::auto_ptr<Value> lambda = LambdaUtilities::eval_lambda(
         lambdadefn.get(), ev.GetEnvironment() );
 
-    *(lambdacall->begin()) = lambda.release();
+    *(lambdacall.begin()) = lambda.release();
 
-    return ev.SubEval( lambdacall.get() );
+    return ev.SubEval( &lambdacall );
 }
 
 }

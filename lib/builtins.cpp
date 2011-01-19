@@ -28,6 +28,7 @@
 #include "lib/value/nativefunction/expnativefunctionvalue.h"
 #include "lib/value/nativefunction/greaterthannativefunctionvalue.h"
 #include "lib/value/nativefunction/lessthannativefunctionvalue.h"
+#include "lib/value/nativefunction/loadnativefunctionvalue.h"
 #include "lib/value/nativefunction/lognativefunctionvalue.h"
 #include "lib/value/nativefunction/minnativefunctionvalue.h"
 #include "lib/value/nativefunction/minusnativefunctionvalue.h"
@@ -103,10 +104,13 @@ void Init( Environment& environment )
     InsertProcedure<TanNativeFunctionValue>(       environment );
     InsertProcedure<ZeroNativeFunctionValue>(     environment );
 
-    // Question functions
+    // Questions
     InsertProcedure<EqualNativeFunctionValue>(    environment );
     InsertProcedure<PairNativeFunctionValue>(     environment );
     InsertProcedure<NullNativeFunctionValue>(     environment );
+
+    // Scheme evaluation
+    InsertProcedure<LoadNativeFunctionValue>(     environment );
 }
 
 }

@@ -17,31 +17,29 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef LOADSYMBOLVALUE_H
-#define LOADSYMBOLVALUE_H
+#ifndef LOADNATIVEFUNCTIONVALUE_H
+#define LOADNATIVEFUNCTIONVALUE_H
 
 #include <memory>
 #include <string>
 
-#include "lib/value/symbol/specialsymbolvalue.h"
-#include "lib/value/value.h"
-#include "lib/specialsymbolevaluator.h"
+#include "lib/value/nativefunction/nativefunctionvalue.h"
 
 class CombinationValue;
 class EvaluationContext;
+class Value;
 
-class LoadSymbolValue : public SpecialSymbolValue
+class LoadNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    virtual const std::string& GetStringValue() const;
+    virtual std::auto_ptr<Value> Run( EvaluationContext& ev,
+        const CombinationValue* combo ) const;
 
-    static const std::string& StaticValue();
+    virtual LoadNativeFunctionValue* Clone() const;
 
-    virtual LoadSymbolValue* Clone() const;
+    virtual std::string GetName() const;
 
-    virtual SpecialSymbolEvaluator::ESymbolType Apply(
-        EvaluationContext& ev, const CombinationValue* combo,
-        std::auto_ptr<Value>& new_value, const Value*& existing_value ) const;
+    static const std::string& StaticName();
 };
 
 #endif

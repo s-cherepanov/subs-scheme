@@ -17,20 +17,18 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <string>
 
 #include "lib/value/basic/combinationvalue.h"
 #include "lib/value/basic/stringvalue.h"
-#include "lib/value/symbol/loadsymbolvalue.h"
+#include "lib/value/nativefunction/loadnativefunctionvalue.h"
 #include "lib/value/value.h"
 #include "lib/argschecker.h"
-#include "lib/environment.h"
 #include "lib/evaluationcontext.h"
 #include "lib/evaluationerror.h"
-#include "lib/evaluator.h"
 #include "lib/lexer.h"
 #include "lib/parser.h"
 #include "lib/prettyprinter.h"
@@ -85,60 +83,49 @@ void load_file( const string& filename, EvaluationContext& ev )
 
 }
 
-//virtual
-const std::string& LoadSymbolValue::GetStringValue() const
-{
-    return StaticValue();
-}
-
-//static
-const std::string& LoadSymbolValue::StaticValue()
-{
-    static const std::string ret( "load" );
-    return ret;
-}
 
 //virtual
-LoadSymbolValue* LoadSymbolValue::Clone() const
+std::auto_ptr<Value> LoadNativeFunctionValue::Run(
+    EvaluationContext& ev, const CombinationValue* argvalues ) const
 {
-    return new LoadSymbolValue( *this );
-}
+    ArgsChecker::CheckExactNumberOfArgs( "load", argvalues, 1 );
 
-//virtual
-SpecialSymbolEvaluator::ESymbolType LoadSymbolValue::Apply(
-    EvaluationContext& ev, const CombinationValue* combo,
-    std::auto_ptr<Value>& new_value, const Value*& existing_value ) const
-{
-    // TODO: make this a native procedure?  Check others?
+    CombinationValue::const_iterator it = argvalues->begin();
 
-    if( combo->size() != 2 )
-    {
-        ArgsChecker::ThrowWrongNumArgsException( "load", combo->size() - 1, 1 );
-    }
+    assert( it != argvalues->end() ); // We have checked there is 1 arg
 
-    CombinationValue::const_iterator it = combo->begin();
-
-    assert( it != combo->end() ); // "load" (ignore)
-
-    ++it;
-
-    assert( it != combo->end() ); // the filename
-
-    std::auto_ptr<Value> evald_value = ev.SubEval( *it );
-
-    const Value* value = evald_value.get();
-    const StringValue* stringvalue = dynamic_cast<const StringValue*>( value );
+    const StringValue* stringvalue = dynamic_cast<const StringValue*>( *it );
 
     if( !stringvalue )
     {
         throw EvaluationError( "The argument to load must be a string filename "
-            "- '" + PrettyPrinter::Print( value ) + "' is not a string." );
+            "- '" + PrettyPrinter::Print( *it ) + "' is not a string." );
     }
 
     load_file( stringvalue->GetStringValue(), ev );
 
-    existing_value = NULL;
-    return SpecialSymbolEvaluator::eEvaluateExistingSymbol;
+    return std::auto_ptr<Value>( NULL );
+}
+
+
+//virtual
+LoadNativeFunctionValue* LoadNativeFunctionValue::Clone() const
+{
+    return new LoadNativeFunctionValue( *this );
+}
+
+
+//virtual
+std::string LoadNativeFunctionValue::GetName() const
+{
+    return StaticName();
+}
+
+//static
+const std::string& LoadNativeFunctionValue::StaticName()
+{
+    static const string static_name( "load" );
+    return static_name;
 }
 
 

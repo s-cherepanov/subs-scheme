@@ -130,7 +130,6 @@ ValueFactory::ValueFactory()
     add_to_map<LambdaSymbolValue>(  special_symbols_ );
     add_to_map<LetSymbolValue>(     special_symbols_ );
     add_to_map<ListSymbolValue>(    special_symbols_ );
-    add_to_map<LoadSymbolValue>(    special_symbols_ );
     add_to_map<NewlineSymbolValue>( special_symbols_ );
     add_to_map<OrSymbolValue>(      special_symbols_ );
 }

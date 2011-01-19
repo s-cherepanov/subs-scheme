@@ -87,7 +87,7 @@ std::auto_ptr<Value> ForEachNativeFunctionValue::Run(
         list_value = pair->GetSecond();
     }
 
-    return std::auto_ptr<Value>( NULL );
+    return std::auto_ptr<Value>( new NilValue );
 }
 
 

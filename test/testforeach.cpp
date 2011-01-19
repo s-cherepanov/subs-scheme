@@ -33,7 +33,7 @@ void runs_all_commands()
         "(define (fn)"
         "        (for-each display (list 0 1 2)))" );
 
-    TEST_ASSERT_EQUAL( interpreter.Interpret( "(fn)" ), "012" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(fn)" ), "012()" );
 }
 
 void wrong_num_args_is_an_error()

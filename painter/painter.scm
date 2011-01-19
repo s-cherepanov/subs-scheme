@@ -1,17 +1,4 @@
 
-; --- Standard libraries ---
-
-; TODO: these will be provided with subs at some point
-
-(define (fakebegin a b)
-    b)
-
-(define (for-each func items)
-    (if (null? items)
-        nil
-        (fakebegin (func (car items))
-               (for-each func (cdr items)))))
-
 (define (make-vect x y)
     (cons x y))
 

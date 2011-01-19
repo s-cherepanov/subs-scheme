@@ -117,7 +117,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
     while( true )
     {
 
-        EvaluationContext ev( this, run_env, outstream, is_tail_call );
+        EvaluationContext ev( *this, run_env, outstream, is_tail_call );
         SpecialSymbolEvaluator special_symbol_evaluator( ev );
 
         // If value is a symbol, we look it up and return the result

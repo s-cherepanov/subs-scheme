@@ -33,7 +33,7 @@ class Environment;
 class EvaluationContext
 {
 public:
-    EvaluationContext( Evaluator* evaluator,
+    EvaluationContext( Evaluator& evaluator,
         boost::shared_ptr<Environment>& environment, std::ostream& outstream,
         bool is_tail_call );
 
@@ -46,7 +46,7 @@ public:
     bool GetIsTailCall() { return is_tail_call_; }
 
 private:
-    Evaluator* evaluator_;
+    Evaluator& evaluator_;
     boost::shared_ptr<Environment>& environment_;
     std::ostream& outstream_;
     bool is_tail_call_;

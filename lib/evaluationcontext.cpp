@@ -29,7 +29,7 @@
 class Evaluator;
 class Environment;
 
-EvaluationContext::EvaluationContext( Evaluator* evaluator,
+EvaluationContext::EvaluationContext( Evaluator& evaluator,
     boost::shared_ptr<Environment>& environment, std::ostream& outstream,
     bool is_tail_call )
 : evaluator_( evaluator )
@@ -41,5 +41,5 @@ EvaluationContext::EvaluationContext( Evaluator* evaluator,
 
 std::auto_ptr<Value> EvaluationContext::SubEval( const Value* value )
 {
-    return evaluator_->EvalInContext( value, environment_, outstream_, false );
+    return evaluator_.EvalInContext( value, environment_, outstream_, false );
 }

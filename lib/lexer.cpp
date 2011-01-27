@@ -41,8 +41,8 @@ Token handle_string( const string& collected_string, unsigned int column )
         column - ( collected_string.size() + 2 ) );
 }
 
-Token handle_bracket( const string& collected_string, const char bracket,
-    unsigned int column, char& ret_spill_char )
+Token handle_single_char_token( const string& collected_string,
+    const char bracket, unsigned int column, char& ret_spill_char )
 {
     // If bracket is the first thing we find, just return it
     if( collected_string.empty() )
@@ -163,8 +163,9 @@ Token Lexer::NextToken()
         {
             case '(':
             case ')':
+            case '\'':
             {
-                return handle_bracket( collected_string, c, column_,
+                return handle_single_char_token( collected_string, c, column_,
                     spill_char_ );
             }
             case '\n':

@@ -70,6 +70,23 @@ void in_function()
 }
 
 
+void single_quote_form()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "'a" ), "a" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "'(+ 1 2)" ), "(+ 1 2)" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "'\"abc\"" ), "\"abc\"" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "'145932" ),  "145932" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "'#t" ),      "#t" );
+
+    interpreter.Interpret(
+        "(define (func)"
+        "               '(* 4 (+ 2 1)))" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(func)" ), "(* 4 (+ 2 1))" );
+}
+
 }
 
 #define SUITENAME "TestQuote"
@@ -81,5 +98,6 @@ void TestQuote::Run() const
     RUN_TEST(combination);
     RUN_TEST(literals);
     RUN_TEST(in_function);
+    RUN_TEST(single_quote_form);
 }
 

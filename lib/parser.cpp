@@ -20,6 +20,7 @@
 #include <memory>
 
 #include "lib/value/basic/combinationvalue.h"
+#include "lib/value/symbol/quotesymbolvalue.h"
 #include "lib/ilexer.h"
 #include "lib/parser.h"
 #include "lib/token.h"
@@ -65,6 +66,23 @@ std::auto_ptr<Value> next_value_from_token( ILexer& lexer,
             ret->push_back( next_value_from_token( lexer, token,
                 value_factory ).release() );
         }
+        return auto_ptr<Value>( ret.release() );
+    }
+    else if( token.Name() == "'" )
+    {
+        // TODO: more efficient way than creating a new combination?
+        auto_ptr<CombinationValue> ret( new CombinationValue );
+        ret->push_back( new QuoteSymbolValue );
+
+        token = lexer.NextToken();
+        if( token.IsEndOfStream() )
+        {
+            // TODO: Unfinished quote, not combo!
+            throw UnfinishedCombinationException();
+        }
+        ret->push_back( next_value_from_token( lexer, token, value_factory
+            ).release() );
+
         return auto_ptr<Value>( ret.release() );
     }
     else

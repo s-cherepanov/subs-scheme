@@ -419,6 +419,69 @@ void string_containing_bracket()
 
 
 
+void single_quote_symbol()
+{
+    istringstream ss( "'foo" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "'" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "foo" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
+}
+
+
+void single_quote_splitting_symbols()
+{
+    istringstream ss( "foo'bar" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "foo" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "'" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "bar" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
+}
+
+
+void single_quote_after_other()
+{
+    istringstream ss( "foo 'bar" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "foo" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "'" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "bar" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
+}
+
+
+void single_quote_before_bracket()
+{
+    istringstream ss( "'(foo" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "'" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "(" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "foo" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
+}
+
+
+
+void single_quote_after_bracket()
+{
+    istringstream ss( "(foo)' bar" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "(" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "foo" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), ")" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "'" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "bar" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
+}
+
+
+
 
 
 }
@@ -446,5 +509,10 @@ void TestLexer::Run() const
     RUN_TEST(string_containing_space);
     RUN_TEST(string_containing_bracket);
     // NOTDONE: string_with_escaped_quote();
+    RUN_TEST(single_quote_symbol);
+    RUN_TEST(single_quote_splitting_symbols);
+    RUN_TEST(single_quote_after_other);
+    RUN_TEST(single_quote_before_bracket);
+    RUN_TEST(single_quote_after_bracket);
 }
 

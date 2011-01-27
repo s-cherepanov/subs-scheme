@@ -35,19 +35,26 @@ void symbol()
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(quote a)" ), "a" );
 }
 
-
-
 void wrong_number_of_args_is_an_error()
 {
     TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "quote", 1 );
 }
 
 
-
 void combination()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "(quote (+ 1 2))" ),
         "(+ 1 2)" );
+}
+
+
+void literals()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quote \"abc\")" ), "\"abc\"" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quote 145932)" ),  "145932" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quote #t)" ),      "#t" );
 }
 
 
@@ -60,5 +67,6 @@ void TestQuote::Run() const
     RUN_TEST(symbol);
     RUN_TEST(wrong_number_of_args_is_an_error);
     RUN_TEST(combination);
+    RUN_TEST(literals);
 }
 

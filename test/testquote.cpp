@@ -58,6 +58,18 @@ void literals()
 }
 
 
+void in_function()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (func)"
+        "               (quote (* 4 (+ 2 1))))" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(func)" ), "(* 4 (+ 2 1))" );
+}
+
+
 }
 
 #define SUITENAME "TestQuote"
@@ -68,5 +80,6 @@ void TestQuote::Run() const
     RUN_TEST(wrong_number_of_args_is_an_error);
     RUN_TEST(combination);
     RUN_TEST(literals);
+    RUN_TEST(in_function);
 }
 

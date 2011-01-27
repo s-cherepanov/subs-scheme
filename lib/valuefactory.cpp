@@ -36,6 +36,7 @@
 #include "lib/value/symbol/listsymbolvalue.h"
 #include "lib/value/symbol/newlinesymbolvalue.h"
 #include "lib/value/symbol/orsymbolvalue.h"
+#include "lib/value/symbol/quotesymbolvalue.h"
 #include "lib/value/basic/decimalvalue.h"
 #include "lib/value/basic/integervalue.h"
 #include "lib/value/basic/stringvalue.h"
@@ -131,6 +132,7 @@ ValueFactory::ValueFactory()
     add_to_map<ListSymbolValue>(    special_symbols_ );
     add_to_map<NewlineSymbolValue>( special_symbols_ );
     add_to_map<OrSymbolValue>(      special_symbols_ );
+    add_to_map<QuoteSymbolValue>(   special_symbols_ );
 }
 
 ValueFactory::~ValueFactory()

@@ -47,6 +47,7 @@
 #include "test/testpredicates.h"
 #include "test/testprettyprintconstants.h"
 #include "test/testquestionfunctions.h"
+#include "test/testquote.h"
 #include "test/testrepl.h"
 #include "test/testtailcalloptimisation.h"
 #include "test/testtokenlist.h"
@@ -86,6 +87,7 @@ int main()
         TestCadr(                 ).Run();
         TestBegin(                ).Run();
         TestForEach(              ).Run();
+        TestQuote(                ).Run();
     }
     catch( AssertionFailed& e )
     {

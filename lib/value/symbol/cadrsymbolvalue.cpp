@@ -25,6 +25,7 @@
 #include "lib/value/basic/combinationvalue.h"
 #include "lib/value/basic/pairvalue.h"
 #include "lib/value/symbol/cadrsymbolvalue.h"
+#include "lib/value/symbol/listsymbolvalue.h"
 #include "lib/value/value.h"
 #include "lib/argschecker.h"
 #include "lib/environment.h"
@@ -65,7 +66,7 @@ void apply_car_or_cdr(
         selected = pair->GetSecond();
     }
 
-    new_value = ev.SubEval( selected );
+    new_value.reset( selected->Clone() );
 }
 
 void apply_all( EvaluationContext& ev, const Value* arg,

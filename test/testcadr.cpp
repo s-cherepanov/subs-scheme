@@ -18,8 +18,18 @@
 **/
 
 #include <string>
+#include <sstream>
 
+#include <boost/shared_ptr.hpp>
+
+#include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/nilvalue.h"
+#include "lib/value/basic/pairvalue.h"
+#include "lib/value/symbol/cadrsymbolvalue.h"
+#include "lib/value/symbol/customsymbolvalue.h"
+#include "lib/evaluationcontext.h"
 #include "lib/evaluationerror.h"
+#include "lib/evaluator.h"
 #include "lib/subsinterpreter.h"
 #include "test/assertmacros.h"
 #include "test/testcadr.h"
@@ -86,6 +96,53 @@ void symbols()
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(cdaddr y)" ), "20" );
 }
 
+void doesnt_eval_elems()
+{
+    CombinationValue combo;
+
+    combo.push_back( NULL );
+
+    combo.push_back(
+        new PairValue(
+            std::auto_ptr<Value>( new CustomSymbolValue( "a" ) ),
+            std::auto_ptr<Value>( new PairValue(
+                std::auto_ptr<Value>( new CustomSymbolValue( "b" ) ),
+                std::auto_ptr<Value>( new PairValue(
+                    std::auto_ptr<Value>( new CustomSymbolValue( "c" ) ),
+                    std::auto_ptr<Value>( new NilValue ) ) ) ) ) )
+            );
+
+    Evaluator evaluator;
+    boost::shared_ptr<Environment> environment( new Environment );
+    std::ostringstream outstream;
+    EvaluationContext ev( evaluator, environment, outstream, false );
+
+    std::auto_ptr<Value> new_value;
+    const Value* existing_value = NULL;
+
+    // If cadr evaluates any of these symbols, they won't be found and
+    // an exception will be thrown.
+
+    std::auto_ptr<CadrSymbolValue> car( dynamic_cast<CadrSymbolValue*>(
+        CadrSymbolValue::CreateFromString( "car" ).release() ) );
+
+    std::auto_ptr<CadrSymbolValue> cdr( dynamic_cast<CadrSymbolValue*>(
+        CadrSymbolValue::CreateFromString( "cdr" ).release() ) );
+
+    std::auto_ptr<CadrSymbolValue> cadr( dynamic_cast<CadrSymbolValue*>(
+        CadrSymbolValue::CreateFromString( "cadr" ).release() ) );
+
+    combo[0] = car.get();
+    car->Apply( ev, &combo, new_value, existing_value );
+
+    combo[0] = cdr.get();
+    cdr->Apply( ev, &combo, new_value, existing_value );
+
+    combo[0] = cadr.get();
+    cadr->Apply( ev, &combo, new_value, existing_value );
+
+    combo[0] = NULL;
+}
 
 }
 
@@ -96,5 +153,6 @@ void TestCadr::Run() const
     RUN_TEST(list);
     RUN_TEST(tree);
     RUN_TEST(symbols);
+    RUN_TEST(doesnt_eval_elems);
 }
 

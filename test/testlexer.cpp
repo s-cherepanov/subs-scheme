@@ -482,6 +482,19 @@ void single_quote_after_bracket()
 
 
 
+void single_quoted_empty_combo()
+{
+    istringstream ss( "'()" );
+    Lexer lexer( ss );
+
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "'" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), "(" );
+    TEST_ASSERT_EQUAL( lexer.NextToken().Name(), ")" );
+    TEST_ASSERT_TRUE( lexer.NextToken().IsEndOfStream() );
+}
+
+
+
 
 
 }
@@ -514,5 +527,6 @@ void TestLexer::Run() const
     RUN_TEST(single_quote_after_other);
     RUN_TEST(single_quote_before_bracket);
     RUN_TEST(single_quote_after_bracket);
+    RUN_TEST(single_quoted_empty_combo);
 }
 

@@ -20,9 +20,35 @@
 #include <memory>
 
 #include "lib/value/basic/combinationvalue.h"
+#include "lib/value/basic/nilvalue.h"
+#include "lib/value/basic/pairvalue.h"
 #include "lib/value/symbol/quotesymbolvalue.h"
 #include "lib/value/value.h"
 #include "lib/argschecker.h"
+
+namespace
+{
+
+std::auto_ptr<Value> combo_to_list( CombinationValue::const_iterator it,
+    const CombinationValue* combo )
+{
+    // TODO: make combo and list the same thing, so here we are just
+    //       flipping a boolean flag?
+
+    if( it == combo->end() )
+    {
+        return std::auto_ptr<Value>( new NilValue );
+    }
+
+    const Value* value = *it;
+
+    ++it;
+
+    return std::auto_ptr<Value>( new PairValue(
+        std::auto_ptr<Value>( value->Clone() ), combo_to_list( it, combo ) ) );
+}
+
+}
 
 //virtual
 const std::string& QuoteSymbolValue::GetStringValue() const
@@ -54,7 +80,20 @@ SpecialSymbolEvaluator::ESymbolType QuoteSymbolValue::Apply(
             1 );
     }
 
-    new_value.reset( (*combo)[1]->Clone() );
+    // If the quoted thing is a combination, "unquote" it by converting
+    // it to a list of symbols.
+
+    const CombinationValue* quotedcombo =
+        dynamic_cast<const CombinationValue*>( quotedvalue );
+
+    if( quotedcombo )
+    {
+        new_value = combo_to_list( quotedcombo->begin(), quotedcombo );
+    }
+    else
+    {
+        new_value.reset( quotedvalue->Clone() );
+    }
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

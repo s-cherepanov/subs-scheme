@@ -18,8 +18,12 @@
 **/
 
 #include <string>
+#include <sstream>
 
+#include "lib/value/basic/combinationvalue.h"
 #include "lib/evaluationerror.h"
+#include "lib/lexer.h"
+#include "lib/parser.h"
 #include "lib/subsinterpreter.h"
 #include "test/assertmacros.h"
 #include "test/testquote.h"
@@ -87,6 +91,40 @@ void single_quote_form()
     TEST_ASSERT_EQUAL( interpreter.Interpret( "(func)" ), "(* 4 (+ 2 1))" );
 }
 
+
+
+void quoted_combo_acts_like_list()
+{
+    SubsInterpreter in;
+
+    TEST_ASSERT_EQUAL( in.Interpret( "(car '((+ 2 3) 8))" ), "(+ 2 3)" );
+    TEST_ASSERT_EQUAL( in.Interpret( "(car '(a b c))" ), "a" );
+    TEST_ASSERT_EQUAL( in.Interpret( "(cdr '(a b c))" ), "(b c)" );
+}
+
+
+
+void quoted_empty_combo_parsed_correctly()
+{
+    istringstream ss( "'()" );
+    Lexer lexer( ss );
+    Parser parser( lexer );
+
+    std::auto_ptr<Value> value = parser.NextValue();
+
+    CombinationValue* combo = dynamic_cast<CombinationValue*>( value.get() );
+    TEST_ASSERT_NOT_NULL( combo );
+}
+
+
+void quoted_empty_combo_acts_like_empty_list()
+{
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "'()" ), "()" );
+}
+
+
+
+
 }
 
 #define SUITENAME "TestQuote"
@@ -99,5 +137,8 @@ void TestQuote::Run() const
     RUN_TEST(literals);
     RUN_TEST(in_function);
     RUN_TEST(single_quote_form);
+    RUN_TEST(quoted_combo_acts_like_list);
+    RUN_TEST(quoted_empty_combo_parsed_correctly);
+    RUN_TEST(quoted_empty_combo_acts_like_empty_list);
 }
 

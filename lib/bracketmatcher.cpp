@@ -112,7 +112,8 @@ TokenList BracketMatcher::ReadCombination()
         }
 
         // If we got a bare symbol (no brackets) we exit here
-        if( bracket_level == 0 )
+        // (except that we skip straight past quotes)
+        if( bracket_level == 0 && token.Name() != "'" )
         {
             break;
         }

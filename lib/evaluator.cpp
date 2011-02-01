@@ -146,7 +146,7 @@ std::auto_ptr<Value> Evaluator::EvalInContext( const Value* value,
         {
             // TODO: supply line number, file etc.
             throw EvaluationError(
-                "Attepted to evaluate an empty combination" );
+                "Attempted to evaluate an empty combination" );
         }
 
         CombinationValue::const_iterator cmbit = combo->begin();

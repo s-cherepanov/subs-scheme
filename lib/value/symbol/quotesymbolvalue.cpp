@@ -80,6 +80,8 @@ SpecialSymbolEvaluator::ESymbolType QuoteSymbolValue::Apply(
             1 );
     }
 
+    const Value* quotedvalue = (*combo)[1];
+
     // If the quoted thing is a combination, "unquote" it by converting
     // it to a list of symbols.
 

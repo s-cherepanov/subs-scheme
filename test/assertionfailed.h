@@ -1,6 +1,6 @@
 /*
  *  Subs Scheme Interpreter
- *  Copyright (C) 2010 Andy Balaam
+ *  Copyright (C) 2010, 2011 Andy Balaam
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

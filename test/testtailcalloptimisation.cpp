@@ -253,6 +253,32 @@ void count_with_begin_single_arg_optimised()
 
 
 
+void cdr_doesnt_prevent_optimisation()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (mylength list) "
+                "(define (length-iter total list) "
+                        "(if (null? list) "
+                            "total "
+                            "(length-iter (+ total 1) (cdr list)))) "
+                "(length-iter 0 list)) " );
+
+    interpreter.Interpret(
+        "(define mylist (list 0 1 2 3 4 5 6 7 8 9)) " );
+
+    EvalDepthTracer tracer;
+    interpreter.SetTracer( &tracer );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(mylength mylist)" ), "10" );
+
+    // Even though Lisp recursed to 10 levels, the C++ stack never got beyond 3
+    TEST_ASSERT_EQUAL( tracer.GetMaxEvalDepth(), 3 );
+}
+
+
+
 }
 
 #define SUITENAME "TestTailCallOptimisation"
@@ -268,6 +294,7 @@ void TestTailCallOptimisation::Run() const
     RUN_TEST(count_with_let_optimised);
     RUN_TEST(count_with_begin_optimised);
     RUN_TEST(count_with_begin_single_arg_optimised);
+    RUN_TEST(cdr_doesnt_prevent_optimisation);
 }
 
 

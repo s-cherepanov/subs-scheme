@@ -117,9 +117,36 @@ void quoted_empty_combo_parsed_correctly()
 }
 
 
+
 void quoted_empty_combo_acts_like_empty_list()
 {
     TEST_ASSERT_EQUAL( SubsInterpreter().Interpret( "'()" ), "()" );
+}
+
+
+
+void quoted_nested_combos_act_like_nested_lists()
+{
+    // Note: these 3 agree with mzscheme so they must be right :)
+
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret(
+        "(caaddr '(a b (+ 1 2) d))" ), "+" );
+
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret(
+        "(cadadr '(a (list b c)))" ), "b" );
+
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret(
+        "(cadadr '(a '(b c)))" ), "(b c)" );
+
+}
+
+
+
+void quote_within_quote_is_preserved()
+{
+    // TODO: render quotes with ' instead of (quote)
+    TEST_ASSERT_EQUAL( SubsInterpreter().Interpret(
+        "'(a b c '(d e f))" ), "(a b c (quote (d e f)))" );
 }
 
 
@@ -140,5 +167,7 @@ void TestQuote::Run() const
     RUN_TEST(quoted_combo_acts_like_list);
     RUN_TEST(quoted_empty_combo_parsed_correctly);
     RUN_TEST(quoted_empty_combo_acts_like_empty_list);
+    RUN_TEST(quoted_nested_combos_act_like_nested_lists);
+    RUN_TEST(quote_within_quote_is_preserved);
 }
 

@@ -29,6 +29,8 @@
 namespace
 {
 
+std::auto_ptr<Value> unquote( const Value* quotedvalue );
+
 std::auto_ptr<Value> combo_to_list( CombinationValue::const_iterator it,
     const CombinationValue* combo )
 {
@@ -45,7 +47,31 @@ std::auto_ptr<Value> combo_to_list( CombinationValue::const_iterator it,
     ++it;
 
     return std::auto_ptr<Value>( new PairValue(
-        std::auto_ptr<Value>( value->Clone() ), combo_to_list( it, combo ) ) );
+        std::auto_ptr<Value>( unquote( value ) ),
+        combo_to_list( it, combo ) ) );
+}
+
+/**
+ * Convert this and anything in it, turning each combination
+ * into a list.
+ */
+std::auto_ptr<Value> unquote( const Value* quotedvalue )
+{
+    // If the quoted thing is a combination, "unquote" it by converting
+    // it to a list of symbols.
+
+    const CombinationValue* quotedcombo =
+        dynamic_cast<const CombinationValue*>( quotedvalue );
+
+    if( quotedcombo )
+    {
+        return combo_to_list( quotedcombo->begin(), quotedcombo );
+    }
+    else
+    {
+        return std::auto_ptr<Value>( quotedvalue->Clone() );
+    }
+
 }
 
 }
@@ -80,22 +106,7 @@ SpecialSymbolEvaluator::ESymbolType QuoteSymbolValue::Apply(
             1 );
     }
 
-    const Value* quotedvalue = (*combo)[1];
-
-    // If the quoted thing is a combination, "unquote" it by converting
-    // it to a list of symbols.
-
-    const CombinationValue* quotedcombo =
-        dynamic_cast<const CombinationValue*>( quotedvalue );
-
-    if( quotedcombo )
-    {
-        new_value = combo_to_list( quotedcombo->begin(), quotedcombo );
-    }
-    else
-    {
-        new_value.reset( quotedvalue->Clone() );
-    }
+    new_value = unquote( (*combo)[1] );
 
     return SpecialSymbolEvaluator::eReturnNewValue;
 }

@@ -1,0 +1,79 @@
+> (define a 1)
+a
+
+> (define b 2)
+b
+
+> (list a b)
+(1 2)
+
+> (list 'a 'b)
+(a b)
+
+> (list 'a b)
+(a 2)
+
+> (car '(a b c))
+a
+
+> (cdr '(a b c))
+(b c)
+
+> '()
+()
+
+> (define (memq item x)
+.         (cond ((null? x) #f)
+.               ((eq? item (car x)) x)
+.               (else (memq item (cdr x)))))
+memq
+
+> (memq 'apple '(pear banana prune))
+#f
+
+> (memq 'apple '(x (apple sauce) y apple pear))
+(apple pear)
+
+> (list 'a 'b 'c)
+(a b c)
+
+> (list (list 'george))
+((george))
+
+> (cdr '((x1 x2) (y1 y2)))
+((y1 y2))
+
+> (cadr '((x1 x2) (y1 y2)))
+(y1 y2)
+
+> (pair? (car '(a short list)))
+#f
+
+> (memq 'red '((red shoes) (blue socks)))
+#f
+
+> (memq 'red '(red shoes blue socks))
+(red shoes blue socks)
+
+> (define (myequal? list1 list2)
+.         (cond ((and (null? list1) (null? list2)) #t)
+.               ((or (null? list1) (null? list2)) #f)
+.               (else (and (eq? (car list1) (car list2))
+.                          (myequal? (cdr list1) (cdr list2))))))
+myequal?
+
+> (myequal? '(this is a list) '(this is a list))
+#t
+
+> (myequal? '(this is a list) '(this is a))
+#f
+
+> (myequal? '(this is a list) '(this is a list fool))
+#f
+
+> (myequal? '(this is a list) '(this (is a) list))
+#f
+
+> (car ''abracadabra)
+quote
+

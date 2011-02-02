@@ -17,23 +17,29 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef SYMBOLVALUE_H
-#define SYMBOLVALUE_H
+#ifndef EQNATIVEFUNCTIONVALUE_H
+#define EQNATIVEFUNCTIONVALUE_H
 
+#include <memory>
 #include <string>
 
-#include "lib/value/value.h"
+#include "lib/value/nativefunction/nativefunctionvalue.h"
 
-class SymbolValue : public Value
+class CombinationValue;
+class EvaluationContext;
+class Value;
+
+class EqNativeFunctionValue : public NativeFunctionValue
 {
 public:
-    virtual const std::string& GetStringValue() const = 0;
+    virtual std::auto_ptr<Value> Run( EvaluationContext& ev,
+        const CombinationValue* argvalues ) const;
 
-    friend bool operator==( const SymbolValue& left,
-        const SymbolValue& right );
+    virtual EqNativeFunctionValue* Clone() const;
 
-    friend bool operator!=( const SymbolValue& left,
-        const SymbolValue& right );
+    virtual std::string GetName() const;
+
+    static const std::string& StaticName();
 };
 
 #endif

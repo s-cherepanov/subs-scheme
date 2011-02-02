@@ -17,24 +17,21 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 **/
 
-#ifndef SYMBOLVALUE_H
-#define SYMBOLVALUE_H
+#include "symbolvalue.h"
 
-#include <string>
-
-#include "lib/value/value.h"
-
-class SymbolValue : public Value
+bool operator==( const SymbolValue& left, const SymbolValue& right )
 {
-public:
-    virtual const std::string& GetStringValue() const = 0;
+    // TODO: we can do this more efficiently using typeid, or implementing
+    //       this using a virtual Equals function?
 
-    friend bool operator==( const SymbolValue& left,
-        const SymbolValue& right );
+    return ( ( &left == &right ) ||
+        ( left.GetStringValue() == right.GetStringValue() )
+        );
+}
 
-    friend bool operator!=( const SymbolValue& left,
-        const SymbolValue& right );
-};
-
-#endif
-
+bool operator!=( const SymbolValue& left, const SymbolValue& right )
+{
+    return ( ( &left != &right ) &&
+        ( left.GetStringValue() != right.GetStringValue() )
+        );
+}

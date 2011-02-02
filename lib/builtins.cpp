@@ -22,6 +22,7 @@
 #include "lib/value/basic/truevalue.h"
 #include "lib/value/nativefunction/cosnativefunctionvalue.h"
 #include "lib/value/nativefunction/dividenativefunctionvalue.h"
+#include "lib/value/nativefunction/eqnativefunctionvalue.h"
 #include "lib/value/nativefunction/equalnativefunctionvalue.h"
 #include "lib/value/nativefunction/equalsnativefunctionvalue.h"
 #include "lib/value/nativefunction/evennativefunctionvalue.h"
@@ -103,18 +104,19 @@ void Init( Environment& environment )
     InsertProcedure<RemainderNativeFunctionValue>( environment );
     InsertProcedure<SinNativeFunctionValue>(       environment );
     InsertProcedure<TanNativeFunctionValue>(       environment );
-    InsertProcedure<ZeroNativeFunctionValue>(     environment );
+    InsertProcedure<ZeroNativeFunctionValue>(      environment );
 
     // Questions
-    InsertProcedure<EqualNativeFunctionValue>(    environment );
-    InsertProcedure<PairNativeFunctionValue>(     environment );
-    InsertProcedure<NullNativeFunctionValue>(     environment );
+    InsertProcedure<EqNativeFunctionValue>(    environment );
+    InsertProcedure<EqualNativeFunctionValue>( environment );
+    InsertProcedure<PairNativeFunctionValue>(  environment );
+    InsertProcedure<NullNativeFunctionValue>(  environment );
 
     // Scheme evaluation
-    InsertProcedure<LoadNativeFunctionValue>(     environment );
+    InsertProcedure<LoadNativeFunctionValue>( environment );
 
     // List operations
-    InsertProcedure<ForEachNativeFunctionValue>(  environment );
+    InsertProcedure<ForEachNativeFunctionValue>( environment );
 }
 
 }

@@ -48,6 +48,44 @@ void pair_returns_true_if_pair()
 
 
 
+void wrong_num_args_to_eq_is_an_error()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "eq?", 2 );
+}
+
+
+
+void eq_returns_true_for_identical_symbols()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define x 'xx)" );
+    interpreter.Interpret( "(define x1 'xx)" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(eq? 'xx 'xx)" ),         "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(eq? 'define 'define)" ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(eq? x 'xx)" ),           "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(eq? x x1)" ),            "#t" );
+}
+
+
+
+void eq_returns_false_for_different_symbols()
+{
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret( "(define x 'xx)" );
+    interpreter.Interpret( "(define y 'yy)" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(eq? 'aa 'bb)" ),   "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(eq? x 'define)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(eq? 'define x)" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(eq? x y)" ),       "#f" );
+}
+
+
+
+
 
 }
 
@@ -57,5 +95,8 @@ void TestQuestionFunctions::Run() const
 {
     RUN_TEST(wrong_num_args_to_pair_is_an_error);
     RUN_TEST(pair_returns_true_if_pair);
+    RUN_TEST(wrong_num_args_to_eq_is_an_error)
+    RUN_TEST(eq_returns_true_for_identical_symbols)
+    RUN_TEST(eq_returns_false_for_different_symbols)
 }
 

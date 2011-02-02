@@ -98,6 +98,14 @@ void symbols()
 
 void doesnt_eval_elems()
 {
+    // I'm not totally convinced this test is right - it
+    // checks that cadr etc. doesn't evaluate the expressions
+    // within the list/structure it is walking through.
+    // Theoretically, though, repeated calls to car/cdr
+    // would actually evaluate them?
+    // Anyway, since it deals with pairs, which are simply
+    // cloned when evaluated, I think it is equivalent?
+
     CombinationValue combo;
 
     combo.push_back( NULL );

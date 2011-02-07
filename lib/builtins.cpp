@@ -44,6 +44,7 @@
 #include "lib/value/nativefunction/positivenativefunctionvalue.h"
 #include "lib/value/nativefunction/remaindernativefunctionvalue.h"
 #include "lib/value/nativefunction/sinnativefunctionvalue.h"
+#include "lib/value/nativefunction/symbolnativefunctionvalue.h"
 #include "lib/value/nativefunction/tannativefunctionvalue.h"
 #include "lib/value/nativefunction/timesnativefunctionvalue.h"
 #include "lib/value/nativefunction/zeronativefunctionvalue.h"
@@ -107,10 +108,11 @@ void Init( Environment& environment )
     InsertProcedure<ZeroNativeFunctionValue>(      environment );
 
     // Questions
-    InsertProcedure<EqNativeFunctionValue>(    environment );
-    InsertProcedure<EqualNativeFunctionValue>( environment );
-    InsertProcedure<PairNativeFunctionValue>(  environment );
-    InsertProcedure<NullNativeFunctionValue>(  environment );
+    InsertProcedure<EqNativeFunctionValue>(     environment );
+    InsertProcedure<EqualNativeFunctionValue>(  environment );
+    InsertProcedure<NullNativeFunctionValue>(   environment );
+    InsertProcedure<PairNativeFunctionValue>(   environment );
+    InsertProcedure<SymbolNativeFunctionValue>( environment );
 
     // Scheme evaluation
     InsertProcedure<LoadNativeFunctionValue>( environment );

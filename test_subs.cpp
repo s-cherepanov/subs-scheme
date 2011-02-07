@@ -49,6 +49,7 @@
 #include "test/testquestionfunctions.h"
 #include "test/testquote.h"
 #include "test/testrepl.h"
+#include "test/testsymbols.h"
 #include "test/testtailcalloptimisation.h"
 #include "test/testtokenlist.h"
 
@@ -88,6 +89,7 @@ int main()
         TestBegin(                ).Run();
         TestForEach(              ).Run();
         TestQuote(                ).Run();
+        TestSymbols(              ).Run();
     }
     catch( AssertionFailed& e )
     {

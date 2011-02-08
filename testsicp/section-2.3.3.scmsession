@@ -170,14 +170,6 @@ partial-tree
 list->tree
 
 > (list->tree (list 3 1 2))
+(1 (3 () ()) (2 () ()))
 
-
-> (define (lookup given-key set-of-records)
-.         (cond ((null? set-of-records) false)
-.               ((equal? given-key (key (car set-of-records)))
-.                (car set-of-records))
-.               (else (lookup given-key (cdr set-of-records)))))
-lookup
-
-> insert basic test for above
 

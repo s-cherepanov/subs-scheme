@@ -46,6 +46,7 @@ env.Program(
 	+ Glob( "lib/value/nativefunction/*.cpp")
 	+ Glob( "lib/value/symbol/*.cpp")
 	+ Glob( "scmlib/*.cpp")
+	+ Glob( "cppscm/*.cpp")
 	)
 
 test_cmd = env.Command( ".test.passed", ["subs","test_subs"],

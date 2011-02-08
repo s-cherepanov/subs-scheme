@@ -29,6 +29,7 @@
 #include "test/testcond.h"
 #include "test/testcons.h"
 #include "test/testconstants.h"
+#include "test/testcppscm.h"
 #include "test/testdefineprocedure.h"
 #include "test/testdefinesymbol.h"
 #include "test/testdisplay.h"
@@ -90,6 +91,7 @@ int main()
         TestForEach(              ).Run();
         TestQuote(                ).Run();
         TestSymbols(              ).Run();
+        TestCppScm(               ).Run();
     }
     catch( AssertionFailed& e )
     {

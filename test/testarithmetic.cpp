@@ -214,6 +214,57 @@ void remainder_produces_modulus()
 }
 
 
+
+void quotient_with_wrong_num_arguments_is_an_error()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "quotient", 2 );
+}
+
+
+void quotient_with_nonint_arguments_is_an_error()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_THROWS_BEGIN
+    {
+        interpreter.Interpret( "(quotient 5.1 2.1)" );
+    }
+    TEST_ASSERT_THROWS_END("Invalid argument")
+}
+
+void quotient_produces_integer_division()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quotient 6 2)" ), "3" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quotient 5 2)" ), "2" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quotient 8 3)" ), "2" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quotient -8 3)" ), "-2" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quotient 5 -2)" ), "-2" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(quotient -6 -2)" ), "3" );
+}
+
+void quotient_times_divisor_plus_remainder_equals_dividend()
+{
+    // From R5RS section 6.2.5 - div_mult should always return true
+
+    SubsInterpreter interpreter;
+
+    interpreter.Interpret(
+        "(define (div_mult n1 n2)"
+        "        (= n1 (+ (* n2 (quotient n1 n2))"
+        "              (remainder n1 n2))))" );
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(div_mult 1 2)"     ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(div_mult -1 2)"    ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(div_mult -1 -2)"   ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(div_mult 54 16)"   ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(div_mult -54 16)"  ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(div_mult 54 -16)"  ), "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(div_mult -54 -16)" ), "#t" );
+}
+
+
 }
 
 #define SUITENAME "TestArithmetic"
@@ -246,5 +297,11 @@ void TestArithmetic::Run() const
     RUN_TEST(remainder_with_wrong_num_arguments_is_an_error);
     RUN_TEST(remainder_with_nonint_arguments_is_an_error);
     RUN_TEST(remainder_produces_modulus);
+
+    RUN_TEST(quotient_with_wrong_num_arguments_is_an_error);
+    RUN_TEST(quotient_with_nonint_arguments_is_an_error);
+    RUN_TEST(quotient_produces_integer_division);
+
+    RUN_TEST(quotient_times_divisor_plus_remainder_equals_dividend);
 }
 

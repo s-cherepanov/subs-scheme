@@ -38,6 +38,7 @@
 #include "lib/value/nativefunction/negativenativefunctionvalue.h"
 #include "lib/value/nativefunction/notnativefunctionvalue.h"
 #include "lib/value/nativefunction/nullnativefunctionvalue.h"
+#include "lib/value/nativefunction/numbernativefunctionvalue.h"
 #include "lib/value/nativefunction/oddnativefunctionvalue.h"
 #include "lib/value/nativefunction/pairnativefunctionvalue.h"
 #include "lib/value/nativefunction/plusnativefunctionvalue.h"
@@ -111,6 +112,7 @@ void Init( Environment& environment )
     InsertProcedure<EqNativeFunctionValue>(     environment );
     InsertProcedure<EqualNativeFunctionValue>(  environment );
     InsertProcedure<NullNativeFunctionValue>(   environment );
+    InsertProcedure<NumberNativeFunctionValue>( environment );
     InsertProcedure<PairNativeFunctionValue>(   environment );
     InsertProcedure<SymbolNativeFunctionValue>( environment );
 

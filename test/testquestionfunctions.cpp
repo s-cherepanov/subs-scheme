@@ -84,6 +84,35 @@ void eq_returns_false_for_different_symbols()
 }
 
 
+void number_takes_one_argument()
+{
+    TEST_ASSERT_TAKES_FIXED_NUMBER_OF_ARGS( "number?", 1 );
+}
+
+
+void number_identifies_all_number_types()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(number? 3)" ),           "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(number? 3.3)" ),         "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(number? (* 3 -3))" ),    "#t" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(number? (* 3.1 -3.2))" ),
+        "#t" );
+}
+
+
+void number_denies_non_number_types()
+{
+    SubsInterpreter interpreter;
+
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(number? \"foo\")" ), "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(number? 'bar)" ),    "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(number? (car (list 'a 'b)))" ),
+        "#f" );
+    TEST_ASSERT_EQUAL( interpreter.Interpret( "(number? #t)" ), "#f" );
+}
+
 
 
 
@@ -98,5 +127,8 @@ void TestQuestionFunctions::Run() const
     RUN_TEST(wrong_num_args_to_eq_is_an_error)
     RUN_TEST(eq_returns_true_for_identical_symbols)
     RUN_TEST(eq_returns_false_for_different_symbols)
+    RUN_TEST(number_takes_one_argument)
+    RUN_TEST(number_identifies_all_number_types)
+    RUN_TEST(number_denies_non_number_types)
 }
 
